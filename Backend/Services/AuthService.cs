@@ -1,13 +1,18 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Backend.DTO;
+using Backend.Models;
+using Backend.Repositories;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services;
 
-public class AuthService(IConfiguration configuration)
+public class AuthService(IConfiguration configuration, UserRepository userRepository)
 {
     private readonly IConfiguration _configuration = configuration;
+    private readonly UserRepository _userRepository = userRepository;
 
     public string? Authenticate(string username, string password)
     {
@@ -41,5 +46,32 @@ public class AuthService(IConfiguration configuration)
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public RegisterResponse Register(RegisterRequest request)
+    {
+        // Check if the user already exists
+        if (_userRepository.GetUserByUsername(request.Email) != null)
+        {
+            return new RegisterResponse { Success = false, Message = "Username already taken" };
+        }
+
+        var passwordHash = HashPassword(request.Password);
+
+        var user = new User
+        {
+            PasswordHash = passwordHash,
+            Email = request.Email
+        };
+        _userRepository.AddUser(user);
+
+        return new RegisterResponse { Success = true, Message = "Registration successful" };
+    }
+
+    private string HashPassword(string password)
+    {
+        using var sha256 = SHA256.Create();
+        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+        return Convert.ToBase64String(hashedBytes);
     }
 }
