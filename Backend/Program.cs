@@ -1,11 +1,19 @@
 using System.Text;
+using Backend.Data;
+using Backend.Repositories;
 using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<AuthService>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var key = builder.Configuration["Jwt:Key"];
 builder
