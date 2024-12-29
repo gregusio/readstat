@@ -50,7 +50,6 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
 
     public RegisterResponse Register(RegisterRequest request)
     {
-        // Check if the user already exists
         if (_userRepository.GetUserByUsername(request.Email) != null)
         {
             return new RegisterResponse { Success = false, Message = "Username already taken" };
