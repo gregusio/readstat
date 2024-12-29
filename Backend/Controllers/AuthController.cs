@@ -10,6 +10,24 @@ public class AuthController(AuthService authService) : ControllerBase
 {
     private readonly AuthService _authService = authService;
 
+    [HttpPost("register")]
+    public IActionResult Register([FromBody] RegisterRequest request)
+    {
+        if (request == null || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Email))
+        {
+            return BadRequest(new { Message = "Invalid request" });
+        }
+
+        var response = _authService.Register(request);
+
+        if (!response.Success)
+        {
+            return BadRequest(response);
+        }
+
+        return Ok(response);
+    }
+
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
