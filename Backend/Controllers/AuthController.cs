@@ -29,7 +29,7 @@ public class AuthController(AuthService authService) : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         if (
             request == null
@@ -40,13 +40,13 @@ public class AuthController(AuthService authService) : ControllerBase
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var token = _authService.Authenticate(request.Email, request.Password);
+        var response = await _authService.Authenticate(request.Email, request.Password);
 
-        if (token == null)
+        if (response == null)
         {
             return Unauthorized(new { Message = "Invalid username or password" });
         }
 
-        return Ok(new LoginResponse { Token = token, Message = "Login successful" });
+        return Ok(response);
     }
 }
