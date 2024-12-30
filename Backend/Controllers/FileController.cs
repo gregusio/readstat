@@ -1,8 +1,10 @@
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [Consumes("multipart/form-data")]
 public class FileController(FileService fileService) : ControllerBase
