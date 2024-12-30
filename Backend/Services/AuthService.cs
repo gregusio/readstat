@@ -14,14 +14,31 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
     private readonly IConfiguration _configuration = configuration;
     private readonly UserRepository _userRepository = userRepository;
 
-    public string? Authenticate(string username, string password)
+    public async Task<LoginResponse> Authenticate(string username, string password)
     {
         // TODO: Replace this with a real authentication logic
         if (username == "test" && password == "password")
         {
-            return GenerateJwtToken(username);
+            var tokens = GenerateTokens(username);
+
+            return new LoginResponse
+            {
+                AccessToken = tokens.accessToken,
+                RefreshToken = tokens.refreshToken,
+                Message = "Login successful"
+            };
         }
         return null;
+    }
+
+    private (string accessToken, string refreshToken) GenerateTokens(string username)
+    {
+        var accessToken = GenerateJwtToken(username);
+        var refreshToken = GenerateRefreshToken();
+        // TODO Save refresh token to database
+        // SaveRefreshToken(user, refreshToken);
+
+        return (accessToken, refreshToken);
     }
 
     private string GenerateJwtToken(string username)
@@ -46,6 +63,24 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        RandomNumberGenerator.Fill(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private void SaveRefreshToken(User user, string refreshToken)
+    {
+        // TODO Save refresh token to database
+        // _refreshTokenRepository.Save(new RefreshToken
+        // {
+        //     UserId = user.Id,
+        //     Token = refreshToken,
+        //     ExpiryDate = DateTime.Now.AddDays(30) 
+        // });
     }
 
     public RegisterResponse Register(RegisterRequest request)
