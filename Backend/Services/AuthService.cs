@@ -9,10 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services;
 
-public class AuthService(IConfiguration configuration, UserRepository userRepository)
+public class AuthService(IConfiguration configuration, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository)
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly UserRepository _userRepository = userRepository;
+    private readonly RefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
     public async Task<LoginResponse> Authenticate(string username, string password)
     {
@@ -28,15 +29,40 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
                 Message = "Login successful"
             };
         }
-        return null;
+        return new LoginResponse { AccessToken = "null", RefreshToken = "null", Message = "Invalid username or password" };
+    }
+
+    public async Task<RefreshTokenResponse?> RefreshToken(string refreshToken)
+    {
+        var token = await _refreshTokenRepository.GetByToken(refreshToken);
+        if (token == null || token.ExpiresAt < DateTime.UtcNow)
+        {
+            return null;
+        }
+
+        var user = _userRepository.GetById(token.UserId);
+        if (user == null)
+        {
+            return null;
+        }
+
+        await _refreshTokenRepository.Delete(token);
+
+        var (newAccessToken, newRefreshToken) = GenerateTokens(user.Email);
+
+        return new RefreshTokenResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
+        };
     }
 
     private (string accessToken, string refreshToken) GenerateTokens(string username)
     {
         var accessToken = GenerateJwtToken(username);
         var refreshToken = GenerateRefreshToken();
-        // TODO Save refresh token to database
-        // SaveRefreshToken(user, refreshToken);
+
+        SaveRefreshToken(username, refreshToken);
 
         return (accessToken, refreshToken);
     }
@@ -72,20 +98,29 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         return Convert.ToBase64String(randomNumber);
     }
 
-    private void SaveRefreshToken(User user, string refreshToken)
+    private async void SaveRefreshToken(string username, string refreshToken)
     {
-        // TODO Save refresh token to database
-        // _refreshTokenRepository.Save(new RefreshToken
-        // {
-        //     UserId = user.Id,
-        //     Token = refreshToken,
-        //     ExpiryDate = DateTime.Now.AddDays(30) 
-        // });
+        var user = _userRepository.GetByUsername(username);
+        if (user == null)
+        {
+            return;
+        }
+
+        await _refreshTokenRepository.DeletePrevious(user.Id);
+
+        var token = new RefreshToken
+        {
+            Token = refreshToken,
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddHours(1)
+        };
+
+        await _refreshTokenRepository.Add(token);
     }
 
     public RegisterResponse Register(RegisterRequest request)
     {
-        if (_userRepository.GetUserByUsername(request.Email) != null)
+        if (_userRepository.GetByUsername(request.Email) != null)
         {
             return new RegisterResponse { Success = false, Message = "Username already taken" };
         }
