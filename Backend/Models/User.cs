@@ -12,4 +12,6 @@ public class User
 
     [Required]
     public required string PasswordHash { get; set; }
+
+    public List<UserBookRecord>? UserBookRecords { get; set; }
 }
