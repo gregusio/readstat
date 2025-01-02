@@ -13,7 +13,6 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         await using var _context = _contextFactory.CreateDbContext();
         return await _context.UserBookRecords
             .Where(ubr => ubr.UserId == userId)
-            .Include(ubr => ubr.Book)
             .ToListAsync();
     }
 
@@ -21,7 +20,6 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
     {
         await using var _context = _contextFactory.CreateDbContext();
         return await _context.UserBookRecords
-            .Include(ubr => ubr.Book)
             .FirstOrDefaultAsync(ubr => ubr.Id == id);
     }
 
