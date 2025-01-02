@@ -14,8 +14,6 @@ public class UserBookRecord
     [ForeignKey("BookId")]
     public int BookId { get; set; }
 
-    public required Book Book { get; set; }
-
     public int? MyRating { get; set; }
 
     public required string ExclusiveShelf { get; set; }
