@@ -33,7 +33,6 @@ public class FileService(BooksRepository booksRepository, UserBookRecordsReposit
             {
                 UserId = userId,
                 BookId = book.Id,
-                Book = book,
                 MyRating = csvReader.GetField<int?>("My Rating"),
                 ExclusiveShelf = csvReader.GetField("Exclusive Shelf")!,
                 DateRead = DateTime.TryParse(csvReader.GetField("Date Read"), out var dateRead) ? dateRead : null,
@@ -72,6 +71,8 @@ public class FileService(BooksRepository booksRepository, UserBookRecordsReposit
                 YearPublished = csvReader.GetField<int?>("Year Published"),
                 OriginalPublicationYear = csvReader.GetField<int?>("Original Publication Year"),
             };
+
+            await _booksRepository.AddAsync(book);
         }
 
         return book;
