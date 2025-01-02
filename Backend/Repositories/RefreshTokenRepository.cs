@@ -9,14 +9,14 @@ public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactor
 {
     private readonly IDbContextFactory<DataContext> _contextFactory = contextFactory;
 
-    public async Task Add(RefreshToken token)
+    public async Task AddAsync(RefreshToken token)
     {
         await using var _context = _contextFactory.CreateDbContext();
         await _context.RefreshTokens.AddAsync(token);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<RefreshToken?> GetByToken(string token)
+    public async Task<RefreshToken?> GetByTokenAsync(string token)
     {
         await using var _context = _contextFactory.CreateDbContext();
         var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
@@ -27,14 +27,14 @@ public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactor
         return refreshToken;
     }
 
-    public async Task Delete(RefreshToken token)
+    public async Task DeleteAsync(RefreshToken token)
     {
         await using var _context = _contextFactory.CreateDbContext();
         _context.RefreshTokens.Remove(token);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeletePrevious(int userId)
+    public async Task DeletePreviousAsync(int userId)
     {
         await using var _context = _contextFactory.CreateDbContext();
         var tokens = _context.RefreshTokens.Where(t => t.UserId == userId);
