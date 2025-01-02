@@ -72,8 +72,6 @@ public class FileService(BooksRepository booksRepository, UserBookRecordsReposit
                 YearPublished = csvReader.GetField<int?>("Year Published"),
                 OriginalPublicationYear = csvReader.GetField<int?>("Original Publication Year"),
             };
-
-            // await _booksRepository.AddAsync(book);
         }
 
         return book;
