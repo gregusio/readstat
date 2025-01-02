@@ -35,10 +35,11 @@ public class BooksRepository(IDbContextFactory<DataContext> contextFactory)
     {
         await using var _context = _contextFactory.CreateDbContext();
 
-        if (await _context.Books.AnyAsync(b => b.ISBN == book.ISBN) && !string.IsNullOrEmpty(book.ISBN))
-        {
-            // throw new InvalidOperationException("Book with this ISBN already exists");
-        }
+        // TODO: Uncomment this code after implementing ISBN uniqueness check
+        // if (await _context.Books.AnyAsync(b => b.ISBN == book.ISBN) && !string.IsNullOrEmpty(book.ISBN))
+        // {
+        //      throw new InvalidOperationException("Book with this ISBN already exists");
+        // }
 
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();
