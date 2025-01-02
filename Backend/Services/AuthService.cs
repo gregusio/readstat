@@ -17,18 +17,14 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
 
     public async Task<LoginResponse> Authenticate(string username, string password)
     {
-        // TODO: Replace this with a real authentication logic
-        if (username == "test" && password == "password")
-        {
-            var tokens = GenerateTokens(username);
+        var user = _userRepository.GetByUsername(username);
 
-            return new LoginResponse
-            {
-                AccessToken = tokens.accessToken,
-                RefreshToken = tokens.refreshToken,
-                Message = "Login successful"
-            };
+        if (user != null && user.PasswordHash == HashPassword(password))
+        {
+            var (accessToken, refreshToken) = GenerateTokens(username);
+            return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Message = "Login successful" };
         }
+        
         return new LoginResponse { AccessToken = "null", RefreshToken = "null", Message = "Invalid username or password" };
     }
 
