@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,8 @@ public class FileController(FileService fileService) : ControllerBase
 
         try
         {
-            var result = await _fileService.ProcessCsvFile(file);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await _fileService.ProcessCsvFile(file, userId);
             return Ok(new { Message = "File uploaded successfully", RowsProcessed = result });
         }
         catch (Exception ex)
