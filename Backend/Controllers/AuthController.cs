@@ -14,14 +14,14 @@ public class AuthController(AuthService authService, UserRepository userReposito
     private readonly RefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         if (request == null || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Email))
         {
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = _authService.Register(request);
+        var response = await _authService.Register(request);
 
         if (!response.Success)
         {
