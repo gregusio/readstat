@@ -73,6 +73,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         {
             new Claim(ClaimTypes.Name, username),
             new Claim(ClaimTypes.Role, "User"),
+            new Claim(ClaimTypes.NameIdentifier, _userRepository.GetByUsername(username)!.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -112,7 +113,8 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         {
             Token = refreshToken,
             UserId = user.Id,
-            ExpiresAt = DateTime.UtcNow.AddHours(1)
+            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = DateTime.UtcNow.AddDays(7)
         };
 
         await _refreshTokenRepository.Add(token);
