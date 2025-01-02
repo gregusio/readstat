@@ -8,23 +8,23 @@ public class UserRepository(IDbContextFactory<DataContext> contextFactory)
 {
     private readonly IDbContextFactory<DataContext> _contextFactory = contextFactory;
 
-    public User AddUser(User user)
+    public async Task<User> AddUserAsync(User user)
     {
-        using var _context = _contextFactory.CreateDbContext();
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        await using var _context = _contextFactory.CreateDbContext();
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
         return user;
     }
 
-    public User? GetByUsername(string email)
+    public async Task<User?> GetByUsernameAsync(string email)
     {
-        using var _context = _contextFactory.CreateDbContext();
-        return _context.Users.FirstOrDefault(u => u.Email == email);
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public User? GetById(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
-        using var _context = _contextFactory.CreateDbContext();
-        return _context.Users.FirstOrDefault(u => u.Id == id);
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 }

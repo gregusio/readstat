@@ -17,34 +17,34 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
 
     public async Task<LoginResponse> Authenticate(string username, string password)
     {
-        var user = _userRepository.GetByUsername(username);
+        var user = await _userRepository.GetByUsernameAsync(username);
 
         if (user != null && user.PasswordHash == HashPassword(password))
         {
-            var (accessToken, refreshToken) = GenerateTokens(username);
+            var (accessToken, refreshToken) = await GenerateTokens(username);
             return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Message = "Login successful" };
         }
-        
+
         return new LoginResponse { AccessToken = "null", RefreshToken = "null", Message = "Invalid username or password" };
     }
 
     public async Task<RefreshTokenResponse?> RefreshToken(string refreshToken)
     {
-        var token = await _refreshTokenRepository.GetByToken(refreshToken);
+        var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
         if (token == null || token.ExpiresAt < DateTime.UtcNow)
         {
             return null;
         }
 
-        var user = _userRepository.GetById(token.UserId);
+        var user = await _userRepository.GetByIdAsync(token.UserId);
         if (user == null)
         {
             return null;
         }
 
-        await _refreshTokenRepository.Delete(token);
+        await _refreshTokenRepository.DeleteAsync(token);
 
-        var (newAccessToken, newRefreshToken) = GenerateTokens(user.Email);
+        var (newAccessToken, newRefreshToken) = await GenerateTokens(user.Email);
 
         return new RefreshTokenResponse
         {
@@ -53,9 +53,9 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         };
     }
 
-    private (string accessToken, string refreshToken) GenerateTokens(string username)
+    private async Task<(string accessToken, string refreshToken)> GenerateTokens(string username)
     {
-        var accessToken = GenerateJwtToken(username);
+        var accessToken = await GenerateJwtToken(username);
         var refreshToken = GenerateRefreshToken();
 
         SaveRefreshToken(username, refreshToken);
@@ -63,13 +63,14 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         return (accessToken, refreshToken);
     }
 
-    private string GenerateJwtToken(string username)
+    private async Task<string> GenerateJwtToken(string username)
     {
+        var user = await _userRepository.GetByUsernameAsync(username);
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, username),
             new Claim(ClaimTypes.Role, "User"),
-            new Claim(ClaimTypes.NameIdentifier, _userRepository.GetByUsername(username)!.Id.ToString())
+            new Claim(ClaimTypes.NameIdentifier,  user!.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -97,13 +98,13 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
 
     private async void SaveRefreshToken(string username, string refreshToken)
     {
-        var user = _userRepository.GetByUsername(username);
+        var user = await _userRepository.GetByUsernameAsync(username);
         if (user == null)
         {
             return;
         }
 
-        await _refreshTokenRepository.DeletePrevious(user.Id);
+        await _refreshTokenRepository.DeletePreviousAsync(user.Id);
 
         var token = new RefreshToken
         {
@@ -113,12 +114,12 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
             ExpiresAt = DateTime.UtcNow.AddDays(7)
         };
 
-        await _refreshTokenRepository.Add(token);
+        await _refreshTokenRepository.AddAsync(token);
     }
 
-    public RegisterResponse Register(RegisterRequest request)
+    public async Task<RegisterResponse> Register(RegisterRequest request)
     {
-        if (_userRepository.GetByUsername(request.Email) != null)
+        if (await _userRepository.GetByUsernameAsync(request.Email) != null)
         {
             return new RegisterResponse { Success = false, Message = "Username already taken" };
         }
@@ -130,7 +131,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
             PasswordHash = passwordHash,
             Email = request.Email
         };
-        _userRepository.AddUser(user);
+        await _userRepository.AddUserAsync(user);
 
         return new RegisterResponse { Success = true, Message = "Registration successful" };
     }
