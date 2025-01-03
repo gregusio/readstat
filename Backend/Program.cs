@@ -16,6 +16,7 @@ builder.Services.AddScoped<BooksRepository>();
 builder.Services.AddScoped<UserBookRecordsRepository>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddScoped<BookService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
