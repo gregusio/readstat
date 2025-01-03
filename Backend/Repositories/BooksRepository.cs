@@ -31,6 +31,12 @@ public class BooksRepository(IDbContextFactory<DataContext> contextFactory)
         return await _context.Books.ToListAsync();
     }
 
+    public async Task<IEnumerable<Book>> GetBooksByIdsAsync(IEnumerable<int> ids)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.Books.Where(b => ids.Contains(b.Id)).ToListAsync();
+    }
+
     public async Task AddAsync(Book book)
     {
         await using var _context = _contextFactory.CreateDbContext();
