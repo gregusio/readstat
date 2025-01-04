@@ -9,36 +9,139 @@ public class BookService(BooksRepository bookRepository, UserBookRecordsReposito
     private readonly BooksRepository _bookRepository = bookRepository;
     private readonly UserBookRecordsRepository _userBookRecordRepository = userBookRecordRepository;
 
-    public async Task<IEnumerable<BookDTO>> GetUserBooksAsync(int userId)
+    public async Task<IEnumerable<BookBasicInfoDTO>> GetUserBooksAsync(int userId)
     {
-        var userBooks = await _userBookRecordRepository.GetAllForUserAsync(userId);
+        var userBookRecords = await _userBookRecordRepository.GetAllForUserAsync(userId);
 
-        var bookDetails = await _bookRepository.GetBooksByIdsAsync(userBooks.Select(ub => ub.BookId));
+        var DTOBooks = new List<BookBasicInfoDTO>();
 
-        var bookDtos = bookDetails.Select(book => new BookDTO
+        foreach (var userBookRecord in userBookRecords)
         {
-            Id = book.Id,
+            var book = await _bookRepository.GetByIdAsync(userBookRecord.BookId);
+
+            DTOBooks.Add(new BookBasicInfoDTO
+            {
+                Id = userBookRecord.Id,
+                Title = userBookRecord.UserTitle ?? book!.Title,
+                Author = userBookRecord.UserAuthor ?? book!.Author,
+                ExclusiveShelf = userBookRecord.ExclusiveShelf
+            });
+        }
+
+        return DTOBooks;
+    }
+
+    public async Task<BookDTO> GetBookDetailsAsync(int userId, int bookId)
+    {
+        var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, bookId);
+
+        if (userBookRecord == null)
+        {
+            throw new InvalidOperationException("User does not have this book");
+        }
+
+        var book = await _bookRepository.GetByIdAsync(bookId);
+
+        return new BookDTO
+        {
+            Id = bookId,
+            Title = userBookRecord.UserTitle ?? book!.Title,
+            Author = userBookRecord.UserAuthor ?? book!.Author,
+            AdditionalAuthors = userBookRecord.UserAdditionalAuthors ?? book!.AdditionalAuthors,
+            AverageRating = book!.AverageRating,
+            NumberOfPages = userBookRecord.UserNumberOfPages ?? book!.NumberOfPages,
+            YearPublished = userBookRecord.UserYearPublished ?? book!.YearPublished,
+            OriginalPublicationYear = userBookRecord.UserOriginalPublicationYear ?? book!.OriginalPublicationYear,
+            ISBN = userBookRecord.UserISBN ?? book!.ISBN,
+            ISBN13 = userBookRecord.UserISBN13 ?? book!.ISBN13,
+            Publisher = userBookRecord.UserPublisher ?? book!.Publisher,
+            MyRating = userBookRecord.MyRating,
+            ExclusiveShelf = userBookRecord.ExclusiveShelf,
+            DateRead = userBookRecord.DateRead,
+            DateAdded = userBookRecord.DateAdded,
+            MyReview = userBookRecord.MyReview,
+            ReadCount = userBookRecord.ReadCount
+        };
+    }
+
+    public async Task<BookDTO> AddBookAsync(int userId, BookDTO book)
+    {
+        var newBook = new Book
+        {
             Title = book.Title,
             Author = book.Author,
             AdditionalAuthors = book.AdditionalAuthors,
-            ISBN = book.ISBN,
-            ISBN13 = book.ISBN13,
             AverageRating = book.AverageRating,
-            Publisher = book.Publisher,
             NumberOfPages = book.NumberOfPages,
             YearPublished = book.YearPublished,
             OriginalPublicationYear = book.OriginalPublicationYear,
-            MyRating = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.MyRating,
-            ExclusiveShelf = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.ExclusiveShelf!,
-            DateRead = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.DateRead,
-            DateAdded = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.DateAdded,
-            MyReview = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.MyReview,
-            ReadCount = userBooks.FirstOrDefault(ub => ub.BookId == book.Id)?.ReadCount
-        });
+            ISBN = book.ISBN,
+            ISBN13 = book.ISBN13,
+            Publisher = book.Publisher
+        };
 
-        return bookDtos;
+        var addedBookId = await _bookRepository.AddAsync(newBook);
+
+        var userBookRecord = new UserBookRecord
+        {
+            UserId = userId,
+            BookId = addedBookId,
+            UserTitle = book.Title,
+            UserAuthor = book.Author,
+            UserAdditionalAuthors = book.AdditionalAuthors,
+            UserNumberOfPages = book.NumberOfPages,
+            UserYearPublished = book.YearPublished,
+            UserOriginalPublicationYear = book.OriginalPublicationYear,
+            UserISBN = book.ISBN,
+            UserISBN13 = book.ISBN13,
+            UserPublisher = book.Publisher,
+            MyRating = book.MyRating,
+            ExclusiveShelf = book.ExclusiveShelf,
+            DateRead = book.DateRead,
+            DateAdded = book.DateAdded,
+            MyReview = book.MyReview,
+            ReadCount = book.ReadCount
+        };
+
+        await _userBookRecordRepository.AddAsync(userBookRecord);
+
+        return book;
     }
 
+    public async Task<BookDTO> UpdateBookAsync(int userId, BookDTO book)
+    {
+        var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, book.Id);
 
+        if (userBookRecord == null)
+        {
+            throw new InvalidOperationException("User does not have this book");
+        }
 
+        userBookRecord.UserTitle = book.Title;
+        userBookRecord.UserAuthor = book.Author;
+        userBookRecord.UserAdditionalAuthors = book.AdditionalAuthors;
+        userBookRecord.UserNumberOfPages = book.NumberOfPages;
+        userBookRecord.UserYearPublished = book.YearPublished;
+        userBookRecord.UserOriginalPublicationYear = book.OriginalPublicationYear;
+        userBookRecord.UserISBN = book.ISBN;
+        userBookRecord.UserISBN13 = book.ISBN13;
+        userBookRecord.UserPublisher = book.Publisher;
+        userBookRecord.MyRating = book.MyRating;
+        userBookRecord.ExclusiveShelf = book.ExclusiveShelf;
+        userBookRecord.DateRead = book.DateRead;
+        userBookRecord.DateAdded = book.DateAdded;
+        userBookRecord.MyReview = book.MyReview;
+        userBookRecord.ReadCount = book.ReadCount;
+
+        await _userBookRecordRepository.UpdateAsync(userBookRecord);
+
+        return book;
+    }
+
+    public async Task DeleteBookAsync(int userId, int bookId)
+    {
+        var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, bookId);
+
+        await _userBookRecordRepository.DeleteAsync(userBookRecord!.Id);
+    }
 }
