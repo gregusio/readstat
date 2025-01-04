@@ -23,6 +23,13 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
             .FirstOrDefaultAsync(ubr => ubr.Id == id);
     }
 
+    public async Task<UserBookRecord?> GetByUserIdAndBookIdAsync(int userId, int bookId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .FirstOrDefaultAsync(ubr => ubr.UserId == userId && ubr.BookId == bookId);
+    }
+
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)
     {
         await using var _context = _contextFactory.CreateDbContext();

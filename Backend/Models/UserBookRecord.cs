@@ -14,6 +14,24 @@ public class UserBookRecord
     [ForeignKey("BookId")]
     public int BookId { get; set; }
 
+    public string? UserTitle { get; set; }
+
+    public string? UserAuthor { get; set; }
+
+    public string? UserAdditionalAuthors { get; set; }
+
+    public string? UserISBN { get; set; }
+
+    public string? UserISBN13 { get; set; }
+
+    public string? UserPublisher { get; set; }
+
+    public int? UserNumberOfPages { get; set; }
+
+    public int? UserYearPublished { get; set; }
+
+    public int? UserOriginalPublicationYear { get; set; }
+
     public int? MyRating { get; set; }
 
     public required string ExclusiveShelf { get; set; }
@@ -24,5 +42,5 @@ public class UserBookRecord
 
     public string? MyReview { get; set; }
 
-    public int ReadCount { get; set; }
+    public int? ReadCount { get; set; }
 }
