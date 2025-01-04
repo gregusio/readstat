@@ -37,7 +37,7 @@ public class BooksRepository(IDbContextFactory<DataContext> contextFactory)
         return await _context.Books.Where(b => ids.Contains(b.Id)).ToListAsync();
     }
 
-    public async Task AddAsync(Book book)
+    public async Task<int> AddAsync(Book book)
     {
         await using var _context = _contextFactory.CreateDbContext();
 
@@ -49,6 +49,7 @@ public class BooksRepository(IDbContextFactory<DataContext> contextFactory)
 
         await _context.Books.AddAsync(book);
         await _context.SaveChangesAsync();
+        return book.Id;
     }
 
     public async Task UpdateAsync(Book book)
