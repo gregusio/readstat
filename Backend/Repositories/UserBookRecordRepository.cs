@@ -125,6 +125,148 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
+    public async Task<Dictionary<string, int>> GetNumberOfBooksReadPerYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYearAndMonth = new Dictionary<string, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (booksReadPerYearAndMonth.ContainsKey($"{year}-{month}"))
+            {
+                booksReadPerYearAndMonth[$"{year}-{month}"]++;
+            }
+            else
+            {
+                booksReadPerYearAndMonth[$"{year}-{month}"] = 1;
+            }
+        }
+
+        return booksReadPerYearAndMonth;
+    }
+
+    public async Task<Dictionary<string, int>> GetNumberOfPagesReadPerYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var pagesReadPerYearAndMonth = new Dictionary<string, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (pagesReadPerYearAndMonth.ContainsKey($"{year}-{month}"))
+            {
+                pagesReadPerYearAndMonth[$"{year}-{month}"] += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+            }
+            else
+            {
+                pagesReadPerYearAndMonth[$"{year}-{month}"] = record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+            }
+        }
+
+        return pagesReadPerYearAndMonth;
+    }
+
+    public async Task<string> GetMostProductiveYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYear = new Dictionary<int, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            if (booksReadPerYear.ContainsKey(year))
+            {
+                booksReadPerYear[year]++;
+            }
+            else
+            {
+                booksReadPerYear[year] = 1;
+            }
+        }
+
+        return booksReadPerYear
+            .OrderByDescending(kvp => kvp.Value)
+            .FirstOrDefault()
+            .Key
+            .ToString();
+    }
+
+    public async Task<string> GetMostProductiveYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYearAndMonth = new Dictionary<(int, int), int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (booksReadPerYearAndMonth.ContainsKey((year, month)))
+            {
+                booksReadPerYearAndMonth[(year, month)]++;
+            }
+            else
+            {
+                booksReadPerYearAndMonth[(year, month)] = 1;
+            }
+        }
+
+        var mostProductiveYearAndMonth = booksReadPerYearAndMonth
+            .OrderByDescending(kvp => kvp.Value)
+            .FirstOrDefault();
+
+        return mostProductiveYearAndMonth.Key.Item1 + "-" + mostProductiveYearAndMonth.Key.Item2;
+    }
+
+    public async Task<double> GetAveragePagesPerBookAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var totalPagesRead = 0;
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            totalPagesRead += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+        }
+
+        return (double)totalPagesRead / userBooksRecords.Count;
+    }
+
+    public async Task<int> GetTotalPagesReadAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var totalPagesRead = 0;
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            totalPagesRead += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+        }
+
+        return totalPagesRead;
+    }
+
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)
     {
         await using var _context = _contextFactory.CreateDbContext();

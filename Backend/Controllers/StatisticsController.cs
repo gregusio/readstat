@@ -27,4 +27,12 @@ public class StatisticsController(IStatisticsService statisticsService) : Contro
         var statisticsReadBooks = await _statisticsService.GetStatisticsReadBooks(userId);
         return Ok(statisticsReadBooks);
     }
+
+    [HttpGet("progress")]
+    public async Task<IActionResult> GetReadingProgress()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsReadingProgress = await _statisticsService.GetStatisticsReadingProgress(userId);
+        return Ok(statisticsReadingProgress);
+    }
 }
