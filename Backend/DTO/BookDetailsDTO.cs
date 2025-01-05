@@ -13,7 +13,7 @@ public class BookDTO
     public int? NumberOfPages { get; set; } 
     public int? YearPublished { get; set; } 
     public int? OriginalPublicationYear { get; set; } 
-    public int? MyRating { get; set; }
+    public int MyRating { get; set; }
     public required string ExclusiveShelf { get; set; }
     public DateTime? DateRead { get; set; }
     public DateTime? DateAdded { get; set; }
