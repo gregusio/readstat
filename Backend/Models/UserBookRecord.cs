@@ -32,7 +32,7 @@ public class UserBookRecord
 
     public int? UserOriginalPublicationYear { get; set; }
 
-    public int? MyRating { get; set; }
+    public int MyRating { get; set; }
 
     public required string ExclusiveShelf { get; set; }
 

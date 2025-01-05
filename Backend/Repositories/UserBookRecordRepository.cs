@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.DTO;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,242 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         await using var _context = _contextFactory.CreateDbContext();
         return await _context.UserBookRecords
             .FirstOrDefaultAsync(ubr => ubr.UserId == userId && ubr.BookId == bookId);
+    }
+
+    public async Task<int> GetTotalBooksCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId)
+            .CountAsync();
+    }
+
+    public async Task<int> GetTotalReadBooksCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.ExclusiveShelf == "read") // TODO add some status enum
+            .CountAsync();
+    }
+
+    public async Task<int> GetTotalReadingBooksCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.ExclusiveShelf == "currently-reading") // TODO add some status enum
+            .CountAsync();
+    }
+
+    public async Task<int> GetTotalUnreadBooksAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.ExclusiveShelf == "to-read") // TODO add some status enum
+            .CountAsync();
+    }
+
+    public async Task<double> GetAverageRatingAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.MyRating != 0)
+            .AverageAsync(ubr => ubr.MyRating);
+    }
+
+    public async Task<List<BookBasicInfoDTO>> GetBooksWithRatingAsync(int userId, int rating)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecordsWithRating = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.MyRating == rating)
+            .ToListAsync();
+
+        var booksBasicInfoWithRating = new List<BookBasicInfoDTO>();
+        foreach (var record in userBooksRecordsWithRating)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            booksBasicInfoWithRating.Add(new BookBasicInfoDTO
+            {
+                Id = record.BookId,
+                Title = record.UserTitle ?? book!.Title,
+                Author = record.UserAuthor ?? book!.Author,
+                ExclusiveShelf = record.ExclusiveShelf,
+            });
+        }
+
+        return booksBasicInfoWithRating;
+    }
+
+    public async Task<Dictionary<string, int>> GetFiveMostPopularAuthorsWithBooksCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId)
+            .ToListAsync();
+
+        var authorsBooksCount = new Dictionary<string, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            if (book != null && (!string.IsNullOrEmpty(book.Author) || !string.IsNullOrEmpty(record.UserAuthor)))
+            {
+                if (authorsBooksCount.ContainsKey(record.UserAuthor ?? book.Author))
+                {
+                    authorsBooksCount[record.UserAuthor ?? book.Author]++;
+                }
+                else
+                {
+                    authorsBooksCount[record.UserAuthor ?? book.Author] = 1;
+                }
+                
+            }
+        }
+
+        return authorsBooksCount
+            .OrderByDescending(kvp => kvp.Value)
+            .Take(5)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+    }
+
+    public async Task<Dictionary<string, int>> GetNumberOfBooksReadPerYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYearAndMonth = new Dictionary<string, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (booksReadPerYearAndMonth.ContainsKey($"{year}-{month}"))
+            {
+                booksReadPerYearAndMonth[$"{year}-{month}"]++;
+            }
+            else
+            {
+                booksReadPerYearAndMonth[$"{year}-{month}"] = 1;
+            }
+        }
+
+        return booksReadPerYearAndMonth;
+    }
+
+    public async Task<Dictionary<string, int>> GetNumberOfPagesReadPerYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var pagesReadPerYearAndMonth = new Dictionary<string, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (pagesReadPerYearAndMonth.ContainsKey($"{year}-{month}"))
+            {
+                pagesReadPerYearAndMonth[$"{year}-{month}"] += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+            }
+            else
+            {
+                pagesReadPerYearAndMonth[$"{year}-{month}"] = record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+            }
+        }
+
+        return pagesReadPerYearAndMonth;
+    }
+
+    public async Task<string> GetMostProductiveYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYear = new Dictionary<int, int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            if (booksReadPerYear.ContainsKey(year))
+            {
+                booksReadPerYear[year]++;
+            }
+            else
+            {
+                booksReadPerYear[year] = 1;
+            }
+        }
+
+        return booksReadPerYear
+            .OrderByDescending(kvp => kvp.Value)
+            .FirstOrDefault()
+            .Key
+            .ToString();
+    }
+
+    public async Task<string> GetMostProductiveYearAndMonthAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var booksReadPerYearAndMonth = new Dictionary<(int, int), int>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (booksReadPerYearAndMonth.ContainsKey((year, month)))
+            {
+                booksReadPerYearAndMonth[(year, month)]++;
+            }
+            else
+            {
+                booksReadPerYearAndMonth[(year, month)] = 1;
+            }
+        }
+
+        var mostProductiveYearAndMonth = booksReadPerYearAndMonth
+            .OrderByDescending(kvp => kvp.Value)
+            .FirstOrDefault();
+
+        return mostProductiveYearAndMonth.Key.Item1 + "-" + mostProductiveYearAndMonth.Key.Item2;
+    }
+
+    public async Task<double> GetAveragePagesPerBookAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var totalPagesRead = 0;
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            totalPagesRead += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+        }
+
+        return (double)totalPagesRead / userBooksRecords.Count;
+    }
+
+    public async Task<int> GetTotalPagesReadAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var totalPagesRead = 0;
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            totalPagesRead += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+        }
+
+        return totalPagesRead;
     }
 
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)

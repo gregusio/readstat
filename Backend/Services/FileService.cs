@@ -28,12 +28,12 @@ public class FileService(BooksRepository booksRepository, UserBookRecordsReposit
         while (csvReader.Read())
         {
             var book = await FindOrCreateBook(csvReader);
-
+            
             var userBookRecord = new UserBookRecord
             {
                 UserId = userId,
                 BookId = book.Id,
-                MyRating = csvReader.GetField<int?>("My Rating"),
+                MyRating = csvReader.GetField<int>("My Rating"),
                 ExclusiveShelf = csvReader.GetField("Exclusive Shelf")!,
                 DateRead = DateTime.TryParse(csvReader.GetField("Date Read"), out var dateRead) ? dateRead : null,
                 DateAdded = DateTime.TryParse(csvReader.GetField("Date Added"), out var dateAdded) ? dateAdded : null,
