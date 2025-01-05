@@ -44,4 +44,24 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
             MostFivePopularAuthorsWithBooksCount = mostPopularAuthorsWithBooksCount
         };
     }
+
+    public async Task<StatisticsReadingProgressDTO> GetStatisticsReadingProgress(int userId)
+    {
+        var numberOfBooksReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfBooksReadPerYearAndMonthAsync(userId);
+        var numberOfPagesReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfPagesReadPerYearAndMonthAsync(userId);
+        var mostProductiveYear = await _userBookRecordsRepository.GetMostProductiveYearAsync(userId);
+        var mostProductiveMonth = await _userBookRecordsRepository.GetMostProductiveYearAndMonthAsync(userId);   
+        var averagePagesPerBook = await _userBookRecordsRepository.GetAveragePagesPerBookAsync(userId);
+        var totalPagesRead = await _userBookRecordsRepository.GetTotalPagesReadAsync(userId);
+
+        return new StatisticsReadingProgressDTO
+        {
+            BooksReadPerMonth = numberOfBooksReadPerYearAndMonth,
+            PagesReadPerMonth = numberOfPagesReadPerYearAndMonth,
+            MostProductiveYear = mostProductiveYear,
+            MostProductiveMonth = mostProductiveMonth,
+            AveragePagesPerBook = averagePagesPerBook,
+            TotalPagesRead = totalPagesRead
+        };
+    }
 }
