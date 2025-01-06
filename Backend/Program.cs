@@ -28,7 +28,16 @@ builder.Services.AddDbContextFactory<DataContext>(options =>{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     options.EnableSensitiveDataLogging();});
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // Zmień na adres swojego frontendu
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
 var key = builder.Configuration["Jwt:Key"];
 builder
@@ -84,6 +93,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
