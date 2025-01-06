@@ -15,7 +15,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
     private readonly UserRepository _userRepository = userRepository;
     private readonly RefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
-    public async Task<LoginResponse> Authenticate(string username, string password)
+    public async Task<LoginResponse?> Authenticate(string username, string password)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
 
@@ -25,7 +25,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
             return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Message = "Login successful" };
         }
 
-        return new LoginResponse { AccessToken = "null", RefreshToken = "null", Message = "Invalid username or password" };
+        return null;
     }
 
     public async Task<RefreshTokenResponse?> RefreshToken(string refreshToken)

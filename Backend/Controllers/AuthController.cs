@@ -1,6 +1,7 @@
 using Backend.DTO;
 using Backend.Repositories;
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
@@ -70,5 +71,29 @@ public class AuthController(AuthService authService, UserRepository userReposito
 
         return Ok(response);
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var email = User.Identity?.Name; // Username z JWT
+        if (email == null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _userRepository.GetByUsernameAsync(email); // Pobierz użytkownika z bazy
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new
+        {
+            email = user.Email,
+        });
+    }
+
+
 
 }
