@@ -29,11 +29,14 @@ const LoginForm: React.FC = () => {
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto', mt: 5 }}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '400px', margin: 'auto' }}
     >
       {error && <Typography color="error">{error}</Typography>}
       <TextField
         label="Email"
+        variant="outlined"
+        fullWidth
+        margin="normal"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -45,7 +48,7 @@ const LoginForm: React.FC = () => {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>
         Login
       </Button>
 
@@ -54,7 +57,7 @@ const LoginForm: React.FC = () => {
         variant="outlined"
         color="primary"
       >
-        Register
+        Register account
       </Button>
     </Box>
   );

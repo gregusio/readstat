@@ -45,6 +45,7 @@ const RegisterForm: React.FC = () => {
         margin="normal"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        required
       />
       <TextField
         label="Password"
@@ -54,6 +55,7 @@ const RegisterForm: React.FC = () => {
         margin="normal"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
       <TextField
         label="Confirm Password"
@@ -63,6 +65,7 @@ const RegisterForm: React.FC = () => {
         margin="normal"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
+        required
       />
       {error && (
         <Typography color="error" variant="body2" sx={{ mt: 1 }}>

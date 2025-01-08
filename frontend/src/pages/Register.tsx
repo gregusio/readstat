@@ -6,8 +6,8 @@ const Register: React.FC = () => {
   return (
     <div className="register-page">
       <div className="register-container">
-      <h1>Register</h1>
-      <RegisterForm />
+        <h1>Register</h1>
+        <RegisterForm />
       </div>
     </div>
   );
