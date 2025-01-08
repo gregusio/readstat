@@ -38,9 +38,6 @@ const RegisterForm: React.FC = () => {
       onSubmit={handleSubmit} 
       sx={{ maxWidth: 400, margin: 'auto', textAlign: 'center', mt: 4 }}
     >
-      <Typography variant="h5" gutterBottom>
-        Register
-      </Typography>
       <TextField
         label="Email"
         variant="outlined"
