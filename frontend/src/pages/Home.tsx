@@ -1,24 +1,19 @@
 import { Button } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
+  const { logout } = useAuth();
 
   return (
     <div>
       <h1>Welcome Home!</h1>
       <Button
         onClick={() => {
-          authService.logout();
+          logout();
+          navigate("/login");
         }}
       >
         Logout
