@@ -4,9 +4,9 @@ import "./Register.css";
 
 const Register: React.FC = () => {
   return (
-    <div className="register-container">
-      <div className="register-box">
-      <h1 className="register-title">Register</h1>
+    <div className="register-page">
+      <div className="register-container">
+      <h1>Register</h1>
       <RegisterForm />
       </div>
     </div>

@@ -9,7 +9,7 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { setUser } = useAuth();
+  const { setUser, login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -18,7 +18,8 @@ const LoginForm: React.FC = () => {
     try {
       const response = await authService.login({email, password});
       setUser(response.data);
-      navigate('/home');
+      login();
+      navigate('/');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
     }
@@ -30,7 +31,6 @@ const LoginForm: React.FC = () => {
       onSubmit={handleSubmit}
       sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '300px', margin: 'auto', mt: 5 }}
     >
-      <Typography variant="h4">Login</Typography>
       {error && <Typography color="error">{error}</Typography>}
       <TextField
         label="Email"
@@ -47,6 +47,14 @@ const LoginForm: React.FC = () => {
       />
       <Button type="submit" variant="contained" color="primary">
         Login
+      </Button>
+
+      <Button
+        onClick={() => navigate('/register')}
+        variant="outlined"
+        color="primary"
+      >
+        Register
       </Button>
     </Box>
   );
