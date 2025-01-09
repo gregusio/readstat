@@ -1,11 +1,12 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute: React.FC = () => {
-  const token = localStorage.getItem("accessToken");
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} />;
   }
 

@@ -80,6 +80,13 @@ const RegisterForm: React.FC = () => {
       <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
         Register
       </Button>
+
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        Already have an account? 
+        <Button color="primary" sx={{ textTransform: 'none' }} onClick={() => navigate('/login')}>
+          Login
+        </Button>
+      </Typography>
     </Box>
   );
 }
