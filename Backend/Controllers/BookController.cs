@@ -37,7 +37,7 @@ public class BookController(BookService bookService) : ControllerBase
         return Ok(new Response { Message = "Book added successfully", Success = true });
     }
 
-    [HttpPut("update-book")]
+    [HttpPatch("update-book")]
     public async Task<IActionResult> UpdateBook([FromBody] BookDTO book)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
