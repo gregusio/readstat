@@ -31,16 +31,21 @@ public class BookService(BooksRepository bookRepository, UserBookRecordsReposito
         return DTOBooks;
     }
 
-    public async Task<BookDTO> GetBookDetailsAsync(int userId, int bookId)
+    public async Task<BookDTO> GetBookDetailsAsync(int userId, int recordId)
     {
-        var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, bookId);
+        var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, recordId);
 
         if (userBookRecord == null)
         {
             throw new InvalidOperationException("User does not have this book");
         }
 
+        var bookId = userBookRecord.BookId;
         var book = await _bookRepository.GetByIdAsync(bookId);
+        if(book == null)
+        {
+            throw new InvalidOperationException("Book not found");
+        }
 
         return new BookDTO
         {

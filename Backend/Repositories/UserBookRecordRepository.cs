@@ -24,11 +24,11 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
             .FirstOrDefaultAsync(ubr => ubr.Id == id);
     }
 
-    public async Task<UserBookRecord?> GetByUserIdAndBookIdAsync(int userId, int bookId)
+    public async Task<UserBookRecord?> GetByUserIdAndBookIdAsync(int userId, int recordId)
     {
         await using var _context = _contextFactory.CreateDbContext();
         return await _context.UserBookRecords
-            .FirstOrDefaultAsync(ubr => ubr.UserId == userId && ubr.BookId == bookId);
+            .FirstOrDefaultAsync(ubr => ubr.UserId == userId && ubr.Id == recordId);
     }
 
     public async Task<int> GetTotalBooksCountAsync(int userId)
