@@ -1,20 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
+import React from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { BrowserRouter as Router } from "react-router-dom";
+import DashboardLayout from "./components/Layout/DashboardLayout";
+import theme from "./theme/theme";
+import { SearchProvider } from "./context/SearchContext";
 
-const App: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path='/register' element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="*" element={<Login />} />
-      </Routes>
-    </Router>
-  );
+
+interface AppProviderProps {
+  children: React.ReactNode;
+}
+
+const App: React.FC<AppProviderProps> = ({ children }) => {
+return (
+  <SearchProvider>
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+            <DashboardLayout>
+            {children}
+            </DashboardLayout>
+        </Router>
+    </ThemeProvider>
+  </SearchProvider>
+);
 };
 
 export default App;

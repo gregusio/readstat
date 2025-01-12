@@ -19,7 +19,7 @@ const LoginForm: React.FC = () => {
       const response = await authService.login({email, password});
       setUser(response.data);
       login();
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
     }
