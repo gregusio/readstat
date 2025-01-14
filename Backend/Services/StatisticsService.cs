@@ -65,7 +65,7 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
         };
     }
 
-    public async Task<Dictionary<int, List<int>>> GetStatisticsMonthlyReadBookCountPerYear(int userId)
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyReadBookCountPerYear(int userId)
     {
         return await _userBookRecordsRepository.GetMonthlyReadBookCountPerYearAsync(userId);
     }

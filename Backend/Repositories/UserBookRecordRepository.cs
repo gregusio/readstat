@@ -268,27 +268,35 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         return totalPagesRead;
     }
 
-    public async Task<Dictionary<int, List<int>>> GetMonthlyReadBookCountPerYearAsync(int userId)
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetMonthlyReadBookCountPerYearAsync(int userId)
     {
         await using var _context = _contextFactory.CreateDbContext();
         var userBooksRecords = await _context.UserBookRecords
             .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
             .ToListAsync();
 
-        var monthlyReadBookCountPerYear = new Dictionary<int, List<int>>();
+        var monthlyReadBookCountPerYear = new Dictionary<int, List<MonthlyStats>>();
+        var months = DateTimeFormatInfo.CurrentInfo!.MonthNames.Take(12).ToArray();
+
+        var years = userBooksRecords.Select(record => record.DateRead!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            monthlyReadBookCountPerYear[year] = months.Select(month => new MonthlyStats
+            {
+                Month = month,
+                Count = 0
+            }).ToList();
+        }
+
         foreach (var record in userBooksRecords)
         {
             var year = record.DateRead!.Value.Year;
-            var month = record.DateRead!.Value.Month;
-            if (monthlyReadBookCountPerYear.ContainsKey(year))
-            {
-                monthlyReadBookCountPerYear[year][month - 1]++;
-            }
-            else
-            {
-                monthlyReadBookCountPerYear[year] = new List<int>(new int[12]);
-                monthlyReadBookCountPerYear[year][month - 1] = 1;
-            }
+            var month = record.DateRead.Value.Month;
+            var monthlyStats = monthlyReadBookCountPerYear[year];
+            var stats = monthlyStats.First(ms => ms.Month == months[month - 1]);
+            stats.Count++;
         }
 
         return monthlyReadBookCountPerYear;
