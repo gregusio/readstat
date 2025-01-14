@@ -1,12 +1,13 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Skeleton } from "@mui/material";
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Skeleton variant="rectangular" />;
   }
 
   if (!isAuthenticated) {

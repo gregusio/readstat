@@ -24,9 +24,11 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
 });
 
-builder.Services.AddDbContextFactory<DataContext>(options =>{
+builder.Services.AddDbContextFactory<DataContext>(options =>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    options.EnableSensitiveDataLogging();});
+    options.EnableSensitiveDataLogging();
+});
 
 builder.Services.AddCors(options =>
 {

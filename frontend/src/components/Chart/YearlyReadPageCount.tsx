@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import statisticService from '../../services/statisticService';
-import YearlyCountChart from './YearlyCountChart';
+import React, { useEffect, useState } from "react";
+import statisticService from "../../services/statisticService";
+import YearlyCountChart from "./YearlyCountChart";
+import { Skeleton } from "@mui/material";
 
 const YearlyReadPageCount: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -14,7 +15,7 @@ const YearlyReadPageCount: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Skeleton variant="rectangular" width={500} height={300} />;
   }
 
   return <YearlyCountChart data={data} title="Yearly Read Page Count" />;

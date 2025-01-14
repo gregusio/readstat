@@ -3,20 +3,24 @@ import React, { useContext, useRef } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar = () => {
+const SearchBar: React.FC = () => {
   const { setSearchQuery } = useContext(SearchContext);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement> | React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearch = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+  ) => {
     const target = event.target as HTMLInputElement;
     setSearchQuery(target.value);
-    navigate('/books');
+    navigate("/books");
   };
 
   const clearSearch = () => {
     if (inputRef.current) {
-      inputRef.current.value = '';
+      inputRef.current.value = "";
     }
   };
 
@@ -34,7 +38,7 @@ const SearchBar = () => {
         type="text"
         placeholder="Search books..."
         onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+          if (event.key === "Enter") {
             handleSearch(event);
             clearSearch();
           }

@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from 'react';
+import { createContext, useState, ReactNode } from "react";
 
 type SearchContextType = {
   searchQuery: string;
@@ -7,20 +7,24 @@ type SearchContextType = {
 };
 
 export const SearchContext = createContext<SearchContextType>({
-  searchQuery: '',
+  searchQuery: "",
   setSearchQuery: (_value: string) => {},
-  clearSearchQuery: () => {}
+  clearSearchQuery: () => {},
 });
 
-export const SearchProvider = ({ children }: { children: ReactNode }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+export const SearchProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
   const clearSearchQuery = () => {
-    setSearchQuery('');
+    setSearchQuery("");
   };
 
   return (
-    <SearchContext.Provider value={{ searchQuery, setSearchQuery, clearSearchQuery }}>
+    <SearchContext.Provider
+      value={{ searchQuery, setSearchQuery, clearSearchQuery }}
+    >
       {children}
     </SearchContext.Provider>
   );

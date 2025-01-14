@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { axisClasses, BarChart } from '@mui/x-charts';
-import { Typography } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { axisClasses, BarChart } from "@mui/x-charts";
+import { Skeleton, Typography } from "@mui/material";
 
 interface MonthlyCountChartProps {
   data: any;
@@ -23,7 +23,10 @@ const chartSetting = {
   },
 };
 
-const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({ data, title }) => {
+const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({
+  data,
+  title,
+}) => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [year, setYear] = useState<number>(0);
@@ -44,7 +47,7 @@ const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({ data, title }) =>
 
     setChartData({
       labels: months,
-      series: [{ type: 'bar', data: dataset }],
+      series: [{ type: "bar", data: dataset }],
     });
   };
 
@@ -55,7 +58,7 @@ const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({ data, title }) =>
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Skeleton variant="rectangular" width={500} height={300} />;
   }
 
   return (

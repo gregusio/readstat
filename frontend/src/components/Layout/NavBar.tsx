@@ -83,33 +83,33 @@ const NavBar: React.FC = () => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <InputFileUpload />
               <Tooltip title="Click it!" placement="bottom">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/book_icon.png" />
-              </IconButton>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/book_icon.png" />
+                </IconButton>
               </Tooltip>
               <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
               >
-              {settings.map((setting) => (
-                <MenuItem key={setting.label} onClick={setting.action}>
-                <Typography sx={{ textAlign: "center" }}>
-                  {setting.label}
-                </Typography>
-                </MenuItem>
-              ))}
+                {settings.map((setting) => (
+                  <MenuItem key={setting.label} onClick={setting.action}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting.label}
+                    </Typography>
+                  </MenuItem>
+                ))}
               </Menu>
             </Box>
           </>

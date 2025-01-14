@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import React, { useState } from "react";
+import { TextField, Button, Box, Typography } from "@mui/material";
 import authService from "../../services/authService";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
-    
+
     try {
-      await authService.register({email, password});
-      setSuccess('Registration successful!');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/login');
+      await authService.register({ email, password });
+      setSuccess("Registration successful!");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      navigate("/login");
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      setError("Registration failed. Please try again.");
     }
   };
 
   return (
-    <Box 
-      component="form" 
-      onSubmit={handleSubmit} 
-      sx={{ maxWidth: 400, margin: 'auto', textAlign: 'center', mt: 4 }}
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ maxWidth: 400, margin: "auto", textAlign: "center", mt: 4 }}
     >
       <TextField
         label="Email"
@@ -77,18 +77,28 @@ const RegisterForm: React.FC = () => {
           {success}
         </Typography>
       )}
-      <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 2 }}
+      >
         Register
       </Button>
 
       <Typography variant="body2" sx={{ mt: 2 }}>
-        Already have an account? 
-        <Button color="primary" sx={{ textTransform: 'none' }} onClick={() => navigate('/login')}>
+        Already have an account?
+        <Button
+          color="primary"
+          sx={{ textTransform: "none" }}
+          onClick={() => navigate("/login")}
+        >
           Login
         </Button>
       </Typography>
     </Box>
   );
-}
+};
 
 export default RegisterForm;

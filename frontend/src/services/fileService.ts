@@ -1,18 +1,18 @@
 import apiClient from "./apiClient";
 
 const uploadCsv = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
+  const formData = new FormData();
+  formData.append("file", file);
 
-    const response = await apiClient.post('/File/upload-csv', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
+  const response = await apiClient.post("/File/upload-csv", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-    return response.data;
-}
+  return response.data;
+};
 
 export default {
-    uploadCsv,
+  uploadCsv,
 };

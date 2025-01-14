@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import MonthlyReadBookCountPerYear from "../components/Chart/MonthlyReadBookCountPerYear";
-import MonthlyReadPageCountPerYear from "../components/Chart/MonthlyReadPageCountPerYear";
-import MonthlyAddedBookCountPerYear from "../components/Chart/MonthlyAddedBookCountPerYear";
+import MonthlyReadBookCount from "../components/Chart/MonthlyReadBookCount";
+import MonthlyReadPageCount from "../components/Chart/MonthlyReadPageCount";
+import MonthlyAddedBookCount from "../components/Chart/MonthlyAddedBookCount";
 import YearlyReadBookCount from "../components/Chart/YearlyReadBookCount";
 import YearlyReadPageCount from "../components/Chart/YearlyReadPageCount";
 import YearlyAddedBookCount from "../components/Chart/YearlyAddedBookCount";
@@ -19,13 +19,13 @@ const Statistics: React.FC = () => {
           </div>
         </Grid>
         <Grid size={6}>
-          <MonthlyReadBookCountPerYear />
+          <MonthlyReadBookCount />
         </Grid>
         <Grid size={6}>
-          <MonthlyReadPageCountPerYear />
+          <MonthlyReadPageCount />
         </Grid>
         <Grid size={6}>
-          <MonthlyAddedBookCountPerYear />
+          <MonthlyAddedBookCount />
         </Grid>
         <Grid size={6}>
           <YearlyReadBookCount />

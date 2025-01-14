@@ -108,13 +108,14 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
             var book = await _context.Books.FindAsync(record.BookId);
             if (book != null && (!string.IsNullOrEmpty(book.Author) || !string.IsNullOrEmpty(record.UserAuthor)))
             {
-                if (authorsBooksCount.ContainsKey(record.UserAuthor ?? book.Author))
+                var author = record.UserAuthor ?? book.Author;
+                if (!string.IsNullOrEmpty(author) && authorsBooksCount.ContainsKey(author))
                 {
-                    authorsBooksCount[record.UserAuthor ?? book.Author]++;
+                    authorsBooksCount[author]++;
                 }
-                else
+                else if (!string.IsNullOrEmpty(author))
                 {
-                    authorsBooksCount[record.UserAuthor ?? book.Author] = 1;
+                    authorsBooksCount[author] = 1;
                 }
 
             }

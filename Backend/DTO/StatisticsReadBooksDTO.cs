@@ -1,6 +1,6 @@
 namespace Backend.DTO;
 
-public class StatisticsReadBooksDTO 
+public class StatisticsReadBooksDTO
 {
     public double AverageRating { get; set; }
     public List<BookBasicInfoDTO>? BooksWithOneStarRating { get; set; }

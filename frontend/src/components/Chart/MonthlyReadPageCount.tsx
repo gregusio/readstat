@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import statisticService from "../../services/statisticService";
-import YearlyCountChart from "./YearlyCountChart";
+import MonthlyCountChart from "./MonthlyCountChart";
 import { Skeleton } from "@mui/material";
 
-const YearlyAddedBookCount: React.FC = () => {
+const MonthlyReadPageCount: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    statisticService.getYearlyAddedBookCount().then((response) => {
+    statisticService.getMonthlyReadPageCountPerYear().then((response) => {
       setData(response);
       setLoading(false);
     });
@@ -18,7 +18,9 @@ const YearlyAddedBookCount: React.FC = () => {
     return <Skeleton variant="rectangular" width={500} height={300} />;
   }
 
-  return <YearlyCountChart data={data} title="Yearly Read Book Count" />;
+  return (
+    <MonthlyCountChart data={data} title="Monthly Added Book Count Per Year" />
+  );
 };
 
-export default YearlyAddedBookCount;
+export default MonthlyReadPageCount;

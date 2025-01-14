@@ -6,24 +6,21 @@ import DashboardLayout from "./components/Layout/DashboardLayout";
 import theme from "./theme/theme";
 import { SearchProvider } from "./context/SearchContext";
 
-
 interface AppProviderProps {
   children: React.ReactNode;
 }
 
 const App: React.FC<AppProviderProps> = ({ children }) => {
-return (
-  <SearchProvider>
-    <ThemeProvider theme={theme}>
+  return (
+    <SearchProvider>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-            <DashboardLayout>
-            {children}
-            </DashboardLayout>
+          <DashboardLayout>{children}</DashboardLayout>
         </Router>
-    </ThemeProvider>
-  </SearchProvider>
-);
+      </ThemeProvider>
+    </SearchProvider>
+  );
 };
 
 export default App;
