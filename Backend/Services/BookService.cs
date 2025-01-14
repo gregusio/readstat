@@ -42,7 +42,7 @@ public class BookService(BooksRepository bookRepository, UserBookRecordsReposito
 
         var bookId = userBookRecord.BookId;
         var book = await _bookRepository.GetByIdAsync(bookId);
-        if(book == null)
+        if (book == null)
         {
             throw new InvalidOperationException("Book not found");
         }
