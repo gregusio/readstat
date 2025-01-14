@@ -74,6 +74,17 @@ const getYearlyReadBookCount = async () => {
   }
 };
 
+const getYearlyReadPageCount = async () => {
+  try {
+    const response = await apiClient.get("/Statistics/yearly-read-pages");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching yearly read page count:", error);
+    return null;
+  }
+};
+
 export default {
   getSummary,
   getBooksRead,
@@ -82,4 +93,5 @@ export default {
   getMonthlyReadPageCountPerYear,
   getMonthlyAddedBookCountPerYear,
   getYearlyReadBookCount,
+  getYearlyReadPageCount,
 };
