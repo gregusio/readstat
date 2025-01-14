@@ -35,4 +35,52 @@ public class StatisticsController(IStatisticsService statisticsService) : Contro
         var statisticsReadingProgress = await _statisticsService.GetStatisticsReadingProgress(userId);
         return Ok(statisticsReadingProgress);
     }
+
+    [HttpGet("monthly-read-books")]
+    public async Task<IActionResult> GetMonthlyReadBooks()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsMonthlyReadBooks = await _statisticsService.GetStatisticsMonthlyReadBookCountPerYear(userId);
+        return Ok(statisticsMonthlyReadBooks);
+    }
+
+    [HttpGet("monthly-read-pages")]
+    public async Task<IActionResult> GetMonthlyReadPages()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsMonthlyReadPages = await _statisticsService.GetStatisticsMonthlyReadPageCountPerYear(userId);
+        return Ok(statisticsMonthlyReadPages);
+    }
+
+    [HttpGet("monthly-added-books")]
+    public async Task<IActionResult> GetMonthlyAddedBooks()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsMonthlyAddedBooks = await _statisticsService.GetStatisticsMonthlyAddedBookCountPerYear(userId);
+        return Ok(statisticsMonthlyAddedBooks);
+    }
+
+    [HttpGet("yearly-read-books")]
+    public async Task<IActionResult> GetYearlyReadBooks()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsYearlyReadBooks = await _statisticsService.GetStatisticsYearlyReadBookCountPerYear(userId);
+        return Ok(statisticsYearlyReadBooks);
+    }
+
+    [HttpGet("yearly-read-pages")]
+    public async Task<IActionResult> GetYearlyReadPages()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsYearlyReadPages = await _statisticsService.GetStatisticsYearlyReadPageCountPerYear(userId);
+        return Ok(statisticsYearlyReadPages);
+    }
+
+    [HttpGet("yearly-added-books")]
+    public async Task<IActionResult> GetYearlyAddedBooks()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsYearlyAddedBooks = await _statisticsService.GetStatisticsYearlyAddedBookCountPerYear(userId);
+        return Ok(statisticsYearlyAddedBooks);
+    }
 }

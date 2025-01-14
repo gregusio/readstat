@@ -1,3 +1,4 @@
+using System.Globalization;
 using Backend.Data;
 using Backend.DTO;
 using Backend.Models;
@@ -115,7 +116,7 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
                 {
                     authorsBooksCount[record.UserAuthor ?? book.Author] = 1;
                 }
-                
+
             }
         }
 
@@ -265,6 +266,176 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         }
 
         return totalPagesRead;
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetMonthlyReadBookCountPerYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var monthlyReadBookCountPerYear = new Dictionary<int, List<MonthlyStats>>();
+        var months = DateTimeFormatInfo.CurrentInfo!.MonthNames.Take(12).ToArray();
+
+        var years = userBooksRecords.Select(record => record.DateRead!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            monthlyReadBookCountPerYear[year] = months.Select(month => new MonthlyStats
+            {
+                Month = month,
+                Count = 0
+            }).ToList();
+        }
+
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead.Value.Month;
+            var monthlyStats = monthlyReadBookCountPerYear[year];
+            var stats = monthlyStats.First(ms => ms.Month == months[month - 1]);
+            stats.Count++;
+        }
+
+        return monthlyReadBookCountPerYear;
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetMonthlyReadPageCountPerYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var monthlyReadPageCountPerYear = new Dictionary<int, List<MonthlyStats>>();
+        var months = DateTimeFormatInfo.CurrentInfo!.MonthNames.Take(12).ToArray();
+
+        var years = userBooksRecords.Select(record => record.DateRead!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            monthlyReadPageCountPerYear[year] = months.Select(month => new MonthlyStats
+            {
+                Month = month,
+                Count = 0
+            }).ToList();
+        }
+
+        foreach (var record in userBooksRecords)
+        {
+            var book = await _context.Books.FindAsync(record.BookId);
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead.Value.Month;
+            var monthlyStats = monthlyReadPageCountPerYear[year];
+            var stats = monthlyStats.First(ms => ms.Month == months[month - 1]);
+            stats.Count += record.UserNumberOfPages ?? book!.NumberOfPages ?? 0;
+        }
+
+        return monthlyReadPageCountPerYear;
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetMonthlyAddedBookCountPerYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateAdded != null)
+            .ToListAsync();
+
+        var monthlyAddedBookCountPerYear = new Dictionary<int, List<MonthlyStats>>();
+        var months = DateTimeFormatInfo.CurrentInfo!.MonthNames.Take(12).ToArray();
+
+        var years = userBooksRecords.Select(record => record.DateAdded!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            monthlyAddedBookCountPerYear[year] = months.Select(month => new MonthlyStats
+            {
+                Month = month,
+                Count = 0
+            }).ToList();
+        }
+
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateAdded!.Value.Year;
+            var month = record.DateAdded.Value.Month;
+            var monthlyStats = monthlyAddedBookCountPerYear[year];
+            var stats = monthlyStats.First(ms => ms.Month == months[month - 1]);
+            stats.Count++;
+        }
+
+        return monthlyAddedBookCountPerYear;
+    }
+
+    public async Task<Dictionary<int, int>> GetYearlyReadBookCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var yearlyReadBookCountPerYear = new Dictionary<int, int>();
+
+        var years = userBooksRecords.Select(record => record.DateRead!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            yearlyReadBookCountPerYear[year] = userBooksRecords
+                .Count(record => record.DateRead!.Value.Year == year);
+        }
+
+        return yearlyReadBookCountPerYear;
+    }
+
+    public async Task<Dictionary<int, int>> GetYearlyReadPageCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var books = userBooksRecords.Select(record => record.BookId).Distinct().ToList();
+        var booksWithPages = await _context.Books.Where(book => books.Contains(book.Id)).ToListAsync();
+
+        var yearlyReadPageCountPerYear = new Dictionary<int, int>();
+
+        var years = userBooksRecords.Select(record => record.DateRead!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            yearlyReadPageCountPerYear[year] = userBooksRecords
+                .Where(record => record.DateRead!.Value.Year == year)
+                .Sum(record => record.UserNumberOfPages ?? booksWithPages.First(book => book.Id == record.BookId).NumberOfPages ?? 0);
+        }
+
+        return yearlyReadPageCountPerYear;
+    }
+
+    public async Task<Dictionary<int, int>> GetYearlyAddedBookCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateAdded != null)
+            .ToListAsync();
+
+        var yearlyAddedBookCountPerYear = new Dictionary<int, int>();
+
+        var years = userBooksRecords.Select(record => record.DateAdded!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            yearlyAddedBookCountPerYear[year] = userBooksRecords
+                .Count(record => record.DateAdded!.Value.Year == year);
+        }
+
+        return yearlyAddedBookCountPerYear;
     }
 
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)

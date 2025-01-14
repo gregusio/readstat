@@ -50,7 +50,7 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
         var numberOfBooksReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfBooksReadPerYearAndMonthAsync(userId);
         var numberOfPagesReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfPagesReadPerYearAndMonthAsync(userId);
         var mostProductiveYear = await _userBookRecordsRepository.GetMostProductiveYearAsync(userId);
-        var mostProductiveMonth = await _userBookRecordsRepository.GetMostProductiveYearAndMonthAsync(userId);   
+        var mostProductiveMonth = await _userBookRecordsRepository.GetMostProductiveYearAndMonthAsync(userId);
         var averagePagesPerBook = await _userBookRecordsRepository.GetAveragePagesPerBookAsync(userId);
         var totalPagesRead = await _userBookRecordsRepository.GetTotalPagesReadAsync(userId);
 
@@ -63,5 +63,35 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
             AveragePagesPerBook = averagePagesPerBook,
             TotalPagesRead = totalPagesRead
         };
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyReadBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetMonthlyReadBookCountPerYearAsync(userId);
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyReadPageCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetMonthlyReadPageCountPerYearAsync(userId);
+    }
+
+    public async Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyAddedBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetMonthlyAddedBookCountPerYearAsync(userId);
+    }
+
+    public async Task<Dictionary<int, int>> GetStatisticsYearlyReadBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetYearlyReadBookCountAsync(userId);
+    }
+
+    public async Task<Dictionary<int, int>> GetStatisticsYearlyReadPageCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetYearlyReadPageCountAsync(userId);
+    }
+
+    public async Task<Dictionary<int, int>> GetStatisticsYearlyAddedBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetYearlyAddedBookCountAsync(userId);
     }
 }
