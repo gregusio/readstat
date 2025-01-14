@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import bookService from "../services/bookService";
 import BookCard from "../components/Card/BookCard";
 import { SearchContext } from "../context/SearchContext";
-import { Pagination, Stack } from "@mui/material";
+import { Pagination, Skeleton, Stack } from "@mui/material";
 
 interface Book {
   id: number;
@@ -54,7 +54,7 @@ const UserBooks: React.FC = () => {
   );
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Skeleton variant="rectangular" />;
   }
 
   return (
