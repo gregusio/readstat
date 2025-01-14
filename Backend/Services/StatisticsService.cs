@@ -89,4 +89,9 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
     {
         return await _userBookRecordsRepository.GetYearlyReadPageCountAsync(userId);
     }
+
+    public async Task<Dictionary<int, int>> GetStatisticsYearlyAddedBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetYearlyAddedBookCountAsync(userId);
+    }
 }

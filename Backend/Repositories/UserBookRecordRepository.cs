@@ -417,6 +417,27 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         return yearlyReadPageCountPerYear;
     }
 
+    public async Task<Dictionary<int, int>> GetYearlyAddedBookCountAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateAdded != null)
+            .ToListAsync();
+
+        var yearlyAddedBookCountPerYear = new Dictionary<int, int>();
+
+        var years = userBooksRecords.Select(record => record.DateAdded!.Value.Year).Distinct().ToList();
+        years.Sort();
+
+        foreach (var year in years)
+        {
+            yearlyAddedBookCountPerYear[year] = userBooksRecords
+                .Count(record => record.DateAdded!.Value.Year == year);
+        }
+
+        return yearlyAddedBookCountPerYear;
+    }
+
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)
     {
         await using var _context = _contextFactory.CreateDbContext();
