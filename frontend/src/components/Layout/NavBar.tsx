@@ -113,7 +113,14 @@ const NavBar: React.FC = () => {
               </Menu>
             </Box>
           </>
-        ) : null}
+        ) : 
+        (
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "right" }}>
+            <MenuItem onClick={() => navigate("/login")}>
+              <Typography sx={{ textAlign: "center" }}>Login</Typography>
+            </MenuItem>
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   );
