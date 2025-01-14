@@ -41,9 +41,45 @@ const getMonthlyReadBookCountPerYear = async () => {
   }
 };
 
+const getMonthlyReadPageCountPerYear = async () => {
+  try {
+    const response = await apiClient.get("/Statistics/monthly-read-pages");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching monthly read page count per year:", error);
+    return null;
+  }
+};
+
+const getMonthlyAddedBookCountPerYear = async () => {
+  try {
+    const response = await apiClient.get("/Statistics/monthly-added-books");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching monthly added book count per year:", error);
+    return null;
+  }
+};
+
+const getYearlyReadBookCount = async () => {
+  try {
+    const response = await apiClient.get("/Statistics/yearly-read-books");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching yearly read book count:", error);
+    return null;
+  }
+};
+
 export default {
   getSummary,
   getBooksRead,
   getProgress,
   getMonthlyReadBookCountPerYear,
+  getMonthlyReadPageCountPerYear,
+  getMonthlyAddedBookCountPerYear,
+  getYearlyReadBookCount,
 };
