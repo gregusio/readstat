@@ -2,7 +2,7 @@ import apiClient from "./apiClient";
 
 const getSummary = async () => {
   try {
-    const response = await apiClient.get("/Statistic/summary");
+    const response = await apiClient.get("/Statistics/summary");
     return response.data;
   } catch (error) {
     console.error("Error fetching summary:", error);
@@ -12,7 +12,7 @@ const getSummary = async () => {
 
 const getBooksRead = async () => {
   try {
-    const response = await apiClient.get("/Statistic/books-read");
+    const response = await apiClient.get("/Statistics/books-read");
     return response.data;
   } catch (error) {
     console.error("Error fetching books read:", error);
@@ -22,7 +22,7 @@ const getBooksRead = async () => {
 
 const getProgress = async () => {
   try {
-    const response = await apiClient.get("/Statistic/progress");
+    const response = await apiClient.get("/Statistics/progress");
     return response.data;
   } catch (error) {
     console.error("Error fetching progress:", error);
