@@ -50,7 +50,7 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
         var numberOfBooksReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfBooksReadPerYearAndMonthAsync(userId);
         var numberOfPagesReadPerYearAndMonth = await _userBookRecordsRepository.GetNumberOfPagesReadPerYearAndMonthAsync(userId);
         var mostProductiveYear = await _userBookRecordsRepository.GetMostProductiveYearAsync(userId);
-        var mostProductiveMonth = await _userBookRecordsRepository.GetMostProductiveYearAndMonthAsync(userId);   
+        var mostProductiveMonth = await _userBookRecordsRepository.GetMostProductiveYearAndMonthAsync(userId);
         var averagePagesPerBook = await _userBookRecordsRepository.GetAveragePagesPerBookAsync(userId);
         var totalPagesRead = await _userBookRecordsRepository.GetTotalPagesReadAsync(userId);
 
@@ -63,5 +63,10 @@ public class StatisticsService(UserBookRecordsRepository userBookRecordsReposito
             AveragePagesPerBook = averagePagesPerBook,
             TotalPagesRead = totalPagesRead
         };
+    }
+
+    public async Task<Dictionary<int, List<int>>> GetStatisticsMonthlyReadBookCountPerYear(int userId)
+    {
+        return await _userBookRecordsRepository.GetMonthlyReadBookCountPerYearAsync(userId);
     }
 }

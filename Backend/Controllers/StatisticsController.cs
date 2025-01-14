@@ -35,4 +35,12 @@ public class StatisticsController(IStatisticsService statisticsService) : Contro
         var statisticsReadingProgress = await _statisticsService.GetStatisticsReadingProgress(userId);
         return Ok(statisticsReadingProgress);
     }
+
+    [HttpGet("monthly-read-books")]
+    public async Task<IActionResult> GetMonthlyReadBooks()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsMonthlyReadBooks = await _statisticsService.GetStatisticsMonthlyReadBookCountPerYear(userId);
+        return Ok(statisticsMonthlyReadBooks);
+    }
 }

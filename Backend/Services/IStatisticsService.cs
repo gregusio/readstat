@@ -7,4 +7,5 @@ public interface IStatisticsService
     Task<StatisticsSummaryDTO> GetStatisticsSummary(int userId);
     Task<StatisticsReadBooksDTO> GetStatisticsReadBooks(int userId);
     Task<StatisticsReadingProgressDTO> GetStatisticsReadingProgress(int userId);
+    Task<Dictionary<int, List<int>>> GetStatisticsMonthlyReadBookCountPerYear(int userId);
 }

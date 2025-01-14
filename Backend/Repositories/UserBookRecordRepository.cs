@@ -1,3 +1,4 @@
+using System.Globalization;
 using Backend.Data;
 using Backend.DTO;
 using Backend.Models;
@@ -115,7 +116,7 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
                 {
                     authorsBooksCount[record.UserAuthor ?? book.Author] = 1;
                 }
-                
+
             }
         }
 
@@ -265,6 +266,32 @@ public class UserBookRecordsRepository(IDbContextFactory<DataContext> contextFac
         }
 
         return totalPagesRead;
+    }
+
+    public async Task<Dictionary<int, List<int>>> GetMonthlyReadBookCountPerYearAsync(int userId)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        var userBooksRecords = await _context.UserBookRecords
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
+            .ToListAsync();
+
+        var monthlyReadBookCountPerYear = new Dictionary<int, List<int>>();
+        foreach (var record in userBooksRecords)
+        {
+            var year = record.DateRead!.Value.Year;
+            var month = record.DateRead!.Value.Month;
+            if (monthlyReadBookCountPerYear.ContainsKey(year))
+            {
+                monthlyReadBookCountPerYear[year][month - 1]++;
+            }
+            else
+            {
+                monthlyReadBookCountPerYear[year] = new List<int>(new int[12]);
+                monthlyReadBookCountPerYear[year][month - 1] = 1;
+            }
+        }
+
+        return monthlyReadBookCountPerYear;
     }
 
     public async Task AddRangeAsync(IEnumerable<UserBookRecord> records)
