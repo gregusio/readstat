@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import statisticService from '../../services/statisticService';
-import MonthlyCountChart from './MonthlyCountChart';
+import YearlyCountChart from './YearlyCountChart';
 
-const MonthlyAddedBookCountPerYear: React.FC = () => {
+const YearlyReadBookCount: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    statisticService.getMonthlyAddedBookCountPerYear().then((response) => {
+    statisticService.getYearlyReadBookCount().then((response) => {
       setData(response);
       setLoading(false);
     });
@@ -17,7 +17,7 @@ const MonthlyAddedBookCountPerYear: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  return <MonthlyCountChart data={data} title="Monthly Added Book Count Per Year" />;
+  return <YearlyCountChart data={data} title="Read Book Count Per Year" />;
 };
 
-export default MonthlyAddedBookCountPerYear;
+export default YearlyReadBookCount;

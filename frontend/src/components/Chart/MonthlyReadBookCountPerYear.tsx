@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import statisticService from '../../services/statisticService';
-import MonthlyBookCountChart from './MonthlyCountChart';
+import MonthlyCountChart from './MonthlyCountChart';
 
 const MonthlyReadBookCountPerYear: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -17,7 +17,7 @@ const MonthlyReadBookCountPerYear: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  return <MonthlyBookCountChart data={data} title="Monthly Read Book Count Per Year" />;
+  return <MonthlyCountChart data={data} title="Monthly Read Book Count Per Year" />;
 };
 
 export default MonthlyReadBookCountPerYear;
