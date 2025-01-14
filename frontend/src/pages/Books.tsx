@@ -16,7 +16,7 @@ const UserBooks: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const booksPerPage = 25;
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
   const { searchQuery } = useContext(SearchContext);
