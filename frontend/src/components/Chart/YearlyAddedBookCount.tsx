@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import statisticService from '../../services/statisticService';
-import YearlyCountChart from './YearlyCountChart';
-import { Skeleton } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import statisticService from "../../services/statisticService";
+import YearlyCountChart from "./YearlyCountChart";
+import { Skeleton } from "@mui/material";
 
 const YearlyAddedBookCount: React.FC = () => {
   const [data, setData] = useState<any>(null);

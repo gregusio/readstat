@@ -18,7 +18,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/books/:id" element={<BookDetail />} />
         <Route path="/statistics" element={<Statistics />} />
       </Route>
-      
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
     </Routes>

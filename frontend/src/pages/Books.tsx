@@ -43,9 +43,10 @@ const UserBooks: React.FC = () => {
     fetchBooks();
   }, []);
 
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const paginatedBooks = filteredBooks.slice(
@@ -58,24 +59,38 @@ const UserBooks: React.FC = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Stack spacing={2} style={{ flex: '1 0 auto', overflowY: 'auto', paddingBottom: '60px' }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
+      <Stack
+        spacing={2}
+        style={{ flex: "1 0 auto", overflowY: "auto", paddingBottom: "60px" }}
+      >
         {paginatedBooks.map((book) => (
           <BookCard
-        key={book.id}
-        id={book.id}
-        title={book.title}
-        author={book.author}
-        shelf={book.exclusiveShelf}
+            key={book.id}
+            id={book.id}
+            title={book.title}
+            author={book.author}
+            shelf={book.exclusiveShelf}
           />
         ))}
       </Stack>
-      <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', padding: '10px 0', boxShadow: '0 -2px 5px rgba(0,0,0,0.1)' }}>
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          padding: "10px 0",
+          boxShadow: "0 -2px 5px rgba(0,0,0,0.1)",
+        }}
+      >
         <Pagination
           count={Math.ceil(filteredBooks.length / booksPerPage)}
           page={page}
           onChange={handleChange}
-          style={{ display: 'flex', justifyContent: 'center' }}
+          style={{ display: "flex", justifyContent: "center" }}
         />
       </div>
     </div>

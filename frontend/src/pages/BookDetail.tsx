@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import bookService from '../services/bookService';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import bookService from "../services/bookService";
 
 interface Book {
-    id: number;
-    title: string;
-    author: string;
-    additionalAuthors: string;
-    isbn: string;
-    isbn13: string;
-    averageRating: number;
-    publisher: string;
-    publishDate: string;
-    originalPublishDate: string;
-    numberOfPages: number;
-    myRating: number;
-    shelf: string;
-    dateRead: string;
-    dateAdded: string;
-    myReview: string;
-    readCount: number;
+  id: number;
+  title: string;
+  author: string;
+  additionalAuthors: string;
+  isbn: string;
+  isbn13: string;
+  averageRating: number;
+  publisher: string;
+  publishDate: string;
+  originalPublishDate: string;
+  numberOfPages: number;
+  myRating: number;
+  shelf: string;
+  dateRead: string;
+  dateAdded: string;
+  myReview: string;
+  readCount: number;
 }
 
 const BookDetail = () => {

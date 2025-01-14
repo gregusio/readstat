@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { axisClasses, BarChart } from '@mui/x-charts';
-import { Skeleton, Typography } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { axisClasses, BarChart } from "@mui/x-charts";
+import { Skeleton, Typography } from "@mui/material";
 
 interface YearlyCountChartProps {
   data: any;
@@ -37,7 +37,7 @@ const YearlyCountChart: React.FC<YearlyCountChartProps> = ({ data, title }) => {
 
     setChartData({
       labels: dataset,
-      series: [{ type: 'bar', dataKey: 'count' }],
+      series: [{ type: "bar", dataKey: "count" }],
     });
     setLoading(false);
   }, [data]);

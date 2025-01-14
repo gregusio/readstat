@@ -1,15 +1,15 @@
-import axios from 'axios';
+import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5027/api', 
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5027/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken'); 
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,7 +21,7 @@ apiClient.interceptors.request.use(
 );
 
 apiClient.interceptors.response.use(
-  (response) => response, 
+  (response) => response,
   async (error) => {
     if (error.response && error.response.status === 401) {
       const originalRequest = error.config;
@@ -29,9 +29,9 @@ apiClient.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          const refreshToken = localStorage.getItem('refreshToken');
+          const refreshToken = localStorage.getItem("refreshToken");
           if (!refreshToken) {
-            throw new Error('No refresh token available');
+            throw new Error("No refresh token available");
           }
 
           const response = await axios.post(
@@ -41,16 +41,16 @@ apiClient.interceptors.response.use(
 
           const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', newRefreshToken);
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", newRefreshToken);
 
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
           return apiClient(originalRequest);
         } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
+          console.error("Token refresh failed:", refreshError);
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
         }
       }
     }
