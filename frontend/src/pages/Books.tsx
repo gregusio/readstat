@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import bookService from "../services/bookService";
 import BookCard from "../components/Card/BookCard";
 import { SearchContext } from "../context/SearchContext";
-import { Pagination, Skeleton, Stack } from "@mui/material";
+import { Button, Pagination, Skeleton, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -20,6 +21,7 @@ const UserBooks: React.FC = () => {
     setPage(value);
   };
   const { searchQuery } = useContext(SearchContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -62,6 +64,16 @@ const UserBooks: React.FC = () => {
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
+      <Button
+        variant="contained"
+        color="primary"
+        style={{ alignSelf: "flex-end", margin: "10px" }}
+        onClick={() => {
+          navigate("/add-book");
+        }}
+      >
+        Add Book
+      </Button>
       <Stack
         spacing={2}
         style={{ flex: "1 0 auto", overflowY: "auto", paddingBottom: "60px" }}

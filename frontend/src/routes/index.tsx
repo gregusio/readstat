@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Books from "../pages/Books";
 import BookDetail from "../pages/BookDetail";
 import Statistics from "../pages/Statistics";
+import AddBook from "../pages/AddBook";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetail />} />
         <Route path="/statistics" element={<Statistics />} />
+        <Route path="/add-book" element={<AddBook />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
