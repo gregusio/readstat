@@ -67,4 +67,12 @@ public class StatisticsController(IStatisticsService statisticsService) : Contro
         var statisticsYearlyReadBooks = await _statisticsService.GetStatisticsYearlyReadBookCountPerYear(userId);
         return Ok(statisticsYearlyReadBooks);
     }
+
+    [HttpGet("yearly-read-pages")]
+    public async Task<IActionResult> GetYearlyReadPages()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsYearlyReadPages = await _statisticsService.GetStatisticsYearlyReadPageCountPerYear(userId);
+        return Ok(statisticsYearlyReadPages);
+    }
 }

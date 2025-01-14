@@ -11,4 +11,5 @@ public interface IStatisticsService
     Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyReadPageCountPerYear(int userId);
     Task<Dictionary<int, List<MonthlyStats>>> GetStatisticsMonthlyAddedBookCountPerYear(int userId);
     Task<Dictionary<int, int>> GetStatisticsYearlyReadBookCountPerYear(int userId);
+    Task<Dictionary<int, int>> GetStatisticsYearlyReadPageCountPerYear(int userId);
 }
