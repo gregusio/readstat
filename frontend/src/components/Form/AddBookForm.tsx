@@ -67,9 +67,9 @@ const AddBookForm: React.FC = () => {
       ...bookData,
       [name as string]: value,
     });
-    bookData.dateRead = '';
+    bookData.dateRead = "";
     bookData.myRating = 0;
-    bookData.myReview = '';
+    bookData.myReview = "";
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
