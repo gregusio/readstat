@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import statisticService from '../../services/statisticService';
 import MonthlyBookCountChart from './MonthlyCountChart';
 
-const MonthlyAddedBookCountPerYear = () => {
+const MonthlyAddedBookCountPerYear: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
