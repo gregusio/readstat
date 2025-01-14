@@ -12,7 +12,9 @@ export const SearchContext = createContext<SearchContextType>({
   clearSearchQuery: () => {},
 });
 
-export const SearchProvider = ({ children }: { children: ReactNode }) => {
+export const SearchProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const clearSearchQuery = () => {

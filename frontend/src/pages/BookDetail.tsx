@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import bookService from "../services/bookService";
 
 interface Book {
@@ -23,7 +22,7 @@ interface Book {
   readCount: number;
 }
 
-const BookDetail = () => {
+const BookDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const [book, setBook] = useState<Book | null>(null);

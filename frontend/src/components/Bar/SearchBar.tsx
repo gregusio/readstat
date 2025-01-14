@@ -3,7 +3,7 @@ import React, { useContext, useRef } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar = () => {
+const SearchBar: React.FC = () => {
   const { setSearchQuery } = useContext(SearchContext);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
