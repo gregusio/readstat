@@ -8,6 +8,7 @@ import YearlyReadPageCount from "../components/Chart/YearlyReadPageCount";
 import YearlyAddedBookCount from "../components/Chart/YearlyAddedBookCount";
 import SummaryStatsCard from "../components/Card/SummaryStatsCard";
 import "./Statistics.css";
+import BookCount from "../components/Chart/BookCount";
 
 const Statistics: React.FC = () => {
   return (
@@ -17,6 +18,9 @@ const Statistics: React.FC = () => {
           <div className="center">
             <SummaryStatsCard />
           </div>
+        </Grid>
+        <Grid size={6}>
+          <BookCount />
         </Grid>
         <Grid size={6}>
           <MonthlyReadBookCount />
