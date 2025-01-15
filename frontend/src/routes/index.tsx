@@ -8,6 +8,7 @@ import Books from "../pages/Books";
 import BookDetail from "../pages/BookDetail";
 import Statistics from "../pages/Statistics";
 import AddBook from "../pages/AddBook";
+import DrawBook from "../pages/DrawBook";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/books/:id" element={<BookDetail />} />
         <Route path="/statistics" element={<Statistics />} />
         <Route path="/add-book" element={<AddBook />} />
+        <Route path="/drawbook" element={<DrawBook />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
