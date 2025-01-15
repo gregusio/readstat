@@ -17,17 +17,9 @@ const Statistics: React.FC = () => {
 
   useEffect(() => {
     const checkBooks = async () => {
-      const books = localStorage.getItem("userBooks");
-      if(books && books !== "undefined") {
-        const booksArray = JSON.parse(books);
-        setHasBooks(booksArray.length > 0);
-      }
-      else {
-        const response = await bookService.getUserBooks();
-        if(response) {
-          setHasBooks(response.length > 0);
-          localStorage.setItem("userBooks", JSON.stringify(response.data));
-        }
+      const response = await bookService.getUserBooks();
+      if (response.length > 0) {
+        setHasBooks(true);
       }
     };
 

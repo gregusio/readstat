@@ -26,7 +26,6 @@ export default function InputFileUpload() {
       setLoading(true);
       try {
         const response = await fileService.uploadCsv(files[0]);
-        localStorage.removeItem("userBooks");
         window.location.reload();
         console.log(response);
       } catch (error) {

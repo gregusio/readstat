@@ -68,12 +68,6 @@ const BookDetail: React.FC = () => {
         if (response.success) {
           setBook(null);
           navigate("/books");
-          var userBooks = localStorage.getItem("userBooks");
-          if (userBooks && userBooks !== "undefined") {
-            var books = JSON.parse(userBooks);
-            var updatedBooks = books.filter((b: Book) => b.id !== book.id);
-            localStorage.setItem("userBooks", JSON.stringify(updatedBooks));
-          }
         }
       });
     }

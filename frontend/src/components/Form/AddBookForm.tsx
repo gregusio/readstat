@@ -78,7 +78,6 @@ const AddBookForm: React.FC = () => {
     const response = await bookService.addBook(bookData);
     if (response.success) {
       alert("Book added successfully");
-      localStorage.removeItem("userBooks");
     }
   };
 

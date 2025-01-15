@@ -19,25 +19,13 @@ const DrawBook: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
-    try{
-    const userBooks = localStorage.getItem("userBooks");
-    if (userBooks && userBooks !== "undefined") {
-      const filteredBooks = JSON.parse(userBooks).filter(
-        (book: Book) => book.exclusiveShelf === "to-read"
-      );
+    const fetchBooks = async () => {
+      const response = await bookService.getUserBooks();
+      const filteredBooks = response.filter((book: Book) => book.exclusiveShelf === "to-read");
       setBooks(filteredBooks);
-    } else {
-      bookService.getUserBooks().then((books) => {
-        localStorage.setItem("userBooks", JSON.stringify(books));
-        const filteredBooks = books.filter(
-          (book: Book) => book.exclusiveShelf === "to-read"
-        );
-        setBooks(filteredBooks);
-      });
-    }
-  } catch (error) {
-    console.error("Error fetching books:", error);
-  }
+    };
+
+    fetchBooks();
   }, []);
 
   const handleDraw = () => {

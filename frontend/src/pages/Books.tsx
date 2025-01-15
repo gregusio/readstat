@@ -26,22 +26,9 @@ const Books: React.FC = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      try {
-        const cachedBooks = localStorage.getItem("userBooks");
-        console.log(cachedBooks);
-        if (cachedBooks && cachedBooks !== "undefined") {
-          setBooks(JSON.parse(cachedBooks));
-          setLoading(false);
-        } else {
-          const books = await bookService.getUserBooks();
-          setBooks(books);
-          localStorage.setItem("userBooks", JSON.stringify(books));
-        }
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      } finally {
-        setLoading(false);
-      }
+      const response = await bookService.getUserBooks();
+      setBooks(response);
+      setLoading(false);
     };
 
     fetchBooks();
