@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CircularProgress from "@mui/material/CircularProgress";
 import fileService from "../../services/fileService";
 
 const VisuallyHiddenInput = styled("input")({
@@ -16,11 +18,22 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function InputFileUpload() {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files[0]) {
-      var response = fileService.uploadCsv(files[0]);
-      console.log(response);
+      setLoading(true);
+      try {
+        const response = await fileService.uploadCsv(files[0]);
+        localStorage.removeItem("userBooks");
+        window.location.reload();
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -30,9 +43,10 @@ export default function InputFileUpload() {
       role={undefined}
       variant="contained"
       tabIndex={-1}
-      startIcon={<CloudUploadIcon />}
+      startIcon={loading ? <CircularProgress size={24} /> : <CloudUploadIcon />}
+      disabled={loading}
     >
-      Upload files
+      {loading ? "Uploading..." : "Upload files"}
       <VisuallyHiddenInput
         type="file"
         onChange={(event) => handleFileChange(event)}
