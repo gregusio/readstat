@@ -17,31 +17,34 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, shelf }) => {
   };
 
   return (
-    <Card onClick={handleClick} style={{ cursor: "pointer" }}>
+    <Card onClick={handleClick} style={{ cursor: "pointer", width: "300px", height: "300px" }}>
       <CardContent
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        gap: "10px",
+      }}
       >
-        <Typography variant="h5" style={{ flex: 1, textAlign: "center" }}>
-          {title}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          style={{ flex: 1, textAlign: "center" }}
-        >
-          {author}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          style={{ flex: 1, textAlign: "center" }}
-        >
-          {shelf}
-        </Typography>
+      <Typography variant="h5" style={{ textAlign: "center" }}>
+        {title}
+      </Typography>
+      <Typography
+        variant="body1"
+        color="text.secondary"
+        style={{ textAlign: "center" }}
+      >
+        {author}
+      </Typography>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        style={{ textAlign: "center" }}
+      >
+        {shelf}
+      </Typography>
       </CardContent>
     </Card>
   );

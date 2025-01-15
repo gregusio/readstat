@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import confetti from "canvas-confetti";
 import bookService from "../services/bookService";
+import BookCard from "../components/Card/BookCard";
 
 interface Book {
+  id: number;
   title: string;
   author: string;
   exclusiveShelf: string;
@@ -21,7 +21,9 @@ const DrawBook: React.FC = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       const response = await bookService.getUserBooks();
-      const filteredBooks = response.filter((book: Book) => book.exclusiveShelf === "to-read");
+      const filteredBooks = response.filter(
+        (book: Book) => book.exclusiveShelf === "to-read"
+      );
       setBooks(filteredBooks);
     };
 
@@ -62,12 +64,14 @@ const DrawBook: React.FC = () => {
           />
         </motion.div>
       ) : selectedBook ? (
-        <Card style={{ maxWidth: "400px", margin: "0 auto" }}>
-          <CardContent>
-            <Typography variant="h5">{selectedBook.title}</Typography>
-            <Typography variant="body1">{selectedBook.author}</Typography>
-          </CardContent>
-        </Card>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <BookCard
+            id={selectedBook.id}
+            title={selectedBook.title}
+            author={selectedBook.author}
+            shelf={selectedBook.exclusiveShelf}
+          />
+        </div>
       ) : (
         <Typography variant="h6">Click the button to draw a book!</Typography>
       )}
