@@ -63,14 +63,12 @@ const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({
   return (
     <>
       <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-        <Typography variant="h6">
-          {title}
-        </Typography>
+        <Typography variant="h6">{title}</Typography>
         <select value={year} onChange={handleChange}>
           {years.map((year: string) => (
-        <option key={year} value={year}>
-          {year}
-        </option>
+            <option key={year} value={year}>
+              {year}
+            </option>
           ))}
         </select>
       </div>

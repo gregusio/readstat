@@ -28,7 +28,7 @@ function NavBar() {
     null
   );
   const { logout, isAuthenticated } = useAuth();
-  
+
   const navigate = useNavigate();
   const { clearSearchQuery } = useContext(SearchContext);
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {

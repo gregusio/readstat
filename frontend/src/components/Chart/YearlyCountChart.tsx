@@ -47,9 +47,7 @@ const YearlyCountChart: React.FC<YearlyCountChartProps> = ({ data, title }) => {
 
   return (
     <>
-      <Typography variant="h6">
-        {title}
-      </Typography>
+      <Typography variant="h6">{title}</Typography>
       <BarChart
         xAxis={[{ dataKey: "year", scaleType: "band", label: "Year" }]}
         series={chartData.series}
