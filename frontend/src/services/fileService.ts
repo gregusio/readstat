@@ -10,6 +10,8 @@ const uploadCsv = async (file: File) => {
     },
   });
 
+  localStorage.removeItem("userBooks");
+
   return response.data;
 };
 
