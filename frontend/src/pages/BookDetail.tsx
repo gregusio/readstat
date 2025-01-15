@@ -63,12 +63,13 @@ const BookDetail: React.FC = () => {
 
   const handleDelete = () => {
     if (book) {
+      
       bookService.deleteBook(book.id).then((response) => {
         if (response.success) {
           setBook(null);
           navigate("/books");
           var userBooks = localStorage.getItem("userBooks");
-          if (userBooks) {
+          if (userBooks && userBooks !== "undefined") {
             var books = JSON.parse(userBooks);
             var updatedBooks = books.filter((b: Book) => b.id !== book.id);
             localStorage.setItem("userBooks", JSON.stringify(updatedBooks));

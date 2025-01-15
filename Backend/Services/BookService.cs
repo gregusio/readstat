@@ -49,7 +49,7 @@ public class BookService(BooksRepository bookRepository, UserBookRecordsReposito
 
         return new BookDTO
         {
-            Id = bookId,
+            Id = userBookRecord.Id,
             Title = userBookRecord.UserTitle ?? book!.Title,
             Author = userBookRecord.UserAuthor ?? book!.Author,
             AdditionalAuthors = userBookRecord.UserAdditionalAuthors ?? book!.AdditionalAuthors,

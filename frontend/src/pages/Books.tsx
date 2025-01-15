@@ -28,7 +28,8 @@ const Books: React.FC = () => {
     const fetchBooks = async () => {
       try {
         const cachedBooks = localStorage.getItem("userBooks");
-        if (cachedBooks) {
+        console.log(cachedBooks);
+        if (cachedBooks && cachedBooks !== "undefined") {
           setBooks(JSON.parse(cachedBooks));
           setLoading(false);
         } else {
