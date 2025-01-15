@@ -13,7 +13,6 @@ const chartSetting = {
       label: "Count",
     },
   ],
-  width: 500,
   height: 300,
   margin: { left: 60, right: 20 },
   sx: {
@@ -48,9 +47,7 @@ const YearlyCountChart: React.FC<YearlyCountChartProps> = ({ data, title }) => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
+      <Typography variant="h6">{title}</Typography>
       <BarChart
         xAxis={[{ dataKey: "year", scaleType: "band", label: "Year" }]}
         series={chartData.series}

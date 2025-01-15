@@ -13,7 +13,6 @@ const chartSetting = {
       label: "Count",
     },
   ],
-  width: 500,
   height: 300,
   margin: { left: 60, right: 20 },
   sx: {
@@ -63,16 +62,16 @@ const MonthlyCountChart: React.FC<MonthlyCountChartProps> = ({
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
-      <select value={year} onChange={handleChange}>
-        {years.map((year: string) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
+      <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+        <Typography variant="h6">{title}</Typography>
+        <select value={year} onChange={handleChange}>
+          {years.map((year: string) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
       <BarChart
         xAxis={[{ dataKey: "month", scaleType: "band", label: "Month" }]}
         series={chartData.series}

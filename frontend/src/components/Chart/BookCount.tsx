@@ -24,17 +24,17 @@ const BookCount: React.FC = () => {
 
   return (
     <>
-    <Typography variant="h6">Book Count</Typography>
-    <PieChart
-      series={[
-        {
-          data: chartData,
-          highlightScope: { fade: 'global', highlight: 'item' },
-          faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-        },
-      ]}
-      height={200}
-    />
+      <Typography variant="h6">Book Count</Typography>
+      <PieChart
+        series={[
+          {
+            data: chartData,
+            highlightScope: { fade: "global", highlight: "item" },
+            faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
+          },
+        ]}
+        height={200}
+      />
     </>
   );
 };
