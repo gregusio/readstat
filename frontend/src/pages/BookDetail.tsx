@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -36,6 +36,8 @@ const BookDetail: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedBook, setEditedBook] = useState<Book | null>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (id) {
       bookService.getBook(parseInt(id)).then((response) => {
@@ -57,6 +59,23 @@ const BookDetail: React.FC = () => {
   const handleEdit = () => {
     setIsEditing(true);
     setEditedBook(book);
+  };
+
+  const handleDelete = () => {
+    if (book) {
+      bookService.deleteBook(book.id).then((response) => {
+        if (response.success) {
+          setBook(null);
+          navigate("/books");
+          var userBooks = localStorage.getItem("userBooks");
+          if (userBooks) {
+            var books = JSON.parse(userBooks);
+            var updatedBooks = books.filter((b: Book) => b.id !== book.id);
+            localStorage.setItem("userBooks", JSON.stringify(updatedBooks));
+          }
+        }
+      });
+    }
   };
 
   const handleSave = () => {
@@ -292,6 +311,13 @@ const BookDetail: React.FC = () => {
             </Typography>
             <Button onClick={handleEdit} color="primary" variant="contained">
               Edit
+            </Button>
+            <Button
+              onClick={handleDelete}
+              color="secondary"
+              variant="contained"
+            >
+              Delete
             </Button>
           </>
         )}
