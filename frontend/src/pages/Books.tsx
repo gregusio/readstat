@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import bookService from "../services/bookService";
 import BookCard from "../components/Card/BookCard";
 import { SearchContext } from "../context/SearchContext";
-import { Button, Pagination, Skeleton, Stack } from "@mui/material";
+import { Box, Button, Pagination, Skeleton, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import InputFileUpload from "../components/Button/InputFileButton";
 
 interface Book {
   id: number;
@@ -12,7 +13,7 @@ interface Book {
   exclusiveShelf: string;
 }
 
-const UserBooks: React.FC = () => {
+const Books: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -64,16 +65,18 @@ const UserBooks: React.FC = () => {
     <div
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ alignSelf: "flex-end", margin: "10px" }}
-        onClick={() => {
-          navigate("/add-book");
-        }}
-      >
-        Add Book
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, marginBottom: "10px" }}>
+        <InputFileUpload />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            navigate("/add-book");
+          }}
+        >
+          Add Book
+        </Button>
+      </Box>
       <Stack
         spacing={2}
         style={{ flex: "1 0 auto", overflowY: "auto", paddingBottom: "60px" }}
@@ -109,4 +112,4 @@ const UserBooks: React.FC = () => {
   );
 };
 
-export default UserBooks;
+export default Books;

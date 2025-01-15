@@ -13,7 +13,7 @@ interface Book {
   exclusiveShelf: string;
 }
 
-const RandomBookPicker: React.FC = () => {
+const DrawBook: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
@@ -93,4 +93,4 @@ const RandomBookPicker: React.FC = () => {
   );
 };
 
-export default RandomBookPicker;
+export default DrawBook;
