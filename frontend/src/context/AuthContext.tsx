@@ -53,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem("userBooks");
     setIsAuthenticated(false);
     setUser(null);
+    setLoading(true);
   };
 
   return (

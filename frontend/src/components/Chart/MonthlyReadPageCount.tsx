@@ -19,7 +19,7 @@ const MonthlyReadPageCount: React.FC = () => {
   }
 
   return (
-    <MonthlyCountChart data={data} title="Monthly Added Book Count Per Year" />
+    <MonthlyCountChart data={data} title="Monthly Read Page Count Per Year" />
   );
 };
 
