@@ -55,14 +55,14 @@ public class AuthController(AuthService authService, UserRepository userReposito
     }
 
     [HttpPost("refresh-token")]
-    public IActionResult RefreshToken([FromBody] RefreshTokenRequest model)
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
     {
         if (model == null || string.IsNullOrEmpty(model.RefreshToken))
         {
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = _authService.RefreshToken(model.RefreshToken);
+        var response = await _authService.RefreshToken(model.RefreshToken);
 
         if (response == null)
         {
