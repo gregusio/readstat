@@ -2,11 +2,13 @@ import apiClient from "./apiClient";
 
 const getUserBooks = async () => {
   const userBooks = localStorage.getItem("userBooks");
-  const response = await apiClient.get(`/Book/user-books`);
   
   if (userBooks && userBooks !== "undefined") {
     return JSON.parse(userBooks);
   }
+
+  const response = await apiClient.get(`/Book/user-books`);
+  localStorage.setItem("userBooks", JSON.stringify(response.data));
 
   return response.data;
 };
