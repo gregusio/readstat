@@ -42,8 +42,6 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
             return null;
         }
 
-        await _refreshTokenRepository.DeleteAsync(token);
-
         var (newAccessToken, newRefreshToken) = await GenerateTokens(user.Email);
 
         return new RefreshTokenResponse

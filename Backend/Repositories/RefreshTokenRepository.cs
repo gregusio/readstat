@@ -27,13 +27,6 @@ public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactor
         return refreshToken;
     }
 
-    public async Task DeleteAsync(RefreshToken token)
-    {
-        await using var _context = _contextFactory.CreateDbContext();
-        _context.RefreshTokens.Remove(token);
-        await _context.SaveChangesAsync();
-    }
-
     public async Task DeletePreviousAsync(int userId)
     {
         await using var _context = _contextFactory.CreateDbContext();
