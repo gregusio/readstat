@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import bookService from "../services/bookService";
 import BookCard from "../components/Card/BookCard";
 import { SearchContext } from "../context/SearchContext";
-import { Box, Button, Pagination, Skeleton, Stack } from "@mui/material";
+import { Box, Button, Pagination, Skeleton } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { useNavigate } from "react-router-dom";
 import InputFileUpload from "../components/Button/InputFileButton";
 
@@ -17,7 +18,7 @@ const Books: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const booksPerPage = 25;
+  const booksPerPage = 24;
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -65,20 +66,19 @@ const Books: React.FC = () => {
           Add Book
         </Button>
       </Box>
-      <Stack
-        spacing={2}
-        style={{ flex: "1 0 auto", overflowY: "auto", paddingBottom: "60px" }}
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 3, sm: 6, md: 9 }}
       >
         {paginatedBooks.map((book) => (
-          <BookCard
-            key={book.id}
-            id={book.id}
-            title={book.title}
-            author={book.author}
-            shelf={book.exclusiveShelf}
-          />
+          <Grid size={3} key={book.id}>
+            <BookCard
+              id={book.id}
+              title={book.title}
+              author={book.author}
+              shelf={book.exclusiveShelf}
+            />
+          </Grid>
         ))}
-      </Stack>
+      </Grid>
       <div
         style={{
           position: "fixed",

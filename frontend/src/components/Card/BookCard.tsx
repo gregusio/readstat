@@ -17,7 +17,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, shelf }) => {
   };
 
   return (
-    <Card onClick={handleClick} style={{ cursor: "pointer", width: "300px", height: "300px" }}>
+    <Card onClick={handleClick} style={{ cursor: "pointer", height: "250px" }}>
       <CardContent
       style={{
         display: "flex",
