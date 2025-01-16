@@ -1,0 +1,26 @@
+{
+  "name": "readstat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd Backend && dotnet watch",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregusio/readstat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gregusio/readstat/issues"
+  },
+  "homepage": "https://github.com/gregusio/readstat#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
