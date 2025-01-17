@@ -102,8 +102,6 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
             return;
         }
 
-        await _refreshTokenRepository.DeletePreviousAsync(user.Id);
-
         var token = new RefreshToken
         {
             Token = refreshToken,

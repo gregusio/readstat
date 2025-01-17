@@ -1,7 +1,6 @@
 using Backend.Data;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Backend.Repositories;
 
@@ -25,13 +24,5 @@ public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactor
             return null;
         }
         return refreshToken;
-    }
-
-    public async Task DeletePreviousAsync(int userId)
-    {
-        await using var _context = _contextFactory.CreateDbContext();
-        var tokens = _context.RefreshTokens.Where(t => t.UserId == userId);
-        _context.RefreshTokens.RemoveRange(tokens);
-        await _context.SaveChangesAsync();
     }
 }
