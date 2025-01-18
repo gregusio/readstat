@@ -1,10 +1,11 @@
 using Backend.Data;
+using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories;
 
-public class UserRepository(IDbContextFactory<DataContext> contextFactory)
+public class UserRepository(IDbContextFactory<DataContext> contextFactory) : IUserRepository
 {
     private readonly IDbContextFactory<DataContext> _contextFactory = contextFactory;
 
