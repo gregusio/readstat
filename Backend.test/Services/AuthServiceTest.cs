@@ -6,7 +6,7 @@ using Backend.Services;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
-namespace Backend.test;
+namespace Backend.test.Services;
 
 public class AuthServiceTest
 {
