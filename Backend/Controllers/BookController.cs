@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Backend.DTO;
-using Backend.Services;
+using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +9,9 @@ namespace Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class BookController(BookService bookService) : ControllerBase
+public class BookController(IBookService bookService) : ControllerBase
 {
-    private readonly BookService _bookService = bookService;
+    private readonly IBookService _bookService = bookService;
 
     [HttpGet("user-books")]
     public async Task<IActionResult> GetUserBooks()

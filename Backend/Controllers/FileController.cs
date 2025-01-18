@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Backend.Services;
+using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +8,9 @@ namespace Backend.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [Consumes("multipart/form-data")]
-public class FileController(FileService fileService) : ControllerBase
+public class FileController(IFileService fileService) : ControllerBase
 {
-    private readonly FileService _fileService = fileService;
+    private readonly IFileService _fileService = fileService;
 
     [HttpPost("upload-csv")]
     public async Task<IActionResult> UploadCsv(IFormFile file)
@@ -28,7 +28,7 @@ public class FileController(FileService fileService) : ControllerBase
         try
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var result = await _fileService.ProcessCsvFile(file, userId);
+            var result = await _fileService.ProcessFile(file, userId);
             return Ok(new { Message = "File uploaded successfully", RowsProcessed = result });
         }
         catch (Exception ex)
