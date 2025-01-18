@@ -8,9 +8,9 @@ namespace Backend.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class StatisticsController(IStatisticsService statisticsService) : ControllerBase
+public class StatisticController(IStatisticService statisticsService) : ControllerBase
 {
-    private readonly IStatisticsService _statisticsService = statisticsService;
+    private readonly IStatisticService _statisticsService = statisticsService;
 
     [HttpGet("summary")]
     public async Task<IActionResult> GetOverallSummary()

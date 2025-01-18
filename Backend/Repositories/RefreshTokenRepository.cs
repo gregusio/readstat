@@ -1,10 +1,11 @@
 using Backend.Data;
+using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories;
 
-public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactory)
+public class RefreshTokenRepository(IDbContextFactory<DataContext> contextFactory) : IRefreshTokenRepository
 {
     private readonly IDbContextFactory<DataContext> _contextFactory = contextFactory;
 

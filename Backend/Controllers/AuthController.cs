@@ -1,6 +1,5 @@
 using Backend.DTO;
-using Backend.Repositories;
-using Backend.Services;
+using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +7,11 @@ namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(AuthService authService, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) : ControllerBase
+public class AuthController(IAuthService authService, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository) : ControllerBase
 {
-    private readonly AuthService _authService = authService;
-    private readonly UserRepository _userRepository = userRepository;
-    private readonly RefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
+    private readonly IAuthService _authService = authService;
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -22,7 +21,7 @@ public class AuthController(AuthService authService, UserRepository userReposito
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = await _authService.Register(request);
+        var response = await _authService.RegisterAsync(request);
 
         if (!response.Success)
         {
@@ -44,7 +43,7 @@ public class AuthController(AuthService authService, UserRepository userReposito
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = await _authService.Authenticate(request.Email, request.Password);
+        var response = await _authService.LoginAsync(request.Email, request.Password);
 
         if (response == null)
         {
@@ -62,7 +61,7 @@ public class AuthController(AuthService authService, UserRepository userReposito
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = await _authService.RefreshToken(model.RefreshToken);
+        var response = await _authService.RefreshTokenAsync(model.RefreshToken);
 
         if (response == null)
         {

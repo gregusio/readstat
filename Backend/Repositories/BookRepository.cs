@@ -1,10 +1,11 @@
 using Backend.Data;
+using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories;
 
-public class BooksRepository(IDbContextFactory<DataContext> contextFactory)
+public class BookRepository(IDbContextFactory<DataContext> contextFactory) : IBookRepository
 {
     private readonly IDbContextFactory<DataContext> _contextFactory = contextFactory;
 

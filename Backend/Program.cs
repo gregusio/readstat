@@ -1,5 +1,6 @@
 using System.Text;
 using Backend.Data;
+using Backend.Interfaces;
 using Backend.Repositories;
 using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,14 +11,15 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<RefreshTokenRepository>();
-builder.Services.AddScoped<BooksRepository>();
-builder.Services.AddScoped<UserBookRecordsRepository>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<FileService>();
-builder.Services.AddScoped<BookService>();
-builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IUserBookRecordRepository, UserBookRecordRepository>();
+builder.Services.AddScoped<IUserStatisticRepository, UserStatisticRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFileService, GoodreadsFileService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {

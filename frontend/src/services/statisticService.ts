@@ -2,7 +2,7 @@ import apiClient from "./apiClient";
 
 const getSummary = async () => {
   try {
-    const response = await apiClient.get("/Statistics/summary");
+    const response = await apiClient.get("/Statistic/summary");
     return response.data;
   } catch (error) {
     console.error("Error fetching summary:", error);
@@ -12,7 +12,7 @@ const getSummary = async () => {
 
 const getBooksRead = async () => {
   try {
-    const response = await apiClient.get("/Statistics/books-read");
+    const response = await apiClient.get("/Statistic/books-read");
     return response.data;
   } catch (error) {
     console.error("Error fetching books read:", error);
@@ -22,7 +22,7 @@ const getBooksRead = async () => {
 
 const getProgress = async () => {
   try {
-    const response = await apiClient.get("/Statistics/progress");
+    const response = await apiClient.get("/Statistic/progress");
     return response.data;
   } catch (error) {
     console.error("Error fetching progress:", error);
@@ -32,7 +32,7 @@ const getProgress = async () => {
 
 const getMonthlyReadBookCountPerYear = async () => {
   try {
-    const response = await apiClient.get("/Statistics/monthly-read-books");
+    const response = await apiClient.get("/Statistic/monthly-read-books");
 
     return response.data;
   } catch (error) {
@@ -43,7 +43,7 @@ const getMonthlyReadBookCountPerYear = async () => {
 
 const getMonthlyReadPageCountPerYear = async () => {
   try {
-    const response = await apiClient.get("/Statistics/monthly-read-pages");
+    const response = await apiClient.get("/Statistic/monthly-read-pages");
 
     return response.data;
   } catch (error) {
@@ -54,7 +54,7 @@ const getMonthlyReadPageCountPerYear = async () => {
 
 const getMonthlyAddedBookCountPerYear = async () => {
   try {
-    const response = await apiClient.get("/Statistics/monthly-added-books");
+    const response = await apiClient.get("/Statistic/monthly-added-books");
 
     return response.data;
   } catch (error) {
@@ -65,7 +65,7 @@ const getMonthlyAddedBookCountPerYear = async () => {
 
 const getYearlyReadBookCount = async () => {
   try {
-    const response = await apiClient.get("/Statistics/yearly-read-books");
+    const response = await apiClient.get("/Statistic/yearly-read-books");
 
     return response.data;
   } catch (error) {
@@ -76,7 +76,7 @@ const getYearlyReadBookCount = async () => {
 
 const getYearlyReadPageCount = async () => {
   try {
-    const response = await apiClient.get("/Statistics/yearly-read-pages");
+    const response = await apiClient.get("/Statistic/yearly-read-pages");
 
     return response.data;
   } catch (error) {
@@ -87,7 +87,7 @@ const getYearlyReadPageCount = async () => {
 
 const getYearlyAddedBookCount = async () => {
   try {
-    const response = await apiClient.get("/Statistics/yearly-added-books");
+    const response = await apiClient.get("/Statistic/yearly-added-books");
 
     return response.data;
   } catch (error) {

@@ -1,17 +1,26 @@
 using System.Globalization;
+using Backend.Interfaces;
 using Backend.Models;
-using Backend.Repositories;
 using CsvHelper;
 using CsvHelper.Configuration;
 
 namespace Backend.Services;
 
-public class FileService(BooksRepository booksRepository, UserBookRecordsRepository userBookRecordsRepository)
+public class GoodreadsFileService(IBookRepository booksRepository, IUserBookRecordRepository userBookRecordsRepository) : IFileService
 {
-    private readonly BooksRepository _booksRepository = booksRepository;
-    private readonly UserBookRecordsRepository _userBookRecordsRepository = userBookRecordsRepository;
+    private readonly IBookRepository _booksRepository = booksRepository;
+    private readonly IUserBookRecordRepository _userBookRecordsRepository = userBookRecordsRepository;
 
-    public async Task<int> ProcessCsvFile(IFormFile file, int userId)
+    public async Task<int> ProcessFile(IFormFile file, int userId)
+    {
+        var bookRecords = await ParseCsvFile(file, userId);
+
+        await _userBookRecordsRepository.AddRangeAsync(bookRecords);
+
+        return bookRecords.Count();
+    }
+
+    private async Task<IEnumerable<UserBookRecord>> ParseCsvFile(IFormFile file, int userId)
     {
         var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -44,9 +53,7 @@ public class FileService(BooksRepository booksRepository, UserBookRecordsReposit
             bookRecords.Add(userBookRecord);
         }
 
-        await _userBookRecordsRepository.AddRangeAsync(bookRecords);
-
-        return bookRecords.Count;
+        return bookRecords;
     }
 
     private async Task<Book> FindOrCreateBook(CsvReader csvReader)

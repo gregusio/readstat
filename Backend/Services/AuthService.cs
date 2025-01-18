@@ -3,19 +3,19 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Backend.DTO;
+using Backend.Interfaces;
 using Backend.Models;
-using Backend.Repositories;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services;
 
-public class AuthService(IConfiguration configuration, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository)
+public class AuthService(IConfiguration configuration, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository) : IAuthService
 {
     private readonly IConfiguration _configuration = configuration;
-    private readonly UserRepository _userRepository = userRepository;
-    private readonly RefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
-    public async Task<LoginResponse?> Authenticate(string username, string password)
+    public async Task<LoginResponse?> LoginAsync(string username, string password)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
 
@@ -28,7 +28,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         return null;
     }
 
-    public async Task<RefreshTokenResponse?> RefreshToken(string refreshToken)
+    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string refreshToken)
     {
         var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
         if (token == null || token.ExpiresAt < DateTime.UtcNow)
@@ -113,7 +113,7 @@ public class AuthService(IConfiguration configuration, UserRepository userReposi
         await _refreshTokenRepository.AddAsync(token);
     }
 
-    public async Task<RegisterResponse> Register(RegisterRequest request)
+    public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
     {
         if (await _userRepository.GetByUsernameAsync(request.Email) != null)
         {

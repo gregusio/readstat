@@ -1,13 +1,13 @@
 using Backend.DTO;
+using Backend.Interfaces;
 using Backend.Models;
-using Backend.Repositories;
 
 namespace Backend.Services;
 
-public class BookService(BooksRepository bookRepository, UserBookRecordsRepository userBookRecordRepository)
+public class BookService(IBookRepository bookRepository, IUserBookRecordRepository userBookRecordRepository) : IBookService
 {
-    private readonly BooksRepository _bookRepository = bookRepository;
-    private readonly UserBookRecordsRepository _userBookRecordRepository = userBookRecordRepository;
+    private readonly IBookRepository _bookRepository = bookRepository;
+    private readonly IUserBookRecordRepository _userBookRecordRepository = userBookRecordRepository;
 
     public async Task<IEnumerable<BookBasicInfoDTO>> GetUserBooksAsync(int userId)
     {
