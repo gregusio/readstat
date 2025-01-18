@@ -64,7 +64,5 @@ public class StatisticServiceTest
         Assert.Single(result.First().Value);
 
     }
-
-
 }
-    
+
