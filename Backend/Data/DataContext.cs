@@ -15,5 +15,41 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)
             .IsUnique();
+
+        modelBuilder.Entity<Book>()
+            .Property(b => b.ISBN)
+            .HasConversion(
+                isbn => isbn!.ToString(),
+                value => ISBN.Create(value)
+            )
+            .HasColumnName("ISBN")
+            .IsRequired();
+
+        modelBuilder.Entity<Book>()
+            .Property(b => b.ISBN13)
+            .HasConversion(
+                isbn => isbn!.ToString(),
+                value => ISBN.Create(value)
+            )
+            .HasColumnName("ISBN13")
+            .IsRequired();
+
+        modelBuilder.Entity<UserBookRecord>()
+            .Property(ubr => ubr.UserISBN)
+            .HasConversion(
+                isbn => isbn!.ToString(),
+                value => ISBN.Create(value)
+            )
+            .HasColumnName("UserISBN")
+            .IsRequired();
+
+        modelBuilder.Entity<UserBookRecord>()
+            .Property(ubr => ubr.UserISBN13)
+            .HasConversion(
+                isbn => isbn!.ToString(),
+                value => ISBN.Create(value)
+            )
+            .HasColumnName("UserISBN13")
+            .IsRequired();
     }
 }
