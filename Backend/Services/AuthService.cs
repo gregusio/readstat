@@ -15,39 +15,41 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
-    public async Task<LoginResponse?> LoginAsync(string username, string password)
+    public async Task<LoginResponse> LoginAsync(string username, string password)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
 
         if (user != null && user.PasswordHash == HashPassword(password))
         {
             var (accessToken, refreshToken) = await GenerateTokens(username);
-            return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Message = "Login successful" };
+            return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Success = true, Message = "Login successful" };
         }
 
-        return null;
+        return new LoginResponse { Success = false, Message = "Invalid username or password" };
     }
 
-    public async Task<RefreshTokenResponse?> RefreshTokenAsync(string refreshToken)
+    public async Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken)
     {
         var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
         if (token == null || token.ExpiresAt < DateTime.UtcNow)
         {
-            return null;
+            return new RefreshTokenResponse { Success = false, Message = "Invalid refresh token" };
         }
 
         var user = await _userRepository.GetByIdAsync(token.UserId);
         if (user == null)
         {
-            return null;
+            return new RefreshTokenResponse { Success = false, Message = "User not found" };
         }
 
-        var (newAccessToken, newRefreshToken) = await GenerateTokens(user.Email);
+        var (newAccessToken, newRefreshToken) = await GenerateTokens(user.Username);
 
         return new RefreshTokenResponse
         {
             AccessToken = newAccessToken,
-            RefreshToken = newRefreshToken
+            RefreshToken = newRefreshToken,
+            Success = true,
+            Message = "Token refreshed"
         };
     }
 
@@ -115,7 +117,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
     {
-        if (await _userRepository.GetByUsernameAsync(request.Email) != null)
+        if (await _userRepository.GetByUsernameAsync(request.Username) != null)
         {
             return new RegisterResponse { Success = false, Message = "Username already taken" };
         }
@@ -125,7 +127,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         var user = new User
         {
             PasswordHash = passwordHash,
-            Email = request.Email
+            Username = request.Username
         };
         await _userRepository.AddUserAsync(user);
 
