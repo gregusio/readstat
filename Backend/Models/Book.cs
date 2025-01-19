@@ -13,9 +13,9 @@ public class Book
 
     public string? AdditionalAuthors { get; set; }
 
-    public string? ISBN { get; set; }
+    public required ISBN ISBN { get; set; }
 
-    public string? ISBN13 { get; set; }
+    public required ISBN ISBN13 { get; set; }
 
     public double AverageRating { get; set; }
 

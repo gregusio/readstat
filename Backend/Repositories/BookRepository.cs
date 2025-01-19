@@ -15,9 +15,9 @@ public class BookRepository(IDbContextFactory<DataContext> contextFactory) : IBo
         return await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<Book?> GetByIsbnAsync(string? isbn)
+    public async Task<Book?> GetByIsbnAsync(ISBN? isbn)
     {
-        if (string.IsNullOrEmpty(isbn))
+        if (string.IsNullOrEmpty(isbn?.Value))
         {
             return null;
         }

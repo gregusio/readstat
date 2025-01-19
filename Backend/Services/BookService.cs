@@ -57,8 +57,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
             NumberOfPages = userBookRecord.UserNumberOfPages ?? book!.NumberOfPages,
             YearPublished = userBookRecord.UserYearPublished ?? book!.YearPublished,
             OriginalPublicationYear = userBookRecord.UserOriginalPublicationYear ?? book!.OriginalPublicationYear,
-            ISBN = userBookRecord.UserISBN ?? book!.ISBN,
-            ISBN13 = userBookRecord.UserISBN13 ?? book!.ISBN13,
+            ISBN = userBookRecord.UserISBN?.Value ?? book!.ISBN?.Value,
+            ISBN13 = userBookRecord.UserISBN13?.Value ?? book!.ISBN13?.Value,
             Publisher = userBookRecord.UserPublisher ?? book!.Publisher,
             MyRating = userBookRecord.MyRating,
             ExclusiveShelf = userBookRecord.ExclusiveShelf,
@@ -80,8 +80,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
             NumberOfPages = book.NumberOfPages,
             YearPublished = book.YearPublished,
             OriginalPublicationYear = book.OriginalPublicationYear,
-            ISBN = book.ISBN,
-            ISBN13 = book.ISBN13,
+            ISBN = ISBN.Create(book.ISBN),
+            ISBN13 = ISBN.Create(book.ISBN13),
             Publisher = book.Publisher
         };
 
@@ -97,8 +97,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
             UserNumberOfPages = book.NumberOfPages,
             UserYearPublished = book.YearPublished,
             UserOriginalPublicationYear = book.OriginalPublicationYear,
-            UserISBN = book.ISBN,
-            UserISBN13 = book.ISBN13,
+            UserISBN = ISBN.Create(book.ISBN),
+            UserISBN13 = ISBN.Create(book.ISBN13),
             UserPublisher = book.Publisher,
             MyRating = book.MyRating,
             ExclusiveShelf = book.ExclusiveShelf,
@@ -128,8 +128,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
         userBookRecord.UserNumberOfPages = book.NumberOfPages;
         userBookRecord.UserYearPublished = book.YearPublished;
         userBookRecord.UserOriginalPublicationYear = book.OriginalPublicationYear;
-        userBookRecord.UserISBN = book.ISBN;
-        userBookRecord.UserISBN13 = book.ISBN13;
+        userBookRecord.UserISBN = ISBN.Create(book.ISBN);
+        userBookRecord.UserISBN13 = ISBN.Create(book.ISBN13);
         userBookRecord.UserPublisher = book.Publisher;
         userBookRecord.MyRating = book.MyRating;
         userBookRecord.ExclusiveShelf = book.ExclusiveShelf;
