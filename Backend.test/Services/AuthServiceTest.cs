@@ -68,7 +68,7 @@ public class AuthServiceTest
         var result = await _authService.LoginAsync("test", "test");
 
         // Assert
-        Assert.Null(result);
+        Assert.False(result.Success);
     }
 
 
