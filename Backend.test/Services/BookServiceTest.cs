@@ -87,7 +87,7 @@ public class BookServiceTest
         var user = new User
         {
             Id = 1,
-            Email = "test",
+            Username = "test",
             PasswordHash = "test"
         };
 

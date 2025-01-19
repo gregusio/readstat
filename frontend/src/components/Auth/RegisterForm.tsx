@@ -4,7 +4,7 @@ import authService from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +23,7 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      await authService.register({ email, password });
+      await authService.register({ username: username, password });
       setSuccess("Registration successful!");
       await new Promise((resolve) => setTimeout(resolve, 1000));
       navigate("/login");
@@ -39,12 +39,12 @@ const RegisterForm: React.FC = () => {
       sx={{ maxWidth: 400, margin: "auto", textAlign: "center", mt: 4 }}
     >
       <TextField
-        label="Email"
+        label="Username"
         variant="outlined"
         fullWidth
         margin="normal"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
         required
       />
       <TextField

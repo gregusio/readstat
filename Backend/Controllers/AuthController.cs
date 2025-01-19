@@ -7,16 +7,15 @@ namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IAuthService authService, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository) : ControllerBase
+public class AuthController(IAuthService authService, IUserRepository userRepository) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        if (request == null || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Email))
+        if (request == null || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Username))
         {
             return BadRequest(new { Message = "Invalid request" });
         }
@@ -36,14 +35,14 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
     {
         if (
             request == null
-            || string.IsNullOrEmpty(request.Email)
+            || string.IsNullOrEmpty(request.Username)
             || string.IsNullOrEmpty(request.Password)
         )
         {
             return BadRequest(new { Message = "Invalid request" });
         }
 
-        var response = await _authService.LoginAsync(request.Email, request.Password);
+        var response = await _authService.LoginAsync(request.Username, request.Password);
 
         if (response == null)
         {
@@ -75,13 +74,13 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
-        var email = User.Identity?.Name; // Username z JWT
-        if (email == null)
+        var username = User.Identity?.Name;
+        if (username == null)
         {
             return Unauthorized();
         }
 
-        var user = await _userRepository.GetByUsernameAsync(email); // Pobierz użytkownika z bazy
+        var user = await _userRepository.GetByUsernameAsync(username);
         if (user == null)
         {
             return NotFound();
@@ -89,10 +88,7 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
 
         return Ok(new
         {
-            email = user.Email,
+            username = user.Username,
         });
     }
-
-
-
 }
