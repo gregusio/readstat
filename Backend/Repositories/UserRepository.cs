@@ -17,10 +17,10 @@ public class UserRepository(IDbContextFactory<DataContext> contextFactory) : IUs
         return user;
     }
 
-    public async Task<User?> GetByUsernameAsync(string email)
+    public async Task<User?> GetByUsernameAsync(string username)
     {
         await using var _context = _contextFactory.CreateDbContext();
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
     public async Task<User?> GetByIdAsync(int id)

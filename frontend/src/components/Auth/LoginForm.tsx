@@ -5,7 +5,7 @@ import { Box, TextField, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { setUser, login } = useAuth();
@@ -15,7 +15,7 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await authService.login({ email, password });
+      const response = await authService.login({ username, password });
       setUser(response.data);
       login();
       navigate("/home");
@@ -38,12 +38,12 @@ const LoginForm: React.FC = () => {
     >
       {error && <Typography color="error">{error}</Typography>}
       <TextField
-        label="Email"
+        label="Username"
         variant="outlined"
         fullWidth
         margin="normal"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
         required
       />
       <TextField

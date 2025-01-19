@@ -38,7 +38,7 @@ public class AuthServiceTest
         var user = new User
         {
             Id = 1,
-            Email = "test",
+            Username = "test",
             PasswordHash = Sha256Hash("test")
         };
 
@@ -68,7 +68,7 @@ public class AuthServiceTest
         var result = await _authService.LoginAsync("test", "test");
 
         // Assert
-        Assert.Null(result);
+        Assert.False(result.Success);
     }
 
 
@@ -87,7 +87,7 @@ public class AuthServiceTest
         var user = new User
         {
             Id = 1,
-            Email = "test",
+            Username = "test",
             PasswordHash = Sha256Hash("test")
         };
 
@@ -99,7 +99,7 @@ public class AuthServiceTest
         _userRepositoryMock.Setup(x => x.AddUserAsync(It.IsAny<User>())).ReturnsAsync(user);
 
         // Act
-        var result = await _authService.RegisterAsync(new DTO.RegisterRequest { Email = "test", Password = "test" });
+        var result = await _authService.RegisterAsync(new DTO.RegisterRequest { Username = "test", Password = "test" });
 
         // Assert
         Assert.NotNull(result);
@@ -122,7 +122,7 @@ public class AuthServiceTest
         var user = new User
         {
             Id = 1,
-            Email = "test",
+            Username = "test",
             PasswordHash = Sha256Hash("test")
         };
 
@@ -133,7 +133,7 @@ public class AuthServiceTest
         _userRepositoryMock.Setup(x => x.GetByUsernameAsync("test")).ReturnsAsync(user);
 
         // Act
-        var result = await _authService.RegisterAsync(new DTO.RegisterRequest { Email = "test", Password = "test" });
+        var result = await _authService.RegisterAsync(new DTO.RegisterRequest { Username = "test", Password = "test" });
 
         // Assert
         Assert.NotNull(result);
@@ -157,7 +157,7 @@ public class AuthServiceTest
         var user = new User
         {
             Id = 1,
-            Email = "test",
+            Username = "test",
             PasswordHash = "test"
         };
 

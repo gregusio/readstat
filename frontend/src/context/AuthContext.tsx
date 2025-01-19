@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import apiClient from "../services/apiClient";
 
 interface User {
-  email: string;
+  username: string;
 }
 
 interface AuthContextType {

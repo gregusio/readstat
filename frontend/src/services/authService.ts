@@ -1,21 +1,25 @@
 import apiClient from "./apiClient";
 
-const login = async (credentials: { email: string; password: string }) => {
+const login = async (credentials: { username: string; password: string }) => {
   const response = await apiClient.post("/Auth/login", credentials);
-  const { accessToken, refreshToken } = response.data;
+  const { accessToken, refreshToken, success } = response.data;
+
+  if (!success) {
+    throw new Error("Invalid login response");
+  }
 
   if (accessToken) {
-    localStorage.setItem("accessToken", accessToken); // Zapis tokena
+    localStorage.setItem("accessToken", accessToken); 
   }
 
   if (refreshToken) {
-    localStorage.setItem("refreshToken", refreshToken); // Zapis refreshTokena
+    localStorage.setItem("refreshToken", refreshToken); 
   }
 
   return response.data;
 };
 
-const register = async (credentials: { email: string; password: string }) => {
+const register = async (credentials: { username: string; password: string }) => {
   const response = await apiClient.post("/Auth/register", credentials);
 
   return response.data;
@@ -27,7 +31,7 @@ const logout = () => {
 };
 
 const getCurrentUser = async () => {
-  const response = await apiClient.get("/Auth/me"); // Endpoint zwracający dane użytkownika
+  const response = await apiClient.get("/Auth/me"); 
   return response.data;
 };
 
@@ -36,7 +40,7 @@ const refreshToken = async () => {
   const { accessToken } = response.data;
 
   if (accessToken) {
-    localStorage.setItem("token", accessToken); // Zaktualizuj token
+    localStorage.setItem("token", accessToken); 
   }
 
   return accessToken;

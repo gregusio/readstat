@@ -2,6 +2,8 @@ namespace Backend.DTO;
 
 public class RefreshTokenResponse
 {
-    public required string AccessToken { get; set; }
-    public required string RefreshToken { get; set; }
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
+    public required bool Success { get; set; }
+    public required string Message { get; set; }
 }
