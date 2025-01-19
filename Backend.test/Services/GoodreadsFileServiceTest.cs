@@ -32,7 +32,7 @@ public class GoodreadsFileServiceTest
         fileMock.Setup(_ => _.FileName).Returns(filePath);
         fileMock.Setup(_ => _.Length).Returns(ms.Length);
         _userBookRecordRepositoryMock.Setup(x => x.AddRangeAsync(It.IsAny<IEnumerable<UserBookRecord>>())).Verifiable();
-        _bookRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Book());
+        _bookRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Book { ISBN = ISBN.Create("1234567890"), ISBN13 = ISBN.Create("1234567890123") });
         _bookRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Book>())).ReturnsAsync(1);
 
         // Act
@@ -56,7 +56,7 @@ public class GoodreadsFileServiceTest
         fileMock.Setup(_ => _.FileName).Returns(filePath);
         fileMock.Setup(_ => _.Length).Returns(ms.Length);
         _userBookRecordRepositoryMock.Setup(x => x.AddRangeAsync(It.IsAny<IEnumerable<UserBookRecord>>())).Verifiable();
-        _bookRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Book());
+        _bookRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new Book() { ISBN = ISBN.Create("1234567890"), ISBN13 = ISBN.Create("1234567890123") });
         _bookRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Book>())).ReturnsAsync(1);
 
         // Act
