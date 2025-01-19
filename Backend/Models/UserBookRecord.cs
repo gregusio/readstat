@@ -20,9 +20,9 @@ public class UserBookRecord
 
     public string? UserAdditionalAuthors { get; set; }
 
-    public string? UserISBN { get; set; }
+    public required ISBN UserISBN { get; set; }
 
-    public string? UserISBN13 { get; set; }
+    public required ISBN UserISBN13 { get; set; }
 
     public string? UserPublisher { get; set; }
 

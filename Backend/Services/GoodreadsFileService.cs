@@ -42,6 +42,8 @@ public class GoodreadsFileService(IBookRepository booksRepository, IUserBookReco
             {
                 UserId = userId,
                 BookId = book.Id,
+                UserISBN = ISBN.Create(NormalizeIsbn(csvReader.GetField("ISBN")!)),
+                UserISBN13 = ISBN.Create(NormalizeIsbn(csvReader.GetField("ISBN13")!)),
                 MyRating = csvReader.GetField<int>("My Rating"),
                 ExclusiveShelf = csvReader.GetField("Exclusive Shelf")!,
                 DateRead = DateTime.TryParse(csvReader.GetField("Date Read"), out var dateRead) ? dateRead : null,
@@ -58,10 +60,7 @@ public class GoodreadsFileService(IBookRepository booksRepository, IUserBookReco
 
     private async Task<Book> FindOrCreateBook(CsvReader csvReader)
     {
-        var isbn = NormalizeIsbn(csvReader.GetField("ISBN")!);
-
-
-        var book = await _booksRepository.GetByIsbnAsync(isbn);
+        var book = await _booksRepository.GetByIsbnAsync(ISBN.Create(NormalizeIsbn(csvReader.GetField("ISBN")!)));
 
         if (book == null)
         {
@@ -70,8 +69,8 @@ public class GoodreadsFileService(IBookRepository booksRepository, IUserBookReco
                 Title = csvReader.GetField("Title"),
                 Author = csvReader.GetField("Author"),
                 AdditionalAuthors = csvReader.GetField("Additional Authors"),
-                ISBN = isbn,
-                ISBN13 = NormalizeIsbn(csvReader.GetField("ISBN13")!),
+                ISBN = ISBN.Create(NormalizeIsbn(csvReader.GetField("ISBN")!)),
+                ISBN13 = ISBN.Create(NormalizeIsbn(csvReader.GetField("ISBN13")!)),
                 AverageRating = csvReader.GetField<double>("Average Rating"),
                 Publisher = csvReader.GetField("Publisher"),
                 NumberOfPages = csvReader.GetField<int?>("Number of Pages"),
