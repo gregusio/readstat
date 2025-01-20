@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:frontend": "cd frontend && npm run dev",
-    "start:backend": "cd Backend && dotnet watch",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd Backend && dotnet watch",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "start:frontend": "cd frontend && npm run build && npm run preview -- --port 3000",
+    "start:backend": "cd Backend && dotnet build && dotnet run",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
 },
   "repository": {
