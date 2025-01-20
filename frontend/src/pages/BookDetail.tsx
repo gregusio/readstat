@@ -233,7 +233,8 @@ const BookDetail: React.FC = () => {
               <TextField
                 label="Date Read"
                 name="dateRead"
-                value={editedBook?.dateRead || ""}
+                type="date"
+                value={editedBook?.dateRead ? new Date(new Date(editedBook.dateRead).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
                 onChange={handleInputChange}
                 fullWidth
                 margin="normal"
@@ -241,12 +242,13 @@ const BookDetail: React.FC = () => {
             </Grid>
             <Grid size={6}>
               <TextField
-                label="Date Added"
-                name="dateAdded"
-                value={editedBook?.dateAdded || ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
+              label="Date Added"
+              name="dateAdded"
+              type="date"
+              value={editedBook?.dateAdded ? new Date(new Date(editedBook.dateAdded).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
               />
             </Grid>
             <Grid size={12}>
