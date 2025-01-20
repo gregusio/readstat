@@ -63,7 +63,6 @@ const BookDetail: React.FC = () => {
 
   const handleDelete = () => {
     if (book) {
-      
       bookService.deleteBook(book.id).then((response) => {
         if (response.success) {
           setBook(null);
@@ -81,6 +80,23 @@ const BookDetail: React.FC = () => {
           setIsEditing(false);
         }
       });
+    }
+  };
+
+  const calculateTimeDifference = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const getTimeWaiting = () => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    if (book?.dateRead) {
+      return calculateTimeDifference(book.dateAdded, book.dateRead);
+    } else {
+      return book ? calculateTimeDifference(book.dateAdded, currentDate) : 0;
     }
   };
 
@@ -303,6 +319,11 @@ const BookDetail: React.FC = () => {
             </Typography>
             <Typography variant="body2" component="p">
               Read Count: {book.readCount}
+            </Typography>
+            <Typography variant="body2" component="p">
+              {book.dateRead
+                ? `Time taken to read: ${getTimeWaiting()} days`
+                : `Time waiting to be read: ${getTimeWaiting()} days`}
             </Typography>
             <Button onClick={handleEdit} color="primary" variant="contained">
               Edit
