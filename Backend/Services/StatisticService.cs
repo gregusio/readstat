@@ -31,7 +31,6 @@ public class StatisticService(IUserStatisticRepository userStatisticsRepository)
         var booksWithThreeStarRating = await _userStatisticsRepository.GetBooksWithRatingAsync(userId, 3);
         var booksWithFourStarRating = await _userStatisticsRepository.GetBooksWithRatingAsync(userId, 4);
         var booksWithFiveStarRating = await _userStatisticsRepository.GetBooksWithRatingAsync(userId, 5);
-        var mostPopularAuthorsWithBooksCount = await _userStatisticsRepository.GetFiveMostPopularAuthorsWithBooksCountAsync(userId);
 
         return new StatisticsReadBooksDTO
         {
@@ -40,8 +39,7 @@ public class StatisticService(IUserStatisticRepository userStatisticsRepository)
             BooksWithTwoStarRating = booksWithTwoStarRating,
             BooksWithThreeStarRating = booksWithThreeStarRating,
             BooksWithFourStarRating = booksWithFourStarRating,
-            BooksWithFiveStarRating = booksWithFiveStarRating,
-            MostFivePopularAuthorsWithBooksCount = mostPopularAuthorsWithBooksCount
+            BooksWithFiveStarRating = booksWithFiveStarRating
         };
     }
 
@@ -93,5 +91,10 @@ public class StatisticService(IUserStatisticRepository userStatisticsRepository)
     public async Task<Dictionary<int, int>> GetStatisticsYearlyAddedBookCountPerYear(int userId)
     {
         return await _userStatisticsRepository.GetYearlyAddedBookCountAsync(userId);
+    }
+
+    public async Task<Dictionary<string, int>> GetStatisticsMostReadAuthors(int userId)
+    {
+        return await _userStatisticsRepository.GetMostReadAuthorsAsync(userId);
     }
 }

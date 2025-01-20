@@ -73,11 +73,11 @@ public class UserStatisticRepository(IDbContextFactory<DataContext> contextFacto
         return booksBasicInfoWithRating;
     }
 
-    public async Task<Dictionary<string, int>> GetFiveMostPopularAuthorsWithBooksCountAsync(int userId)
+    public async Task<Dictionary<string, int>> GetMostReadAuthorsAsync(int userId)
     {
         await using var _context = _contextFactory.CreateDbContext();
         var userBooksRecords = await _context.UserBookRecords
-            .Where(ubr => ubr.UserId == userId)
+            .Where(ubr => ubr.UserId == userId && ubr.DateRead != null)
             .ToListAsync();
 
         var authorsBooksCount = new Dictionary<string, int>();

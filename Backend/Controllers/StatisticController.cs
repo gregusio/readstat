@@ -83,4 +83,12 @@ public class StatisticController(IStatisticService statisticsService) : Controll
         var statisticsYearlyAddedBooks = await _statisticsService.GetStatisticsYearlyAddedBookCountPerYear(userId);
         return Ok(statisticsYearlyAddedBooks);
     }
+
+    [HttpGet("most-read-authors")]
+    public async Task<IActionResult> GetMostReadAuthors()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var statisticsMostReadAuthors = await _statisticsService.GetStatisticsMostReadAuthors(userId);
+        return Ok(statisticsMostReadAuthors);
+    }
 }
