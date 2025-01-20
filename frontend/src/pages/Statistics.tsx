@@ -11,6 +11,7 @@ import "./Statistics.css";
 import BookCount from "../components/Chart/BookCount";
 import { useState, useEffect } from "react";
 import bookService from "../services/bookService";
+import MostReadAuthors from "../components/Chart/MostReadAuthors";
 
 const Statistics: React.FC = () => {
   const [hasBooks, setHasBooks] = useState(false);
@@ -55,6 +56,9 @@ const Statistics: React.FC = () => {
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <YearlyAddedBookCount />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <MostReadAuthors />
           </Grid>
         </Grid>
       ) : (
