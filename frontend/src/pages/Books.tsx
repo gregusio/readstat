@@ -5,12 +5,18 @@ import { SearchContext } from "../context/SearchContext";
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Modal,
   Pagination,
   Skeleton,
   Tooltip,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,9 +46,13 @@ const Books: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const booksPerPage = 24;
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -71,6 +81,13 @@ const Books: React.FC = () => {
     page * booksPerPage
   );
 
+  const handleDeleteAll = async () => {
+    setDeleteLoading(true);
+    await bookService.deleteAllBooks();
+    setDeleteLoading(false);
+    window.location.reload();
+  };
+
   if (loading) {
     return <Skeleton variant="rectangular" />;
   }
@@ -90,14 +107,14 @@ const Books: React.FC = () => {
         <Box sx={{ display: "flex", gap: "10px" }}>
           <InputFileUpload />
           <Tooltip title="Help">
-            <IconButton onClick={handleOpen}>
+            <IconButton onClick={handleOpenModal}>
               <HelpOutlineIcon />
             </IconButton>
           </Tooltip>
         </Box>
         <Modal
-          open={open}
-          onClose={handleClose}
+          open={openModal}
+          onClose={handleCloseModal}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
@@ -116,15 +133,62 @@ const Books: React.FC = () => {
             </Typography>
           </Box>
         </Modal>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            navigate("/add-book");
-          }}
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleOpenDialog}
+            disabled={deleteLoading}
+          >
+            {deleteLoading ? (
+              <Box sx={{ display: "flex", gap: "10px" }}>
+                <CircularProgress size={24} />
+                Delete all
+              </Box>
+            ) : (
+              "Delete all"
+            )}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              navigate("/add-book");
+            }}
+          >
+            Add Book
+          </Button>
+        </Box>
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          Add Book
-        </Button>
+          <DialogTitle id="alert-dialog-title">
+            {"Confirm Deletion"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete all books?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handleDeleteAll();
+                handleCloseDialog();
+              }}
+              color="error"
+              autoFocus
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
       <Grid
         container
