@@ -104,4 +104,22 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
+
+try 
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataContext>>();
+        await using var context = dbContextFactory.CreateDbContext();
+        if(context.Database.GetPendingMigrations().Any())
+        {
+            await context.Database.MigrateAsync();
+        }
+    }
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+}
+
+app.Run("http://0.0.0.0:5027");
