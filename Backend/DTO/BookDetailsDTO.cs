@@ -6,8 +6,8 @@ public class BookDetailsDTO
     public string? Title { get; set; }
     public string? Author { get; set; }
     public string? AdditionalAuthors { get; set; }
-    public string? ISBN { get; set; }
-    public string? ISBN13 { get; set; }
+    public string? Isbn { get; set; }
+    public string? Isbn13 { get; set; }
     public double AverageRating { get; set; }
     public string? Publisher { get; set; }
     public int? NumberOfPages { get; set; }

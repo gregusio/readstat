@@ -66,8 +66,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
             UserNumberOfPages = book.NumberOfPages,
             UserYearPublished = book.YearPublished,
             UserOriginalPublicationYear = book.OriginalPublicationYear,
-            UserISBN = ISBN.Create(book.ISBN),
-            UserISBN13 = ISBN.Create(book.ISBN13),
+            UserISBN = ISBN.Create(book.Isbn),
+            UserISBN13 = ISBN.Create(book.Isbn13),
             UserPublisher = book.Publisher,
             MyRating = book.MyRating,
             ExclusiveShelf = book.ExclusiveShelf,
@@ -97,8 +97,8 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
         userBookRecord.UserNumberOfPages = book.NumberOfPages;
         userBookRecord.UserYearPublished = book.YearPublished;
         userBookRecord.UserOriginalPublicationYear = book.OriginalPublicationYear;
-        userBookRecord.UserISBN = ISBN.Create(book.ISBN);
-        userBookRecord.UserISBN13 = ISBN.Create(book.ISBN13);
+        userBookRecord.UserISBN = ISBN.Create(book.Isbn);
+        userBookRecord.UserISBN13 = ISBN.Create(book.Isbn13);
         userBookRecord.UserPublisher = book.Publisher;
         userBookRecord.MyRating = book.MyRating;
         userBookRecord.ExclusiveShelf = book.ExclusiveShelf;

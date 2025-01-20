@@ -7,6 +7,7 @@ public class BookMapper
 {
     public static Book Map(BookDetailsDTO bookDto)
     {
+        Console.WriteLine(bookDto.Isbn13);
         return new Book
         {
             Title = bookDto.Title,
@@ -16,8 +17,8 @@ public class BookMapper
             NumberOfPages = bookDto.NumberOfPages,
             YearPublished = bookDto.YearPublished,
             OriginalPublicationYear = bookDto.OriginalPublicationYear,
-            ISBN = ISBN.Create(bookDto.ISBN),
-            ISBN13 = ISBN.Create(bookDto.ISBN13),
+            ISBN = ISBN.Create(bookDto.Isbn),
+            ISBN13 = ISBN.Create(bookDto.Isbn13),
             Publisher = bookDto.Publisher,
         };
     }
@@ -34,8 +35,8 @@ public class BookMapper
             NumberOfPages = userBookRecord.UserNumberOfPages ?? book.NumberOfPages,
             YearPublished = userBookRecord.UserYearPublished ?? book.YearPublished,
             OriginalPublicationYear = userBookRecord.UserOriginalPublicationYear ?? book.OriginalPublicationYear,
-            ISBN = userBookRecord.UserISBN?.Value ?? book.ISBN?.Value,
-            ISBN13 = userBookRecord.UserISBN13?.Value ?? book.ISBN13?.Value,
+            Isbn = string.IsNullOrEmpty(userBookRecord.UserISBN?.Value) ? book.ISBN?.Value : userBookRecord.UserISBN?.Value,
+            Isbn13 = string.IsNullOrEmpty(userBookRecord.UserISBN13?.Value) ? book.ISBN13?.Value : userBookRecord.UserISBN13?.Value,
             Publisher = userBookRecord.UserPublisher ?? book.Publisher,
             MyRating = userBookRecord.MyRating,
             ExclusiveShelf = userBookRecord.ExclusiveShelf,
