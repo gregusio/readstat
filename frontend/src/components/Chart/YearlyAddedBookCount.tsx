@@ -18,7 +18,7 @@ const YearlyAddedBookCount: React.FC = () => {
     return <Skeleton variant="rectangular" width={500} height={300} />;
   }
 
-  return <YearlyCountChart data={data} title="Yearly Read Book Count" />;
+  return <YearlyCountChart data={data} title="Yearly Added Book Count" />;
 };
 
 export default YearlyAddedBookCount;
