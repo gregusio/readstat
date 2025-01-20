@@ -1,6 +1,6 @@
 namespace Backend.DTO;
 
-public class BookDTO
+public class BookDetailsDTO
 {
     public int Id { get; set; }
     public string? Title { get; set; }
