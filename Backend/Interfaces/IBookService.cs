@@ -5,8 +5,8 @@ namespace Backend.Interfaces;
 public interface IBookService
 {
     Task<IEnumerable<BookBasicInfoDTO>> GetUserBooksAsync(int userId);
-    Task<BookDTO> GetBookDetailsAsync(int userId, int recordId);
-    Task<BookDTO> AddBookAsync(int userId, BookDTO book);
-    Task<BookDTO> UpdateBookAsync(int userId, BookDTO book);
+    Task<BookDetailsDTO> GetBookDetailsAsync(int userId, int recordId);
+    Task<BookDetailsDTO> AddBookAsync(int userId, BookDetailsDTO book);
+    Task<BookDetailsDTO> UpdateBookAsync(int userId, BookDetailsDTO book);
     Task DeleteBookAsync(int userId, int bookId);
 }

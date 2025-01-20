@@ -30,7 +30,7 @@ public class BookController(IBookService bookService) : ControllerBase
     }
 
     [HttpPost("add-book")]
-    public async Task<IActionResult> AddBook([FromBody] BookDTO book)
+    public async Task<IActionResult> AddBook([FromBody] BookDetailsDTO book)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
         await _bookService.AddBookAsync(userId, book);
@@ -38,7 +38,7 @@ public class BookController(IBookService bookService) : ControllerBase
     }
 
     [HttpPatch("update-book")]
-    public async Task<IActionResult> UpdateBook([FromBody] BookDTO book)
+    public async Task<IActionResult> UpdateBook([FromBody] BookDetailsDTO book)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
         await _bookService.UpdateBookAsync(userId, book);

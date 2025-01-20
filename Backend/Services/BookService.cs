@@ -31,7 +31,7 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
         return DTOBooks;
     }
 
-    public async Task<BookDTO> GetBookDetailsAsync(int userId, int recordId)
+    public async Task<BookDetailsDTO> GetBookDetailsAsync(int userId, int recordId)
     {
         var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, recordId);
 
@@ -47,43 +47,12 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
             throw new InvalidOperationException("Book not found");
         }
 
-        return new BookDTO
-        {
-            Id = userBookRecord.Id,
-            Title = userBookRecord.UserTitle ?? book!.Title,
-            Author = userBookRecord.UserAuthor ?? book!.Author,
-            AdditionalAuthors = userBookRecord.UserAdditionalAuthors ?? book!.AdditionalAuthors,
-            AverageRating = book!.AverageRating,
-            NumberOfPages = userBookRecord.UserNumberOfPages ?? book!.NumberOfPages,
-            YearPublished = userBookRecord.UserYearPublished ?? book!.YearPublished,
-            OriginalPublicationYear = userBookRecord.UserOriginalPublicationYear ?? book!.OriginalPublicationYear,
-            ISBN = userBookRecord.UserISBN?.Value ?? book!.ISBN?.Value,
-            ISBN13 = userBookRecord.UserISBN13?.Value ?? book!.ISBN13?.Value,
-            Publisher = userBookRecord.UserPublisher ?? book!.Publisher,
-            MyRating = userBookRecord.MyRating,
-            ExclusiveShelf = userBookRecord.ExclusiveShelf,
-            DateRead = userBookRecord.DateRead,
-            DateAdded = userBookRecord.DateAdded,
-            MyReview = userBookRecord.MyReview,
-            ReadCount = userBookRecord.ReadCount
-        };
+        return BookMapper.Map(book, userBookRecord);
     }
 
-    public async Task<BookDTO> AddBookAsync(int userId, BookDTO book)
+    public async Task<BookDetailsDTO> AddBookAsync(int userId, BookDetailsDTO book)
     {
-        var newBook = new Book
-        {
-            Title = book.Title,
-            Author = book.Author,
-            AdditionalAuthors = book.AdditionalAuthors,
-            AverageRating = book.AverageRating,
-            NumberOfPages = book.NumberOfPages,
-            YearPublished = book.YearPublished,
-            OriginalPublicationYear = book.OriginalPublicationYear,
-            ISBN = ISBN.Create(book.ISBN),
-            ISBN13 = ISBN.Create(book.ISBN13),
-            Publisher = book.Publisher
-        };
+        var newBook = BookMapper.Map(book);
 
         var addedBookId = await _bookRepository.AddAsync(newBook);
 
@@ -113,7 +82,7 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
         return book;
     }
 
-    public async Task<BookDTO> UpdateBookAsync(int userId, BookDTO book)
+    public async Task<BookDetailsDTO> UpdateBookAsync(int userId, BookDetailsDTO book)
     {
         var userBookRecord = await _userBookRecordRepository.GetByUserIdAndBookIdAsync(userId, book.Id);
 
