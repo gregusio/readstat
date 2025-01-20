@@ -96,6 +96,17 @@ const getYearlyAddedBookCount = async () => {
   }
 };
 
+const getMostReadAuthors = async () => {
+  try {
+    const response = await apiClient.get("/Statistic/most-read-authors");
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching most read authors:", error);
+    return null;
+  }
+}
+
 export default {
   getSummary,
   getBooksRead,
@@ -106,4 +117,5 @@ export default {
   getYearlyReadBookCount,
   getYearlyReadPageCount,
   getYearlyAddedBookCount,
+  getMostReadAuthors,
 };
