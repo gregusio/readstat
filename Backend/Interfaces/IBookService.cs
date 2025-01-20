@@ -9,4 +9,5 @@ public interface IBookService
     Task<BookDetailsDTO> AddBookAsync(int userId, BookDetailsDTO book);
     Task<BookDetailsDTO> UpdateBookAsync(int userId, BookDetailsDTO book);
     Task DeleteBookAsync(int userId, int bookId);
+    Task DeleteAllBooksAsync(int userId);
 }

@@ -52,4 +52,12 @@ public class BookController(IBookService bookService) : ControllerBase
         await _bookService.DeleteBookAsync(userId, id);
         return Ok(new Response { Message = "Book deleted successfully", Success = true });
     }
+
+    [HttpDelete("delete-all-books")]
+    public async Task<IActionResult> DeleteAllBooks()
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        await _bookService.DeleteAllBooksAsync(userId);
+        return Ok(new Response { Message = "All books deleted successfully", Success = true });
+    }
 }
