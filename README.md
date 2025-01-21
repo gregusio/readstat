@@ -46,6 +46,14 @@ docker-compose up --build
 
 ### Without Docker
 
+#### Prerequisites
+
+- .NET Core 8.0
+- Node.js 22.0
+- local SQL Server
+
+#### Setup
+
 1. Clone the repository
 
 ```bash
