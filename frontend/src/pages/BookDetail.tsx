@@ -28,9 +28,9 @@ interface Book {
   originalPublishYear: string;
   numberOfPages: number;
   myRating: number;
-  shelf: string;
-  dateRead: string;
-  dateAdded: string;
+  exclusiveShelf: string;
+  dateRead: string | null;
+  dateAdded: string | null;
   myReview: string;
   readCount: number;
 }
@@ -46,6 +46,12 @@ const BookDetail: React.FC = () => {
   useEffect(() => {
     if (id) {
       bookService.getBook(parseInt(id)).then((response) => {
+        response.dateRead = response.dateRead
+          ? response.dateRead.split("T")[0]
+          : "";
+        response.dateAdded = response.dateAdded
+          ? response.dateAdded.split("T")[0]
+          : "";
         setBook(response);
         setEditedBook(response);
       });
@@ -79,31 +85,50 @@ const BookDetail: React.FC = () => {
 
   const handleSave = () => {
     if (editedBook) {
-      if (editedBook.shelf !== "read") {
+      editedBook.dateAdded = editedBook.dateAdded
+        ? new Date(editedBook.dateAdded).toISOString()
+        : null;
+      editedBook.dateRead = editedBook.dateRead
+        ? new Date(editedBook.dateRead).toISOString()
+        : null;
+      if (editedBook.exclusiveShelf !== "read") {
         editedBook.myRating = 0;
-        editedBook.dateRead = "";
+        editedBook.dateRead = null;
         editedBook.myReview = "";
       }
       bookService.updateBook(editedBook).then((response) => {
         if (response.success) {
+          editedBook.dateRead = editedBook.dateRead
+            ? editedBook.dateRead.split("T")[0]
+            : "";
+          editedBook.dateAdded = editedBook.dateAdded
+            ? editedBook.dateAdded.split("T")[0]
+            : "";
           setBook(editedBook);
           setIsEditing(false);
-            const storedBooks = localStorage.getItem("userBooks");
-            if (storedBooks && storedBooks !== "undefined") {
+          const storedBooks = localStorage.getItem("userBooks");
+          if (storedBooks && storedBooks !== "undefined") {
             const books = JSON.parse(storedBooks);
             const updatedBooks = books.map((b: Book) => {
               if (b.id === editedBook.id) {
-              return {
-                ...b,
-                title: editedBook.title !== b.title ? editedBook.title : b.title,
-                author: editedBook.author !== b.author ? editedBook.author : b.author,
-                shelf: editedBook.shelf !== b.shelf ? editedBook.shelf : b.shelf,
-              };
+                return {
+                  ...b,
+                  title:
+                    editedBook.title !== b.title ? editedBook.title : b.title,
+                  author:
+                    editedBook.author !== b.author
+                      ? editedBook.author
+                      : b.author,
+                  shelf:
+                    editedBook.exclusiveShelf !== b.exclusiveShelf
+                      ? editedBook.exclusiveShelf
+                      : b.exclusiveShelf,
+                };
               }
               return b;
             });
             localStorage.setItem("userBooks", JSON.stringify(updatedBooks));
-            }
+          }
         }
       });
     }
@@ -113,10 +138,10 @@ const BookDetail: React.FC = () => {
     if (editedBook) {
       setEditedBook({
         ...editedBook,
-        shelf: e.target.value as string,
+        exclusiveShelf: e.target.value as string,
       });
     }
-  }
+  };
 
   const calculateTimeDifference = (startDate: string, endDate: string) => {
     const start = new Date(startDate);
@@ -129,9 +154,13 @@ const BookDetail: React.FC = () => {
   const getTimeWaiting = () => {
     const currentDate = new Date().toISOString().split("T")[0];
     if (book?.dateRead) {
-      return calculateTimeDifference(book.dateAdded, book.dateRead);
+      return book.dateRead && book.dateAdded
+        ? calculateTimeDifference(book.dateAdded, book.dateRead)
+        : 0;
     } else {
-      return book ? calculateTimeDifference(book.dateAdded, currentDate) : 0;
+      return book?.dateAdded
+        ? calculateTimeDifference(book.dateAdded, currentDate)
+        : 0;
     }
   };
 
@@ -245,14 +274,14 @@ const BookDetail: React.FC = () => {
               />
             </Grid>
             <Grid size={6}>
-            <FormControl fullWidth margin="normal">
+              <FormControl fullWidth margin="normal">
                 <InputLabel id="demo-simple-select-label">Shelf</InputLabel>
                 <Select
                   name="exclusiveShelf"
                   label="Shelf"
                   labelId="demo-simple-select-label"
-                  value={editedBook?.shelf}
-                  defaultValue={editedBook?.shelf}
+                  value={editedBook?.exclusiveShelf}
+                  defaultValue={editedBook?.exclusiveShelf}
                   onChange={handleSelectChange}
                   fullWidth
                   title="Select the shelf you want to add the book to"
@@ -271,50 +300,48 @@ const BookDetail: React.FC = () => {
             </Grid>
             <Grid size={3}>
               <TextField
-              label="Date Added"
-              name="dateAdded"
-              type="date"
-              value={editedBook?.dateAdded ? new Date(new Date(editedBook.dateAdded).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
+                label="Date Added"
+                name="dateAdded"
+                value={editedBook?.dateAdded}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
               />
             </Grid>
-            {editedBook?.shelf === "read" && (
+            {editedBook?.exclusiveShelf === "read" && (
               <>
-              <Grid size={6}>
-                <TextField
-                label="My Rating"
-                name="myRating"
-                value={editedBook?.myRating || ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                />
-              </Grid>
-              <Grid size={6}>
-                <TextField
-                label="Date Read"
-                name="dateRead"
-                type="date"
-                value={editedBook?.dateRead ? new Date(new Date(editedBook.dateRead).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                />
-              </Grid>
-              <Grid size={12}>
-                <TextField
-                label="My Review"
-                name="myReview"
-                value={editedBook?.myReview || ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-                multiline
-                rows={4}
-                />
-              </Grid>
+                <Grid size={6}>
+                  <TextField
+                    label="My Rating"
+                    name="myRating"
+                    value={editedBook?.myRating || ""}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid size={6}>
+                  <TextField
+                    label="Date Read"
+                    name="dateRead"
+                    value={editedBook?.dateRead}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid size={12}>
+                  <TextField
+                    label="My Review"
+                    name="myReview"
+                    value={editedBook?.myReview || ""}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    multiline
+                    rows={4}
+                  />
+                </Grid>
               </>
             )}
             <Button onClick={handleSave} color="primary" variant="contained">
@@ -362,7 +389,7 @@ const BookDetail: React.FC = () => {
               My Rating: {book.myRating}
             </Typography>
             <Typography variant="body2" component="p">
-              Shelf: {book.shelf}
+              Shelf: {book.exclusiveShelf}
             </Typography>
             <Typography variant="body2" component="p">
               Date Read: {book.dateRead}

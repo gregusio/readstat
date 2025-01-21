@@ -27,7 +27,7 @@ interface BookData {
   originalPublicationYear: number;
   myRating: number;
   exclusiveShelf: string;
-  dateRead: string;
+  dateRead: string | null;
   dateAdded: string;
   myReview: string;
   readCount: number;
@@ -47,7 +47,7 @@ const AddBookForm: React.FC = () => {
     originalPublicationYear: 0,
     myRating: 0,
     exclusiveShelf: "",
-    dateRead: new Date().toISOString(),
+    dateRead: "",
     dateAdded: "",
     myReview: "",
     readCount: 0,
@@ -75,6 +75,9 @@ const AddBookForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     bookData.dateAdded = new Date().toISOString();
+    bookData.dateRead = bookData.dateRead
+      ? new Date(bookData.dateRead).toISOString()
+      : null;
     const response = await bookService.addBook(bookData);
     if (response.success) {
       alert("Book added successfully");
@@ -204,16 +207,22 @@ const AddBookForm: React.FC = () => {
                   />
                 </Grid>
                 <Grid size={6}>
-                  <TextField
-                    name="dateRead"
-                    label="Date Read"
-                    type="date"
-                    value={bookData.dateRead}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    title="Enter the date you read the book"
-                  />
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel
+                      shrink
+                      style={{ backgroundColor: "secondary", padding: "0 4px" }}
+                    >
+                      Date Read
+                    </InputLabel>
+                    <TextField
+                      name="dateRead"
+                      type="date"
+                      value={bookData.dateRead}
+                      onChange={handleChange}
+                      fullWidth
+                      title="Enter the date you read the book"
+                    />
+                  </FormControl>
                 </Grid>
                 <Grid size={12}>
                   <TextField
