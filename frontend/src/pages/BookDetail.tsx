@@ -6,6 +6,11 @@ import {
   Typography,
   TextField,
   Button,
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bookService from "../services/bookService";
@@ -74,14 +79,44 @@ const BookDetail: React.FC = () => {
 
   const handleSave = () => {
     if (editedBook) {
+      if (editedBook.shelf !== "read") {
+        editedBook.myRating = 0;
+        editedBook.dateRead = "";
+        editedBook.myReview = "";
+      }
       bookService.updateBook(editedBook).then((response) => {
         if (response.success) {
           setBook(editedBook);
           setIsEditing(false);
+            const storedBooks = localStorage.getItem("userBooks");
+            if (storedBooks && storedBooks !== "undefined") {
+            const books = JSON.parse(storedBooks);
+            const updatedBooks = books.map((b: Book) => {
+              if (b.id === editedBook.id) {
+              return {
+                ...b,
+                title: editedBook.title !== b.title ? editedBook.title : b.title,
+                author: editedBook.author !== b.author ? editedBook.author : b.author,
+                shelf: editedBook.shelf !== b.shelf ? editedBook.shelf : b.shelf,
+              };
+              }
+              return b;
+            });
+            localStorage.setItem("userBooks", JSON.stringify(updatedBooks));
+            }
         }
       });
     }
   };
+
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    if (editedBook) {
+      setEditedBook({
+        ...editedBook,
+        shelf: e.target.value as string,
+      });
+    }
+  }
 
   const calculateTimeDifference = (startDate: string, endDate: string) => {
     const start = new Date(startDate);
@@ -209,38 +244,32 @@ const BookDetail: React.FC = () => {
                 margin="normal"
               />
             </Grid>
+            <Grid size={6}>
+            <FormControl fullWidth margin="normal">
+                <InputLabel id="demo-simple-select-label">Shelf</InputLabel>
+                <Select
+                  name="exclusiveShelf"
+                  label="Shelf"
+                  labelId="demo-simple-select-label"
+                  value={editedBook?.shelf}
+                  defaultValue={editedBook?.shelf}
+                  onChange={handleSelectChange}
+                  fullWidth
+                  title="Select the shelf you want to add the book to"
+                >
+                  <MenuItem value="read" title="Read">
+                    Read
+                  </MenuItem>
+                  <MenuItem value="currently-reading" title="Currently Reading">
+                    Currently Reading
+                  </MenuItem>
+                  <MenuItem value="to-read" title="To Read">
+                    To Read
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid size={3}>
-              <TextField
-                label="My Rating"
-                name="myRating"
-                value={editedBook?.myRating || ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-            </Grid>
-            <Grid size={6}>
-              <TextField
-                label="Shelf"
-                name="shelf"
-                value={editedBook?.shelf || ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-            </Grid>
-            <Grid size={6}>
-              <TextField
-                label="Date Read"
-                name="dateRead"
-                type="date"
-                value={editedBook?.dateRead ? new Date(new Date(editedBook.dateRead).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-            </Grid>
-            <Grid size={6}>
               <TextField
               label="Date Added"
               name="dateAdded"
@@ -251,8 +280,31 @@ const BookDetail: React.FC = () => {
               margin="normal"
               />
             </Grid>
-            <Grid size={12}>
-              <TextField
+            {editedBook?.shelf === "read" && (
+              <>
+              <Grid size={6}>
+                <TextField
+                label="My Rating"
+                name="myRating"
+                value={editedBook?.myRating || ""}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+                />
+              </Grid>
+              <Grid size={6}>
+                <TextField
+                label="Date Read"
+                name="dateRead"
+                type="date"
+                value={editedBook?.dateRead ? new Date(new Date(editedBook.dateRead).getTime() + 60 * 60 * 1000).toISOString().split("T")[0] : ""}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+                />
+              </Grid>
+              <Grid size={12}>
+                <TextField
                 label="My Review"
                 name="myReview"
                 value={editedBook?.myReview || ""}
@@ -261,8 +313,10 @@ const BookDetail: React.FC = () => {
                 margin="normal"
                 multiline
                 rows={4}
-              />
-            </Grid>
+                />
+              </Grid>
+              </>
+            )}
             <Button onClick={handleSave} color="primary" variant="contained">
               Save
             </Button>
