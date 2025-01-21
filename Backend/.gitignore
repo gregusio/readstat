@@ -2,4 +2,3 @@
 /obj/
 appsettings.Development.json
 Backend.http
-/Migrations/
