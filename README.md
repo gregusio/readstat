@@ -29,6 +29,8 @@ Readstat is a comprehensive full-stack project designed for book lovers and read
 
 ### With Docker
 
+Currently not working due to issues with SQL Server in Docker. :(
+
 1. Clone the repository
 
 ```bash
