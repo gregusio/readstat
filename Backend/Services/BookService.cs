@@ -118,4 +118,14 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
 
         await _userBookRecordRepository.DeleteAsync(userBookRecord!.Id);
     }
+
+    public async Task DeleteAllBooksAsync(int userId)
+    {
+        var userBookRecords = await _userBookRecordRepository.GetAllForUserAsync(userId);
+
+        foreach (var userBookRecord in userBookRecords)
+        {
+            await _userBookRecordRepository.DeleteAsync(userBookRecord.Id);
+        }
+    }
 }

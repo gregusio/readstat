@@ -40,10 +40,17 @@ const deleteBook = async (bookId: number) => {
   return response.data;
 };
 
+const deleteAllBooks = async () => {
+  const response = await apiClient.delete(`/Book/delete-all-books`);
+  localStorage.removeItem("userBooks");
+  return response.data;
+}
+
 export default {
   getUserBooks,
   getBook,
   addBook,
   updateBook,
   deleteBook,
+  deleteAllBooks,
 };
