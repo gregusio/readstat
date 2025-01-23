@@ -1,6 +1,6 @@
 using Backend.DTO;
 
-namespace Backend.Services;
+namespace Backend.Interfaces;
 
 public interface IStatisticService
 {
