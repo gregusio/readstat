@@ -35,6 +35,13 @@ public class UserBookRecordRepository(IDbContextFactory<DataContext> contextFact
     {
         await using var _context = _contextFactory.CreateDbContext();
         await _context.UserBookRecords.AddRangeAsync(records);
+        await _context.UserActivityHistories.AddAsync(new UserActivityHistory
+        {
+            UserId = records.First().UserId,
+            ActivityType = "Upload",
+            Description = string.Format("Uploaded {0} book records", records.Count()),
+            ActivityDate = DateTime.UtcNow,
+        });
         await _context.SaveChangesAsync();
     }
 
@@ -42,6 +49,13 @@ public class UserBookRecordRepository(IDbContextFactory<DataContext> contextFact
     {
         await using var _context = _contextFactory.CreateDbContext();
         await _context.UserBookRecords.AddAsync(record);
+        await _context.UserActivityHistories.AddAsync(new UserActivityHistory
+        {
+            UserId = record.UserId,
+            ActivityType = "Add",
+            Description = string.Format("Added a book \"{0}\"", record.UserTitle),
+            ActivityDate = DateTime.UtcNow,
+        });
         await _context.SaveChangesAsync();
     }
 
