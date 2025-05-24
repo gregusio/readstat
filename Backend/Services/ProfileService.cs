@@ -4,10 +4,10 @@ using Backend.Repositories;
 
 namespace Backend.Services;
 
-public class ProfileService(IUserActivityHistoryService userActivityHistoryService, UserRepository userRepository) : IProfileService
+public class ProfileService(IUserActivityHistoryService userActivityHistoryService, IUserRepository userRepository) : IProfileService
 {
     private readonly IUserActivityHistoryService _userActivityHistoryService = userActivityHistoryService;
-    private readonly UserRepository _userRepository = userRepository;
+    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<UserProfileDTO> GetUserProfile(int userId)
     {

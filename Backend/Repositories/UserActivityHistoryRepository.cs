@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
 using Backend.Data;
+using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories;
 
-public class UserActivityHistoryRepository(IDbContextFactory<DataContext> contextFactory)
+public class UserActivityHistoryRepository(IDbContextFactory<DataContext> contextFactory) : IUserActivityHistoryRepository
 {
     private readonly IDbContextFactory<DataContext> _dbContextFactory = contextFactory;
 

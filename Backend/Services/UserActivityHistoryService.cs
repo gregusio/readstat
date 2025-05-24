@@ -1,12 +1,12 @@
 using Backend.DTO;
+using Backend.Interfaces;
 using Backend.Models;
-using Backend.Repositories;
 
 namespace Backend.Services;
 
-public class UserActivityHistoryService(UserActivityHistoryRepository userActivityHistoryRepository) : IUserActivityHistoryService
+public class UserActivityHistoryService(IUserActivityHistoryRepository userActivityHistoryRepository) : IUserActivityHistoryService
 {
-    private readonly UserActivityHistoryRepository _userActivityHistoryRepository = userActivityHistoryRepository;
+    private readonly IUserActivityHistoryRepository _userActivityHistoryRepository = userActivityHistoryRepository;
 
     public async Task<UserActivityHistoryDTO> AddUserActivity(UserActivityHistoryDTO userActivityDto)
     {
