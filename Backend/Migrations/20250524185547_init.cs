@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,22 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserActivityHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ActivityType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivityDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserActivityHistories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,6 +135,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "UserActivityHistories");
 
             migrationBuilder.DropTable(
                 name: "UserBookRecords");
