@@ -19,9 +19,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import InputFileUpload from "../components/Button/InputFileButton";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useAuth } from "../context/AuthContext";
 
 const style = {
   position: "absolute",
@@ -59,16 +60,20 @@ const Books: React.FC = () => {
   };
   const { searchQuery } = useContext(SearchContext);
   const navigate = useNavigate();
-
+  const { userId } = useParams();
+  const { user } = useAuth();
+  
   useEffect(() => {
-    const fetchBooks = async () => {
-      const response = await bookService.getUserBooks();
+    if (!userId || !user) return;
+
+    fetchBooks(userId);
+  }, [userId, user]);
+
+  const fetchBooks = async (userId: string) => {
+      const response = await bookService.getUserBooks(userId);
       setBooks(response);
       setLoading(false);
     };
-
-    fetchBooks();
-  }, []);
 
   const filteredBooks = books.filter(
     (book) =>
@@ -83,7 +88,8 @@ const Books: React.FC = () => {
 
   const handleDeleteAll = async () => {
     setDeleteLoading(true);
-    await bookService.deleteAllBooks();
+    if (!userId) return;
+    await bookService.deleteAllBooks(userId);
     setDeleteLoading(false);
     window.location.reload();
   };
@@ -153,7 +159,7 @@ const Books: React.FC = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              navigate("/add-book");
+              navigate(`/${userId}/books/add`);
             }}
           >
             Add Book
@@ -198,6 +204,7 @@ const Books: React.FC = () => {
         {paginatedBooks.map((book) => (
           <Grid size={3} key={book.id}>
             <BookCard
+              userId={userId || ""}
               id={book.id}
               title={book.title}
               author={book.author}
