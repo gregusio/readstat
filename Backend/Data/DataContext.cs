@@ -9,6 +9,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public required DbSet<RefreshToken> RefreshTokens { get; set; }
     public required DbSet<Book> Books { get; set; }
     public required DbSet<UserBookRecord> UserBookRecords { get; set; }
+    public required DbSet<UserActivityHistory> UserActivityHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
