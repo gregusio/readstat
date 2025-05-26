@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import confetti from "canvas-confetti";
 import bookService from "../services/bookService";
 import BookCard from "../components/Card/BookCard";
+import { useParams } from "react-router-dom";
 
 interface Book {
   id: number;
@@ -17,10 +18,15 @@ const DrawBook: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
+  const userId = useParams<{ userId: string }>().userId;
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const response = await bookService.getUserBooks();
+      if (!userId) {
+        console.error("User ID is not available");
+        return;
+      }
+      const response = await bookService.getUserBooks(userId);
       const filteredBooks = response.filter(
         (book: Book) => book.exclusiveShelf === "to-read"
       );
@@ -63,9 +69,10 @@ const DrawBook: React.FC = () => {
             style={{ width: "200px", height: "200px" }}
           />
         </motion.div>
-      ) : selectedBook ? (
+      ) : selectedBook && userId ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <BookCard
+            userId={userId}
             id={selectedBook.id}
             title={selectedBook.title}
             author={selectedBook.author}

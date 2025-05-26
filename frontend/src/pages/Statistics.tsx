@@ -12,13 +12,19 @@ import BookCount from "../components/Chart/BookCount";
 import { useState, useEffect } from "react";
 import bookService from "../services/bookService";
 import MostReadAuthors from "../components/Chart/MostReadAuthors";
+import { useParams } from "react-router-dom";
 
 const Statistics: React.FC = () => {
   const [hasBooks, setHasBooks] = useState(false);
+  const userId = useParams<{ userId: string }>().userId;
 
   useEffect(() => {
     const checkBooks = async () => {
-      const response = await bookService.getUserBooks();
+      if (!userId) {
+        console.error("User ID is not available");
+        return;
+      }
+      const response = await bookService.getUserBooks(userId);
       if (response.length > 0) {
         setHasBooks(true);
       }

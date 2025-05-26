@@ -1,8 +1,8 @@
 import apiClient from "./apiClient";
 
-const getProfile = async () => {
+const getProfile = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Profile/user");
+    const response = await apiClient.get(`/Profile/user/${userId}`);
 
     return response.data;
   } catch (error) {
@@ -11,9 +11,9 @@ const getProfile = async () => {
   }
 };
 
-const updateProfile = async (profileData: any) => {
+const updateProfile = async (profileData: any, userId: string) => {
   try {
-    const response = await apiClient.put("/Profile/user", profileData);
+    const response = await apiClient.put(`/Profile/user/${userId}`, profileData);
 
     return response.data;
   } catch (error) {
@@ -22,9 +22,9 @@ const updateProfile = async (profileData: any) => {
   }
 }
 
-const getUserActivityHistory = async () => {
+const getUserActivityHistory = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Profile/user/activity-history");
+    const response = await apiClient.get(`/Profile/user/${userId}/activity-history`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user activity history:", error);

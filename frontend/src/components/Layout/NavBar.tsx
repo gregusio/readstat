@@ -27,7 +27,7 @@ function NavBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
-  const { logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const navigate = useNavigate();
   const { clearSearchQuery } = useContext(SearchContext);
@@ -48,7 +48,14 @@ function NavBar() {
 
   const handleGoToPage = (page: string) => {
     clearSearchQuery();
-    navigate(`/${page.toLowerCase()}`);
+    let path = "/";
+    if (user && user.id) {
+      if (page === "Home") path = "/home";
+      else path = `/${user.id}/${page.toLowerCase()}`;
+    } else {
+      path = `/${page.toLowerCase()}`;
+    }
+    navigate(path);
     handleCloseNavMenu();
     handleCloseUserMenu();
   };
@@ -57,8 +64,8 @@ function NavBar() {
     if (setting === "Logout") {
       logout();
       navigate("/login");
-    } else if (setting === "Profile") {
-      navigate("/profile");
+    } else if (setting === "Profile" && user) {
+      navigate(`/${user.id}/profile`);
     }
 
     clearSearchQuery();
