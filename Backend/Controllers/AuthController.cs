@@ -88,6 +88,7 @@ public class AuthController(IAuthService authService, IUserRepository userReposi
 
         return Ok(new
         {
+            id = user.Id,
             username = user.Username,
         });
     }
