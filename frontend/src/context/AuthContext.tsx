@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import apiClient from "../services/apiClient";
 
 interface User {
+  id: string;
   username: string;
 }
 
@@ -42,10 +43,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchUser();
   }, []);
 
-  const login = () => {
+  const login = async () => {
     setLoading(false);
     setIsAuthenticated(true);
     localStorage.removeItem("userBooks");
+    const response = await apiClient.get("/Auth/me");
+    if (response.data) {
+      setUser(response.data);
+    } else {
+      console.error("Login failed, no user data returned");
+      setUser(null);
+    }
   };
 
   const logout = () => {
