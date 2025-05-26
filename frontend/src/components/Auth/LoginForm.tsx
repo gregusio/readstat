@@ -8,7 +8,7 @@ const LoginForm: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setUser, login } = useAuth();
+  const { user, setUser, login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -18,7 +18,9 @@ const LoginForm: React.FC = () => {
       const response = await authService.login({ username, password });
       setUser(response.data);
       login();
-      navigate("/home");
+      if(user) {
+        navigate("/home");
+      }
     } catch (err) {
       setError("Login failed. Please check your credentials.");
     }

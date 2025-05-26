@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import statisticService from "../../services/statisticService";
 import { Skeleton, Typography } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
+import { useParams } from "react-router-dom";
 
 const BookCount: React.FC = () => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const userId = useParams<{ userId: string }>().userId;
 
   useEffect(() => {
-    statisticService.getSummary().then((response) => {
+    if (!userId) {
+      console.error("User ID is not available");
+      setLoading(false);
+      return;
+    }
+    statisticService.getSummary(userId).then((response) => {
       const { totalReadBooks, totalUnreadBooks } = response;
       setChartData([
         { label: "Read", value: totalReadBooks },

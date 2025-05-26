@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import statisticService from "../../services/statisticService";
 import { Skeleton } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 interface SummaryStats {
   totalBooks: number;
@@ -12,11 +13,17 @@ interface SummaryStats {
 const SummaryStatsCard: React.FC = () => {
   const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const userId = useParams<{ userId: string }>().userId;
 
   useEffect(() => {
     const fetchSummaryStats = async () => {
       try {
-        const data = await statisticService.getSummary();
+        if (!userId) {
+          console.error("User ID is not available");
+          setLoading(false);
+          return;
+        }
+        const data = await statisticService.getSummary(userId);
         setSummaryStats(data);
         setLoading(false);
       } catch (error) {

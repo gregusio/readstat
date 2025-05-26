@@ -3,17 +3,18 @@ import { Card, CardContent, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface BookCardProps {
+  userId: string;
   id: number;
   title: string;
   author: string;
   shelf: string;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ id, title, author, shelf }) => {
+const BookCard: React.FC<BookCardProps> = ({ userId, id, title, author, shelf }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/books/${id}`);
+    navigate(`/${userId}/books/${id}`);
   };
 
   return (

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { axisClasses, BarChart } from "@mui/x-charts";
 import { Skeleton, Typography } from "@mui/material";
 import statisticService from "../../services/statisticService";
+import { useParams } from "react-router-dom";
 
 const chartSetting = {
     yAxis: [
@@ -21,9 +22,15 @@ const chartSetting = {
 const MostReadAuthors: React.FC = () => {
     const [chartData, setChartData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const userId = useParams<{ userId: string }>().userId;
 
     useEffect(() => {
-        statisticService.getMostReadAuthors().then((data) => {
+        if (!userId) {
+            console.error("User ID is not available");
+            setLoading(false);
+            return;
+        }
+        statisticService.getMostReadAuthors(userId).then((data) => {
             const authors = Object.keys(data);
 
             const dataset = authors.map((author) => ({

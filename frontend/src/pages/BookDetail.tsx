@@ -36,7 +36,7 @@ interface Book {
 }
 
 const BookDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { userId, bookId } = useParams();
   const [book, setBook] = useState<Book | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBook, setEditedBook] = useState<Book | null>(null);
@@ -44,8 +44,8 @@ const BookDetail: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) {
-      bookService.getBook(parseInt(id)).then((response) => {
+    if (bookId && userId) {
+      bookService.getBook(userId, parseInt(bookId)).then((response) => {
         response.dateRead = response.dateRead
           ? response.dateRead.split("T")[0]
           : "";
@@ -56,7 +56,7 @@ const BookDetail: React.FC = () => {
         setEditedBook(response);
       });
     }
-  }, [id]);
+  }, [bookId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (editedBook) {
@@ -73,11 +73,11 @@ const BookDetail: React.FC = () => {
   };
 
   const handleDelete = () => {
-    if (book) {
-      bookService.deleteBook(book.id).then((response) => {
+    if (book && userId) {
+      bookService.deleteBook(userId, book.id).then((response) => {
         if (response.success) {
           setBook(null);
-          navigate("/books");
+          navigate(`/${userId}/books`);
         }
       });
     }
@@ -96,7 +96,11 @@ const BookDetail: React.FC = () => {
         editedBook.dateRead = null;
         editedBook.myReview = "";
       }
-      bookService.updateBook(editedBook).then((response) => {
+      if (!userId) {
+        console.error("User ID is not defined");
+        return;
+      }
+      bookService.updateBook(userId, editedBook).then((response) => {
         if (response.success) {
           editedBook.dateRead = editedBook.dateRead
             ? editedBook.dateRead.split("T")[0]

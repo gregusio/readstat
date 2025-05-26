@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import bookService from "../../services/bookService";
+import { useParams } from "react-router-dom";
 
 interface BookData {
   title: string;
@@ -34,6 +35,7 @@ interface BookData {
 }
 
 const AddBookForm: React.FC = () => {
+  const userId = useParams<{ userId: string }>().userId;
   const [bookData, setBookData] = useState<BookData>({
     title: "",
     author: "",
@@ -78,7 +80,11 @@ const AddBookForm: React.FC = () => {
     bookData.dateRead = bookData.dateRead
       ? new Date(bookData.dateRead).toISOString()
       : null;
-    const response = await bookService.addBook(bookData);
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+    const response = await bookService.addBook(userId, bookData);
     if (response.success) {
       alert("Book added successfully");
     }
