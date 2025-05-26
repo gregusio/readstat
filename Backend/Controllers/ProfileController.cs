@@ -28,4 +28,12 @@ public class ProfileController(IProfileService profileService) : ControllerBase
         var updatedUserProfile = await _profileService.UpdateUserProfile(userId, userProfileDto);
         return Ok(updatedUserProfile);
     }
+
+    [HttpGet("user/activity-history")]
+    public async Task<IActionResult> GetUserActivityHistory()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userProfile = await _profileService.GetUserProfile(userId);
+        return Ok(userProfile.UserActivityHistory);
+    }
 }
