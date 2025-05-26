@@ -18,7 +18,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { Link, useNavigate } from "react-router-dom";
 import InputFileUpload from "../components/Button/InputFileButton";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";

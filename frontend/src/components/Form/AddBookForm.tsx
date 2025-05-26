@@ -11,7 +11,7 @@ import {
   FormControl,
   Paper,
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import bookService from "../../services/bookService";
 
 interface BookData {
