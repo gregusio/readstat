@@ -1,8 +1,8 @@
 import apiClient from "./apiClient";
 
-const getSummary = async () => {
+const getSummary = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/summary");
+    const response = await apiClient.get(`/Statistic/user/${userId}/summary`);
     return response.data;
   } catch (error) {
     console.error("Error fetching summary:", error);
@@ -10,9 +10,9 @@ const getSummary = async () => {
   }
 };
 
-const getBooksRead = async () => {
+const getBooksRead = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/books-read");
+    const response = await apiClient.get(`/Statistic/user/${userId}/books-read`);
     return response.data;
   } catch (error) {
     console.error("Error fetching books read:", error);
@@ -20,9 +20,9 @@ const getBooksRead = async () => {
   }
 };
 
-const getProgress = async () => {
+const getProgress = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/progress");
+    const response = await apiClient.get(`/Statistic/user/${userId}/progress`);
     return response.data;
   } catch (error) {
     console.error("Error fetching progress:", error);
@@ -30,9 +30,9 @@ const getProgress = async () => {
   }
 };
 
-const getMonthlyReadBookCountPerYear = async () => {
+const getMonthlyReadBookCountPerYear = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/monthly-read-books");
+    const response = await apiClient.get(`/Statistic/user/${userId}/monthly-read-books`);
 
     return response.data;
   } catch (error) {
@@ -41,9 +41,9 @@ const getMonthlyReadBookCountPerYear = async () => {
   }
 };
 
-const getMonthlyReadPageCountPerYear = async () => {
+const getMonthlyReadPageCountPerYear = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/monthly-read-pages");
+    const response = await apiClient.get(`/Statistic/user/${userId}/monthly-read-pages`);
 
     return response.data;
   } catch (error) {
@@ -52,9 +52,9 @@ const getMonthlyReadPageCountPerYear = async () => {
   }
 };
 
-const getMonthlyAddedBookCountPerYear = async () => {
+const getMonthlyAddedBookCountPerYear = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/monthly-added-books");
+    const response = await apiClient.get(`/Statistic/user/${userId}/monthly-added-books`);
 
     return response.data;
   } catch (error) {
@@ -63,9 +63,9 @@ const getMonthlyAddedBookCountPerYear = async () => {
   }
 };
 
-const getYearlyReadBookCount = async () => {
+const getYearlyReadBookCount = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/yearly-read-books");
+    const response = await apiClient.get(`/Statistic/user/${userId}/yearly-read-books`);
 
     return response.data;
   } catch (error) {
@@ -74,9 +74,9 @@ const getYearlyReadBookCount = async () => {
   }
 };
 
-const getYearlyReadPageCount = async () => {
+const getYearlyReadPageCount = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/yearly-read-pages");
+    const response = await apiClient.get(`/Statistic/user/${userId}/yearly-read-pages`);
 
     return response.data;
   } catch (error) {
@@ -85,9 +85,9 @@ const getYearlyReadPageCount = async () => {
   }
 };
 
-const getYearlyAddedBookCount = async () => {
+const getYearlyAddedBookCount = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/yearly-added-books");
+    const response = await apiClient.get(`/Statistic/user/${userId}/yearly-added-books`);
 
     return response.data;
   } catch (error) {
@@ -96,9 +96,9 @@ const getYearlyAddedBookCount = async () => {
   }
 };
 
-const getMostReadAuthors = async () => {
+const getMostReadAuthors = async (userId: string) => {
   try {
-    const response = await apiClient.get("/Statistic/most-read-authors");
+    const response = await apiClient.get(`/Statistic/user/${userId}/most-read-authors`);
 
     return response.data;
   } catch (error) {
