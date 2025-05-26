@@ -22,7 +22,18 @@ const updateProfile = async (profileData: any) => {
   }
 }
 
+const getUserActivityHistory = async () => {
+  try {
+    const response = await apiClient.get("/Profile/user/activity-history");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user activity history:", error);
+    return null;
+  }
+};
+
 export default {
   getProfile,
   updateProfile,
+  getUserActivityHistory,
 };
