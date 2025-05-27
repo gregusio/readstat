@@ -218,6 +218,28 @@ namespace Backend.Migrations
                     b.ToTable("UserBookRecords");
                 });
 
+            modelBuilder.Entity("Backend.Models.UserFriends", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FriendId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FriendshipDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserFriends");
+                });
+
             modelBuilder.Entity("Backend.Models.UserBookRecord", b =>
                 {
                     b.HasOne("Backend.Models.User", null)
