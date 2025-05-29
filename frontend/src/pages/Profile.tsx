@@ -11,7 +11,6 @@ import { useAuth } from "../context/AuthContext";
 const Profile: React.FC = () => {
 
     const [username, setUsername] = React.useState("");
-    const [bio, setBio] = React.useState("");
     const [activityHistory, setActivityHistory] = React.useState([]);
     const userId = useParams<{ userId: string }>().userId;
     const navigate = useNavigate();
@@ -25,7 +24,6 @@ const Profile: React.FC = () => {
             }
             const profileData = await profileService.getProfile(userId);
             setUsername(profileData.username);
-            setBio(profileData.bio);
         } catch (error) {
             console.error("Error fetching user profile:", error);
         }
@@ -56,7 +54,7 @@ const Profile: React.FC = () => {
         <div className="profile-page">
             <div className="profile-container">
                 <h1>Welcome to your profile!</h1>
-                <ProfileCard username={username} bio={bio} />
+                <ProfileCard name={username} />
             </div>
                 <div className="user-friends-list">
                 {isOwnProfile && (

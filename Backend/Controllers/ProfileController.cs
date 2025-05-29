@@ -24,14 +24,18 @@ public class ProfileController(IProfileService profileService) : ControllerBase
         return Ok(userProfile);
     }
 
-    [HttpPut("user/{userId}/update")]
-    public async Task<IActionResult> UpdateUserProfile(int userId, [FromBody] UserProfileDTO userProfileDto)
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUserProfile([FromBody] UserProfileDTO userProfileDto)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         if (userProfileDto == null)
         {
             return BadRequest(new { Message = "Invalid user profile data" });
         }
 
+        Console.WriteLine($"Updating profile for user ID: {userId}");
+        Console.WriteLine($"Profile Data: Username={userProfileDto.Username}, AvatarUrl={userProfileDto.AvatarUrl}, Bio={userProfileDto.Bio}");
         var updatedProfile = await _profileService.UpdateUserProfile(userId, userProfileDto);
         if (updatedProfile == null)
         {
