@@ -3,17 +3,34 @@ using Backend.Interfaces;
 
 namespace Backend.Services;
 
-public class UserFollowingService(IUserFollowingRepository userFollowingRepository) : IUserFollowingService
+public class UserFollowingService(IUserFollowingRepository userFollowingRepository, IUserRepository userRepository) : IUserFollowingService
 {
     private readonly IUserFollowingRepository _userFollowingRepository = userFollowingRepository;
+    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<IEnumerable<UserFollowingDTO>> GetUserFollowingAsync(int userId)
     {
-        var followingList = await _userFollowingRepository.GetUserFollowingAsync(userId);
-        return followingList.Select(f => new UserFollowingDTO
+        var userFollowings = await _userFollowingRepository.GetUserFollowingAsync(userId);
+        if (userFollowings == null || !userFollowings.Any())
         {
-            FollowingId = f.FollowingId,
-            FollowingDate = f.FollowingDate
+            return Enumerable.Empty<UserFollowingDTO>();
+        }
+
+        var followingUserIds = userFollowings.Select(uf => uf.FollowingId).ToList();
+        var followingUsersUsernames = new Dictionary<int, string>();
+        foreach (var followingId in followingUserIds)
+        {
+            var user = await _userRepository.GetByIdAsync(followingId);
+            if (user != null)
+            {
+                followingUsersUsernames[user.Id] = user.Username;
+            }
+        }
+        return userFollowings.Select(uf => new UserFollowingDTO
+        {
+            FollowingId = uf.FollowingId,
+            FollowingUsername = followingUsersUsernames.TryGetValue(uf.FollowingId, out var username) ? username : "Unknown",
+            FollowingDate = uf.FollowingDate
         });
     }
 
