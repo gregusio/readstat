@@ -86,6 +86,8 @@ const Books: React.FC = () => {
     page * booksPerPage
   );
 
+  const isOwnBooks = String(user?.id) === userId;
+
   const handleDeleteAll = async () => {
     setDeleteLoading(true);
     if (!userId) return;
@@ -110,14 +112,19 @@ const Books: React.FC = () => {
           marginBottom: "10px",
         }}
       >
-        <Box sx={{ display: "flex", gap: "10px" }}>
-          <InputFileUpload />
-          <Tooltip title="Help">
-            <IconButton onClick={handleOpenModal}>
-              <HelpOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        {isOwnBooks && (
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <InputFileUpload />
+            <Tooltip title="Help">
+              <IconButton onClick={handleOpenModal}>
+                <HelpOutlineIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )}
+        
+        {/* Show empty box if not own books to maintain layout */}
+        {!isOwnBooks && <Box />}
         <Modal
           open={openModal}
           onClose={handleCloseModal}
@@ -139,32 +146,34 @@ const Books: React.FC = () => {
             </Typography>
           </Box>
         </Modal>
-        <Box sx={{ display: "flex", gap: "10px" }}>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleOpenDialog}
-            disabled={deleteLoading}
-          >
-            {deleteLoading ? (
-              <Box sx={{ display: "flex", gap: "10px" }}>
-                <CircularProgress size={24} />
-                Delete all
-              </Box>
-            ) : (
-              "Delete all"
-            )}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              navigate(`/${userId}/books/add`);
-            }}
-          >
-            Add Book
-          </Button>
-        </Box>
+        {isOwnBooks && (
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleOpenDialog}
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? (
+                <Box sx={{ display: "flex", gap: "10px" }}>
+                  <CircularProgress size={24} />
+                  Delete all
+                </Box>
+              ) : (
+                "Delete all"
+              )}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                navigate(`/${userId}/books/add`);
+              }}
+            >
+              Add Book
+            </Button>
+          </Box>
+        )}
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}
