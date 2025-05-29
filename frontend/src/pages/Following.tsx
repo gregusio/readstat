@@ -1,0 +1,205 @@
+import React, { useEffect } from 'react'
+import TextField from '@mui/material/TextField'
+import userService from '../services/userService';
+import followingService from '../services/followingService';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Button from '@mui/material/Button';
+import { Box, Modal } from '@mui/material';
+
+
+interface User {
+    id: string;
+    username: string;
+}
+
+interface FollowingProps {
+    followingId: string;
+    followingDate: string;
+}
+
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 500,
+    minHeight: 600,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+};
+
+const Following: React.FC = () => {
+    const [filteredFollowing, setFilteredFollowing] = React.useState<User[]>([]);
+    const [filteredUsers, setFilteredUsers] = React.useState<User[]>([]);
+    const [users, setUsers] = React.useState<User[]>([]);
+    const [following, setFollowing] = React.useState<User[]>([]);
+    const userId = useParams<{ userId: string }>().userId;
+    const [openModal, setOpenModal] = React.useState(false);
+    const handleOpenModal = () => setOpenModal(true);
+
+    const handleCloseModal = () => {
+        setFilteredUsers([]);
+        setOpenModal(false);
+    }
+
+    useEffect(() => {
+        const fetchFollowingUsers = async () => {
+            try {
+                if (userId) {
+                    const response = await followingService.getFollowing(userId);
+                    const following = await Promise.all(
+                        response.map(async (f: FollowingProps) => ({
+                            id: f.followingId,
+                            username: await userService.getUsernameById(f.followingId),
+                        }))
+                    );
+                    setFollowing(following);
+                    setFilteredFollowing(following);
+                } else {
+                    console.error("User ID is undefined.");
+                }
+            } catch (error) {
+                console.error("Error fetching following users:", error);
+            }
+        };
+
+        const fetchUsers = async () => {
+            try {
+                if (userId) {
+                    const response = await userService.getAllUsers(userId);
+                    setUsers(response);
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchFollowingUsers();
+        fetchUsers();
+    }
+        , []);
+
+    const handleFollowingSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const searchValue = event.target.value;
+        if (searchValue) {
+            const filtered = following.filter(f =>
+                f.username.toLowerCase().includes(searchValue.toLowerCase())
+            );
+            setFilteredFollowing(filtered);
+        } else {
+            setFilteredFollowing(following);
+        }
+    };
+
+    const handleNewUserSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const searchValue = event.target.value;
+        if (searchValue) {
+            const filtered = users
+                .filter(u => u.username.toLowerCase().includes(searchValue.toLowerCase()))
+                .slice(0, 5);
+            setFilteredUsers(filtered);
+        } else {
+            setFilteredUsers([]);
+        }
+    }
+
+
+    return (
+        <div className="following-page">
+            <div className="following-container">
+                <h1>Following</h1>
+                <Button variant="text" onClick={handleOpenModal}>
+                    Find users
+                </Button>
+                <Modal
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <TextField
+                            id="outlined-select-user"
+                            label="Select User"
+                            onChange={handleNewUserSearch}
+                            fullWidth
+                        />
+                        <ul>
+                            {filteredUsers.map((user) => (
+                                <li key={user.id}>
+                                    <div className="user-card">
+                                        <div className="user-info">
+                                            <h3>{user.username}</h3>
+                                            <Button
+                                                onClick={async () => {
+                                                    try {
+                                                        if (userId) {
+                                                            await followingService.addFollowing(userId, user.id);
+                                                            setFollowing([...following, user]);
+                                                        } else {
+                                                            console.error("User ID is undefined.");
+                                                        }
+                                                    } catch (error) {
+                                                        console.error("Error adding following user:", error);
+                                                    }
+                                                }}
+                                                className="follow-button"
+                                            >
+                                                Follow
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+
+                    </Box>
+                </Modal>
+                <p>This page will display the list of users you are following.</p>
+
+                <TextField
+                    label="Search users"
+                    variant="outlined"
+                    onChange={handleFollowingSearch}
+                    fullWidth
+                    margin="normal"
+                />
+                <ul>
+                    {filteredFollowing.map((user) => (
+                        <li key={user.id}>
+                            <div className="user-card">
+                                <div className="user-info">
+                                    <h3>{user.username}</h3>
+                                    <Button
+                                        onClick={async () => {
+                                            try {
+                                                if (userId) {
+                                                    await followingService.removeFollowing(userId, user.id);
+                                                    const newFollowing = following.filter(f => f.id !== user.id);
+                                                    setFollowing(newFollowing);
+                                                    setFilteredFollowing(newFollowing);
+                                                } else {
+                                                    console.error("User ID is undefined.");
+                                                }
+                                            } catch (error) {
+                                                console.error("Error removing following user:", error);
+                                            }
+                                        }}
+                                        className="unfollow-button"
+                                    >
+                                        Unfollow
+                                    </Button>
+                                </div>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    )
+}
+
+export default Following;

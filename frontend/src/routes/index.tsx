@@ -11,6 +11,7 @@ import AddBook from "../pages/AddBook";
 import DrawBook from "../pages/DrawBook";
 import PublicRoute from "./PublicRoute";
 import Profile from "../pages/Profile";
+import Following from "../pages/Following";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/:userId/books/add" element={<AddBook />} />
         <Route path="/:userId/drawbook" element={<DrawBook />} />
         <Route path="/:userId/profile" element={<Profile />} />
+        <Route path="/:userId/following" element={<Following />} />
       </Route>
 
       <Route element={<PublicRoute />}>
