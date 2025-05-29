@@ -84,7 +84,7 @@ const AddBookForm: React.FC = () => {
       console.error("User ID is not available");
       return;
     }
-    const response = await bookService.addBook(userId, bookData);
+    const response = await bookService.addBook(bookData);
     if (response.success) {
       alert("Book added successfully");
     }

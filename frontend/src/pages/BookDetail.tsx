@@ -74,7 +74,7 @@ const BookDetail: React.FC = () => {
 
   const handleDelete = () => {
     if (book && userId) {
-      bookService.deleteBook(userId, book.id).then((response) => {
+      bookService.deleteBook(book.id).then((response) => {
         if (response.success) {
           setBook(null);
           navigate(`/${userId}/books`);
@@ -100,7 +100,7 @@ const BookDetail: React.FC = () => {
         console.error("User ID is not defined");
         return;
       }
-      bookService.updateBook(userId, editedBook).then((response) => {
+      bookService.updateBook(editedBook).then((response) => {
         if (response.success) {
           editedBook.dateRead = editedBook.dateRead
             ? editedBook.dateRead.split("T")[0]

@@ -19,19 +19,19 @@ const getBook = async (userId: string ,bookId: number) => {
   return response.data;
 };
 
-const addBook = async (userId: string, book: any) => {
-  const response = await apiClient.post(`/Book/user/${userId}/book/add`, book);
+const addBook = async (book: any) => {
+  const response = await apiClient.post(`/Book/add`, book);
   localStorage.removeItem("userBooks");
   return response.data;
 };
 
-const updateBook = async (userId: string, book: any) => {
-  const response = await apiClient.patch(`/Book/user/${userId}/book/update`, book);
+const updateBook = async (book: any) => {
+  const response = await apiClient.patch(`/Book/update`, book);
   return response.data;
 };
 
-const deleteBook = async (userId: string, bookId: number) => {
-  const response = await apiClient.delete(`/Book/user/${userId}/book/delete/${bookId}`);
+const deleteBook = async (bookId: number) => {
+  const response = await apiClient.delete(`/Book/delete/${bookId}`);
   const userBooks = localStorage.getItem("userBooks");
   if (userBooks && userBooks !== "undefined") {
     const books = JSON.parse(userBooks);
@@ -41,8 +41,8 @@ const deleteBook = async (userId: string, bookId: number) => {
   return response.data;
 };
 
-const deleteAllBooks = async (userId: string) => {
-  const response = await apiClient.delete(`/Book/user/${userId}/book/delete/all`);
+const deleteAllBooks = async () => {
+  const response = await apiClient.delete(`/Book/delete/all`);
   localStorage.removeItem("userBooks");
   return response.data;
 }
