@@ -3,7 +3,6 @@ import TextField from '@mui/material/TextField'
 import userService from '../services/userService';
 import followingService from '../services/followingService';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import Button from '@mui/material/Button';
 import { Box, Modal } from '@mui/material';
 
@@ -38,7 +37,14 @@ const Following: React.FC = () => {
     const [following, setFollowing] = React.useState<User[]>([]);
     const userId = useParams<{ userId: string }>().userId;
     const [openModal, setOpenModal] = React.useState(false);
-    const handleOpenModal = () => setOpenModal(true);
+    const [searchValue, setSearchValue] = React.useState("");
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+        setFilteredUsers([]);
+        setFilteredFollowing(following);
+        setSearchValue("");
+    }
 
     const handleCloseModal = () => {
         setFilteredUsers([]);
@@ -84,6 +90,7 @@ const Following: React.FC = () => {
 
     const handleFollowingSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchValue = event.target.value;
+        setSearchValue(searchValue);
         if (searchValue) {
             const filtered = following.filter(f =>
                 f.username.toLowerCase().includes(searchValue.toLowerCase())
@@ -139,6 +146,7 @@ const Following: React.FC = () => {
                                                         if (userId) {
                                                             await followingService.addFollowing(userId, user.id);
                                                             setFollowing([...following, user]);
+                                                            setFilteredFollowing([...filteredFollowing, user]);
                                                         } else {
                                                             console.error("User ID is undefined.");
                                                         }
@@ -166,6 +174,7 @@ const Following: React.FC = () => {
                     onChange={handleFollowingSearch}
                     fullWidth
                     margin="normal"
+                    value={searchValue}
                 />
                 <ul>
                     {filteredFollowing.map((user) => (
