@@ -27,30 +27,34 @@ public class BookController(IBookService bookService) : ControllerBase
         return Ok(book);
     }
 
-    [HttpPost("user/{userId}/book/add")]
-    public async Task<IActionResult> AddBook(int userId, [FromBody] BookDetailsDTO book)
+    [HttpPost("add")]
+    public async Task<IActionResult> AddBook([FromBody] BookDetailsDTO book)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         await _bookService.AddBookAsync(userId, book);
         return Ok(new Response { Message = "Book added successfully", Success = true });
     }
 
-    [HttpPatch("user/{userId}/book/update")]
-    public async Task<IActionResult> UpdateBook(int userId, [FromBody] BookDetailsDTO book)
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateBook([FromBody] BookDetailsDTO book)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         await _bookService.UpdateBookAsync(userId, book);
         return Ok(new Response { Message = "Book updated successfully", Success = true });
     }
 
-    [HttpDelete("user/{userId}/book/delete/{bookId}")]
-    public async Task<IActionResult> DeleteBook(int userId, int bookId)
+    [HttpDelete("delete/{bookId}")]
+    public async Task<IActionResult> DeleteBook(int bookId)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         await _bookService.DeleteBookAsync(userId, bookId);
         return Ok(new Response { Message = "Book deleted successfully", Success = true });
     }
 
-    [HttpDelete("user/{userId}/book/delete/all")]
-    public async Task<IActionResult> DeleteAllBooks(int userId)
+    [HttpDelete("delete/all")]
+    public async Task<IActionResult> DeleteAllBooks()
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         await _bookService.DeleteAllBooksAsync(userId);
         return Ok(new Response { Message = "All books deleted successfully", Success = true });
     }

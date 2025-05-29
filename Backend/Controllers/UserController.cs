@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,10 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(users);
     }
 
-    [HttpGet("{userId}/username")]
-    public async Task<IActionResult> GetUsernameById(int userId)
+    [HttpGet("username")]
+    public async Task<IActionResult> GetUsernameById()
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var user = await _userService.GetByIdAsync(userId);
         if (user == null)
         {
