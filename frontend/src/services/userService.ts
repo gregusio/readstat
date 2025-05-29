@@ -20,9 +20,9 @@ const getAllUsers = async (userId: string) => {
     }
 }
 
-const getUsernameById = async (userId: string) => {
+const getUsernameById = async () => {
     try {
-        const response = await apiClient.get(`/User/${userId}/username`);
+        const response = await apiClient.get(`/User/username`);
         return response.data.username;
     }
     catch (error) {
