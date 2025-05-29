@@ -9,7 +9,6 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task<IEnumerable<UserDTO>> SearchUsersAsync(string searchTerm)
     {
-        Console.WriteLine($"Searching for users with term: {searchTerm}");
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
             return Enumerable.Empty<UserDTO>();
