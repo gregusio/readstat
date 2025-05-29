@@ -9,17 +9,26 @@ interface ActivityTimelineProps {
 }
 
 const ActivityTimeline: React.FC<{ activities: ActivityTimelineProps[] }> = ({ activities }) => {
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toISOString().slice(0, 16).replace('T', ' ');
+    };
+    
     return (
         <Timeline sx={{
         [`& .${timelineOppositeContentClasses.root}`]: {
           flex: 0.2,
+        },
+          '& .MuiTimelineItem-root': {
+            minHeight: '50px',
+            marginBottom: '-14px', 
         },
       }}>
             <h2>Activity Timeline</h2>
             {activities.map((activity, idx) => (
             <TimelineItem key={idx}>
                 <TimelineOppositeContent color="text.secondary">
-                    <div>{activity.activityDate}</div>
+                    <div>{formatDate(activity.activityDate)}</div>
                     
                 </TimelineOppositeContent>
                 <TimelineSeparator>
