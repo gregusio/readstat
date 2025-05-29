@@ -41,5 +41,21 @@ public class UserRepository(IDbContextFactory<DataContext> contextFactory) : IUs
         }
         user.Username = userProfileDto.Username ?? user.Username;
         // TODO: avatarUrl and bio should be added to the User entity
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<User>> SearchUsersAsync(string searchTerm)
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.Users
+            .Where(u => u.Username.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetAllUsersAsync()
+    {
+        await using var _context = _contextFactory.CreateDbContext();
+        return await _context.Users.ToListAsync();
     }
 }

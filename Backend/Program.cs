@@ -17,12 +17,15 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IUserBookRecordRepository, UserBookRecordRepository>();
 builder.Services.AddScoped<IUserStatisticRepository, UserStatisticRepository>();
 builder.Services.AddScoped<IUserActivityHistoryRepository, UserActivityHistoryRepository>();
+builder.Services.AddScoped<IUserFollowingRepository, UserFollowingRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFileService, GoodreadsFileService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IUserActivityHistoryService, UserActivityHistoryService>();
+builder.Services.AddScoped<IUserFollowingService, UserFollowingService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {

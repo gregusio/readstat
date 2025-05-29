@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250524185547_init")]
+    [Migration("20250528085230_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -219,6 +219,28 @@ namespace Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserBookRecords");
+                });
+
+            modelBuilder.Entity("Backend.Models.UserFollowing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("FollowingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FollowingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserFollowing");
                 });
 
             modelBuilder.Entity("Backend.Models.UserBookRecord", b =>

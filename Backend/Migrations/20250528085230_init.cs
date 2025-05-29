@@ -67,6 +67,21 @@ namespace Backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserFollowing",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FollowingId = table.Column<int>(type: "int", nullable: false),
+                    FollowingDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFollowing", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -141,6 +156,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserBookRecords");
+
+            migrationBuilder.DropTable(
+                name: "UserFollowing");
 
             migrationBuilder.DropTable(
                 name: "Users");

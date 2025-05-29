@@ -10,6 +10,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public required DbSet<Book> Books { get; set; }
     public required DbSet<UserBookRecord> UserBookRecords { get; set; }
     public required DbSet<UserActivityHistory> UserActivityHistories { get; set; }
+    public required DbSet<UserFollowing> UserFollowing { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
