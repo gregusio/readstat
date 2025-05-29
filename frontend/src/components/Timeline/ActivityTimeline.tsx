@@ -19,6 +19,10 @@ const ActivityTimeline: React.FC<{ activities: ActivityTimelineProps[] }> = ({ a
         [`& .${timelineOppositeContentClasses.root}`]: {
           flex: 0.2,
         },
+          '& .MuiTimelineItem-root': {
+            minHeight: '50px',
+            marginBottom: '-14px', 
+        },
       }}>
             <h2>Activity Timeline</h2>
             {activities.map((activity, idx) => (
