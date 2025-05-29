@@ -5,6 +5,7 @@ import ActivityTimeline from "../components/Timeline/ActivityTimeline";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from '@mui/material/Button'
 import "./Profile.css";
+import { useAuth } from "../context/AuthContext";
 
 
 const Profile: React.FC = () => {
@@ -14,6 +15,7 @@ const Profile: React.FC = () => {
     const [activityHistory, setActivityHistory] = React.useState([]);
     const userId = useParams<{ userId: string }>().userId;
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const fetchUserProfile = async () => {
         try {
@@ -47,6 +49,9 @@ const Profile: React.FC = () => {
         fetchUserActivityHistory();
     }, []);
 
+    // Check if the profile being viewed is the current user's profile
+    const isOwnProfile = String(user?.id) === userId;
+
     return (
         <div className="profile-page">
             <div className="profile-container">
@@ -54,9 +59,11 @@ const Profile: React.FC = () => {
                 <ProfileCard username={username} bio={bio} />
             </div>
                 <div className="user-friends-list">
-                <Button variant="text" onClick={() => navigate(`/${userId}/following`)}>
-                    View Following
-                </Button>
+                {isOwnProfile && (
+                    <Button variant="text" onClick={() => navigate(`/${userId}/following`)}>
+                        View Following
+                    </Button>
+                )}
                 <Button variant="text" onClick={() => navigate(`/${userId}/books`)}>
                     View Books
                 </Button>
