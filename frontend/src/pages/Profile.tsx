@@ -67,6 +67,9 @@ const Profile: React.FC = () => {
                 <Button variant="text" onClick={() => navigate(`/${userId}/books`)}>
                     View Books
                 </Button>
+                <Button variant="text" onClick={() => navigate(`/${userId}/statistics`)}>
+                    View Statistics
+                </Button>
             </div>
             <div className="user-updates-history">
                 <h2>Your activity history</h2>
