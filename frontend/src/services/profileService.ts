@@ -11,9 +11,9 @@ const getProfile = async (userId: string) => {
   }
 };
 
-const updateProfile = async (profileData: any, userId: string) => {
+const updateProfile = async (profileData: any) => {
   try {
-    const response = await apiClient.put(`/Profile/user/${userId}`, profileData);
+    const response = await apiClient.put(`/Profile/update`, profileData);
 
     return response.data;
   } catch (error) {
