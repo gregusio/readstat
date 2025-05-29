@@ -87,7 +87,7 @@ const Following: React.FC = () => {
         fetchFollowingUsers();
         fetchUsers();
     }
-        , []);
+        , [userId]);
 
     const handleFollowingSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const searchValue = event.target.value;
