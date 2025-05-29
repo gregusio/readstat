@@ -150,7 +150,7 @@ const Following: React.FC = () => {
                                                 onClick={async () => {
                                                     try {
                                                         if (userId) {
-                                                            await followingService.addFollowing(userId, user.id);
+                                                            await followingService.addFollowing(user.id);
                                                             setFollowing([...following, user]);
                                                             setFilteredFollowing([...filteredFollowing, user]);
                                                         } else {
@@ -197,7 +197,7 @@ const Following: React.FC = () => {
                                         onClick={async () => {
                                             try {
                                                 if (userId) {
-                                                    await followingService.removeFollowing(userId, user.id);
+                                                    await followingService.removeFollowing(user.id);
                                                     const newFollowing = following.filter(f => f.id !== user.id);
                                                     setFollowing(newFollowing);
                                                     setFilteredFollowing(newFollowing);

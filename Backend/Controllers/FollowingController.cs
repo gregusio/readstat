@@ -1,6 +1,7 @@
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Backend.Controllers;
 
@@ -18,16 +19,18 @@ public class FollowingController(IUserFollowingService userFollowingService) : C
         return Ok(following);
     }
 
-    [HttpPost("user/{userId}/add/{followingId}")]
-    public async Task<IActionResult> AddFollowing(int userId, int followingId)
+    [HttpPost("add/{followingId}")]
+    public async Task<IActionResult> AddFollowing(int followingId)
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         await _userFollowingService.AddFollowingAsync(userId, followingId);
         return NoContent();
     }
 
-    [HttpDelete("user/{userId}/remove/{followingId}")]
-    public async Task<IActionResult> RemoveFollowing(int userId, int followingId)
+    [HttpDelete("remove/{followingId}")]
+    public async Task<IActionResult> RemoveFollowing(int followingId)
     {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         await _userFollowingService.RemoveFollowingAsync(userId, followingId);
         return NoContent();
     }

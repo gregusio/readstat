@@ -10,9 +10,9 @@ const getFollowing = async (userId: string) => {
     }
 }
 
-const addFollowing = async (userId: string, followingId: string) => {
+const addFollowing = async (followingId: string) => {
     try {
-        const response = await apiClient.post(`/Following/user/${userId}/add/${followingId}`, {});
+        const response = await apiClient.post(`/Following/add/${followingId}`, {});
         return response.data;
     } catch (error) {
         console.error("Error adding following user:", error);
@@ -20,9 +20,9 @@ const addFollowing = async (userId: string, followingId: string) => {
     }
 }
 
-const removeFollowing = async (userId: string, followingId: string) => {
+const removeFollowing = async (followingId: string) => {
     try {
-        const response = await apiClient.delete(`/Following/user/${userId}/remove/${followingId}`);
+        const response = await apiClient.delete(`/Following/remove/${followingId}`);
         return response.data;
     } catch (error) {
         console.error("Error removing following user:", error);
