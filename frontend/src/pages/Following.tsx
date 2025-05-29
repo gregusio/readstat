@@ -14,6 +14,7 @@ interface User {
 
 interface FollowingProps {
     followingId: string;
+    followingUsername: string;
     followingDate: string;
 }
 
@@ -31,10 +32,10 @@ const style = {
 };
 
 const Following: React.FC = () => {
-    const [filteredFollowing, setFilteredFollowing] = React.useState<User[]>([]);
+    const [filteredFollowing, setFilteredFollowing] = React.useState<FollowingProps[]>([]);
     const [filteredUsers, setFilteredUsers] = React.useState<User[]>([]);
     const [users, setUsers] = React.useState<User[]>([]);
-    const [following, setFollowing] = React.useState<User[]>([]);
+    const [following, setFollowing] = React.useState<FollowingProps[]>([]);
     const userId = useParams<{ userId: string }>().userId;
     const [openModal, setOpenModal] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
@@ -57,14 +58,8 @@ const Following: React.FC = () => {
             try {
                 if (userId) {
                     const response = await followingService.getFollowing(userId);
-                    const following = await Promise.all(
-                        response.map(async (f: FollowingProps) => ({
-                            id: f.followingId,
-                            username: await userService.getUsernameById(f.followingId),
-                        }))
-                    );
-                    setFollowing(following);
-                    setFilteredFollowing(following);
+                    setFollowing(response);
+                    setFilteredFollowing(response);
                 } else {
                     console.error("User ID is undefined.");
                 }
@@ -94,7 +89,7 @@ const Following: React.FC = () => {
         setSearchValue(searchValue);
         if (searchValue) {
             const filtered = following.filter(f =>
-                f.username.toLowerCase().includes(searchValue.toLowerCase())
+                f.followingUsername.toLowerCase().includes(searchValue.toLowerCase())
             );
             setFilteredFollowing(filtered);
         } else {
@@ -151,8 +146,13 @@ const Following: React.FC = () => {
                                                     try {
                                                         if (userId) {
                                                             await followingService.addFollowing(user.id);
-                                                            setFollowing([...following, user]);
-                                                            setFilteredFollowing([...filteredFollowing, user]);
+                                                            const newFollowing: FollowingProps = {
+                                                                followingId: user.id,
+                                                                followingUsername: user.username,
+                                                                followingDate: new Date().toISOString(),
+                                                            };
+                                                            setFollowing(prev => [...prev, newFollowing]);
+                                                            setFilteredFollowing(prev => [...prev, newFollowing]);
                                                         } else {
                                                             console.error("User ID is undefined.");
                                                         }
@@ -184,21 +184,21 @@ const Following: React.FC = () => {
                 />
                 <ul>
                     {filteredFollowing.map((user) => (
-                        <li key={user.id}>
+                        <li key={user.followingId}>
                             <div className="user-card">
                                 <div className="user-info">
                                     <h3
                                         style={{ cursor: "pointer", color: "#1976d2" }}
-                                        onClick={() => navigate(`/${user.id}/profile`)}
+                                        onClick={() => navigate(`/${user.followingId}/profile`)}
                                     >
-                                        {user.username}
+                                        {user.followingUsername}
                                     </h3>
                                     <Button
                                         onClick={async () => {
                                             try {
                                                 if (userId) {
-                                                    await followingService.removeFollowing(user.id);
-                                                    const newFollowing = following.filter(f => f.id !== user.id);
+                                                    await followingService.removeFollowing(user.followingId);
+                                                    const newFollowing = following.filter(f => f.followingId !== user.followingId);
                                                     setFollowing(newFollowing);
                                                     setFilteredFollowing(newFollowing);
                                                 } else {
