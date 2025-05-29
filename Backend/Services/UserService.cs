@@ -36,8 +36,6 @@ public class UserService(IUserRepository userRepository) : IUserService
             return Enumerable.Empty<UserDTO>();
         }
 
-        Console.WriteLine(users.Count());
-
         return users.Where(user => user.Id != userId)
                     .Select(user => new UserDTO
                     {
