@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import userService from '../services/userService';
 import followingService from '../services/followingService';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Box, Modal } from '@mui/material';
 
@@ -38,6 +38,7 @@ const Following: React.FC = () => {
     const userId = useParams<{ userId: string }>().userId;
     const [openModal, setOpenModal] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
+    const navigate = useNavigate();
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -139,7 +140,12 @@ const Following: React.FC = () => {
                                 <li key={user.id}>
                                     <div className="user-card">
                                         <div className="user-info">
-                                            <h3>{user.username}</h3>
+                                            <h3
+                                                style={{ cursor: "pointer", color: "#1976d2" }}
+                                                onClick={() => navigate(`/${user.id}/profile`)}
+                                            >
+                                                {user.username}
+                                            </h3>
                                             <Button
                                                 onClick={async () => {
                                                     try {
@@ -181,7 +187,12 @@ const Following: React.FC = () => {
                         <li key={user.id}>
                             <div className="user-card">
                                 <div className="user-info">
-                                    <h3>{user.username}</h3>
+                                    <h3
+                                        style={{ cursor: "pointer", color: "#1976d2" }}
+                                        onClick={() => navigate(`/${user.id}/profile`)}
+                                    >
+                                        {user.username}
+                                    </h3>
                                     <Button
                                         onClick={async () => {
                                             try {
