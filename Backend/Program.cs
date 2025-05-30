@@ -18,6 +18,7 @@ builder.Services.AddScoped<IUserBookRecordRepository, UserBookRecordRepository>(
 builder.Services.AddScoped<IUserStatisticRepository, UserStatisticRepository>();
 builder.Services.AddScoped<IUserActivityHistoryRepository, UserActivityHistoryRepository>();
 builder.Services.AddScoped<IUserFollowingRepository, UserFollowingRepository>();
+builder.Services.AddScoped<IFeedRepository, FeedRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFileService, GoodreadsFileService>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IUserActivityHistoryService, UserActivityHistoryService>();
 builder.Services.AddScoped<IUserFollowingService, UserFollowingService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFeedService, FeedService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
