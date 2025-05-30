@@ -50,12 +50,13 @@ public class UserService(IUserRepository userRepository) : IUserService
             return Enumerable.Empty<UserDTO>();
         }
 
-        var users = await Task.WhenAll(userIds.Select(id => _userRepository.GetByIdAsync(id))); //TODO change to GetByIdsAsync if implemented 
+        var users = await _userRepository.GetByIdsAsync(userIds);
+        
         return users
             .Where(user => user != null)
             .Select(user => new UserDTO
             {
-                Id = user!.Id,
+                Id = user.Id,
                 Username = user.Username
             });
     }

@@ -24,10 +24,17 @@ public class UserRepository(IDbContextFactory<DataContext> contextFactory) : IUs
         return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    public async Task<User?> GetByIdAsync(int id)
+    public async Task<IEnumerable<User>> GetByIdsAsync(IEnumerable<int> userIds)
     {
+        if (userIds == null || !userIds.Any())
+        {
+            return Enumerable.Empty<User>();
+        }
+
         await using var _context = _contextFactory.CreateDbContext();
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return await _context.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
     }
 
     public async Task UpdateUserAsync(int userId, UserProfileDTO userProfileDto)
