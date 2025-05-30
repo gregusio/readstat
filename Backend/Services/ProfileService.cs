@@ -11,7 +11,12 @@ public class ProfileService(IUserActivityHistoryService userActivityHistoryServi
 
     public async Task<UserProfileDTO> GetUserProfile(int userId)
     {
-        var user = await _userRepository.GetByIdAsync(userId) ?? throw new Exception("User not found");
+        var users = await _userRepository.GetByIdsAsync([userId]);
+        if (!users.Any())
+        {
+            throw new Exception("User not found");
+        }
+        var user = users.First();
         var userActivityHistory = await _userActivityHistoryService.GetUserActivityHistory(userId);
         var userProfileDto = new UserProfileDTO
         {

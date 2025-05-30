@@ -166,7 +166,8 @@ public class AuthServiceTest
         _configMock.Setup(x => x["Jwt:Audience"]).Returns("test");
 
         _refreshTokenRepositoryMock.Setup(x => x.GetByTokenAsync("test")).ReturnsAsync(refreshToken);
-        _userRepositoryMock.Setup(x => x.GetByIdAsync(1)).ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.GetByIdsAsync(It.IsAny<IEnumerable<int>>()))
+            .ReturnsAsync(new List<User> { user });
         _userRepositoryMock.Setup(x => x.GetByUsernameAsync("test")).ReturnsAsync(user);
 
         // Act

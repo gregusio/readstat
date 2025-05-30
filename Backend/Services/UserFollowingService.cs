@@ -17,15 +17,18 @@ public class UserFollowingService(IUserFollowingRepository userFollowingReposito
         }
 
         var followingUserIds = userFollowings.Select(uf => uf.FollowingId).ToList();
-        var followingUsersUsernames = new Dictionary<int, string>();
-        foreach (var followingId in followingUserIds)
+        var followingUsers = await _userRepository.GetByIdsAsync(followingUserIds);
+        var followingUsersUsernames = followingUsers.ToDictionary(u => u.Id, u => u.Username);
+        if (followingUsersUsernames.Count == 0)
         {
-            var user = await _userRepository.GetByIdAsync(followingId);
-            if (user != null)
+            return userFollowings.Select(uf => new UserFollowingDTO
             {
-                followingUsersUsernames[user.Id] = user.Username;
-            }
+                FollowingId = uf.FollowingId,
+                FollowingUsername = "Unknown",
+                FollowingDate = uf.FollowingDate
+            });
         }
+        
         return userFollowings.Select(uf => new UserFollowingDTO
         {
             FollowingId = uf.FollowingId,

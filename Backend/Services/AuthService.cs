@@ -36,7 +36,8 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
             return new RefreshTokenResponse { Success = false, Message = "Invalid refresh token" };
         }
 
-        var user = await _userRepository.GetByIdAsync(token.UserId);
+        var users = await _userRepository.GetByIdsAsync(new[] { token.UserId });
+        var user = users.FirstOrDefault();
         if (user == null)
         {
             return new RefreshTokenResponse { Success = false, Message = "User not found" };
