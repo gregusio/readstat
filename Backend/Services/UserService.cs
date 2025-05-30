@@ -51,16 +51,12 @@ public class UserService(IUserRepository userRepository) : IUserService
         }
 
         var users = await _userRepository.GetByIdsAsync(userIds);
-        if (users == null)
-        {
-            return Enumerable.Empty<UserDTO>();
-        }
         
         return users
             .Where(user => user != null)
             .Select(user => new UserDTO
             {
-                Id = user!.Id,
+                Id = user.Id,
                 Username = user.Username
             });
     }
