@@ -15,30 +15,32 @@ public class FeedService(IFeedRepository feedRepository, IUserFollowingService u
         var userFollowing = await _userFollowingService.GetUserFollowingAsync(userId);
         var followingIds = userFollowing.Select(following => following.FollowingId).ToList();
         var followingUsernames = await _userService.GetByIdsAsync(followingIds);
-        if (followingUsernames == null || !followingUsernames.Any())
+        if (!followingUsernames.Any())
         {
             return Enumerable.Empty<UserActivityHistoryDTO>();
         }
-        var userFeed = new List<UserActivityHistoryDTO>();
-        foreach (var followingId in followingIds)
+        var feedTasks = followingIds.Select(async followingId =>
         {
             var userActivityHistory = await _feedRepository.GetUserFeedAsync(followingId);
-            if (userActivityHistory != null && userActivityHistory.Any())
-            {
-                userFeed.AddRange(MapToDTO(userActivityHistory, followingUsernames));
-            }
-        }
+            return userActivityHistory != null && userActivityHistory.Any()
+                ? MapToDTO(userActivityHistory, followingUsernames)
+                : Enumerable.Empty<UserActivityHistoryDTO>();
+        });
+        
+        var userFeed = (await Task.WhenAll(feedTasks)).SelectMany(feed => feed).ToList();
 
         return userFeed.OrderByDescending(activity => activity.ActivityDate);
     }
 
     private IEnumerable<UserActivityHistoryDTO> MapToDTO(IEnumerable<UserActivityHistory> activities, IEnumerable<UserDTO> followingUsernames)
     {
+        var usernameLookup = followingUsernames.ToDictionary(user => user.Id, user => user.Username);
+
         return activities.Select(activity => new UserActivityHistoryDTO
         {
             Id = activity.Id,
             UserId = activity.UserId,
-            Username = followingUsernames.FirstOrDefault(user => user.Id == activity.UserId)?.Username ?? "Unknown",
+            Username = usernameLookup.TryGetValue(activity.UserId, out var username) ? username : "Unknown",
             ActivityType = activity.ActivityType,
             ActivityDate = activity.ActivityDate,
             Description = activity.Description
