@@ -43,18 +43,20 @@ public class UserService(IUserRepository userRepository) : IUserService
                     });
     }
 
-    public async Task<UserDTO?> GetByIdAsync(int userId)
+    public async Task<IEnumerable<UserDTO>> GetByIdsAsync(IEnumerable<int> userIds)
     {
-        var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null)
+        if (userIds == null || !userIds.Any())
         {
-            return null;
+            return Enumerable.Empty<UserDTO>();
         }
 
-        return new UserDTO
-        {
-            Id = user.Id,
-            Username = user.Username
-        };
+        var users = await Task.WhenAll(userIds.Select(id => _userRepository.GetByIdAsync(id))); //TODO change to GetByIdsAsync if implemented 
+        return users
+            .Where(user => user != null)
+            .Select(user => new UserDTO
+            {
+                Id = user!.Id,
+                Username = user.Username
+            });
     }
 }

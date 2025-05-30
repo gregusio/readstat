@@ -30,7 +30,9 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> GetUsernameById()
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await _userService.GetByIdAsync(userId);
+        var users = await _userService.GetByIdsAsync(new[] { userId });
+        var user = users.FirstOrDefault();
+        
         if (user == null)
         {
             return NotFound();
