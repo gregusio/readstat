@@ -9,6 +9,7 @@ import BookDetail from "../pages/BookDetail";
 import Statistics from "../pages/Statistics";
 import AddBook from "../pages/AddBook";
 import DrawBook from "../pages/DrawBook";
+import Feed from "../pages/Feed";
 import PublicRoute from "./PublicRoute";
 import Profile from "../pages/Profile";
 import Following from "../pages/Following";
@@ -26,6 +27,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/:userId/drawbook" element={<DrawBook />} />
         <Route path="/:userId/profile" element={<Profile />} />
         <Route path="/:userId/following" element={<Following />} />
+        <Route path="/:userId/feed" element={<Feed />} />
       </Route>
 
       <Route element={<PublicRoute />}>

@@ -17,7 +17,7 @@ import SearchBar from "../Bar/SearchBar";
 import { SearchContext } from "../../context/SearchContext";
 import { useContext } from "react";
 
-const pages = ["Home", "Books", "Statistics", "DrawBook"];
+const pages = ["Home", "Books", "Statistics", "DrawBook", "Feed"];
 const settings = ["Profile", "Logout"];
 
 function NavBar() {
