@@ -59,7 +59,8 @@ namespace Backend.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ActivityType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActivityDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Likes = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
