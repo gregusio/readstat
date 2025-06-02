@@ -26,10 +26,20 @@ public class FeedService(IFeedRepository feedRepository, IUserFollowingService u
                 ? MapToDTO(userActivityHistory, followingUsernames)
                 : Enumerable.Empty<UserActivityHistoryDTO>();
         });
-        
+
         var userFeed = (await Task.WhenAll(feedTasks)).SelectMany(feed => feed).ToList();
 
         return userFeed.OrderByDescending(activity => activity.ActivityDate);
+    }
+
+    public async Task LikeActivityAsync(int userId, int activityId)
+    {
+        await _feedRepository.LikeActivityAsync(userId, activityId);
+    }
+
+    public async Task UnlikeActivityAsync(int userId, int activityId)
+    {
+        await _feedRepository.UnlikeActivityAsync(userId, activityId);
     }
 
     private IEnumerable<UserActivityHistoryDTO> MapToDTO(IEnumerable<UserActivityHistory> activities, IEnumerable<UserDTO> followingUsernames)
