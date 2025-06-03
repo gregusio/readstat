@@ -6,8 +6,8 @@ const PublicRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    console.log("Redirecting to books");
-    return <Navigate to="/books" />;
+    console.log("Redirecting to /home");
+    return <Navigate to="/home" />;
   }
 
   return <Outlet />;
