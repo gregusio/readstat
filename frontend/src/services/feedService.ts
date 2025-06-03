@@ -10,7 +10,24 @@ const getFeed = async () => {
   }
 };  
 
+const likeActivity = async (activityId: number) => {
+  try {
+    await apiClient.post(`/Feed/like/${activityId}`);
+  } catch (error) {
+    console.error("Error liking activity:", error);
+  }
+};
+
+const unlikeActivity = async (activityId: number) => {
+  try {
+    await apiClient.post(`/Feed/unlike/${activityId}`);
+  } catch (error) {
+    console.error("Error unliking activity:", error);
+  }
+};
 
 export default {
   getFeed,
+  likeActivity,
+  unlikeActivity,
 };

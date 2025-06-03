@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import feedService from '../../services/feedService';
 
 interface FeedTimelineProps {
     activityType: string;
@@ -9,37 +10,16 @@ interface FeedTimelineProps {
     activityDate: string;
     username: string;
     userId: string;
-    likeCount: number;
+    likes: number;
+    isLiked: boolean;
+    id: number;
 }
 
 const FeedTimeline: React.FC<{ activities: FeedTimelineProps[] }> = ({ activities }) => {
-    const [likedActivities, setLikedActivities] = useState<Set<number>>(new Set());
-    const [likeCounts, setLikeCounts] = useState<{ [key: number]: number }>({});
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toISOString().slice(0, 16).replace('T', ' ');
-    };
-
-    const handleLike = (index: number, initialLikeCount: number) => {
-        const isLiked = likedActivities.has(index);
-        const newLikedActivities = new Set(likedActivities);
-        
-        if (isLiked) {
-            newLikedActivities.delete(index);
-            setLikeCounts(prev => ({
-                ...prev,
-                [index]: (prev[index] !== undefined ? prev[index] : initialLikeCount) - 1
-            }));
-        } else {
-            newLikedActivities.add(index);
-            setLikeCounts(prev => ({
-                ...prev,
-                [index]: (prev[index] !== undefined ? prev[index] : initialLikeCount) + 1
-            }));
-        }
-        
-        setLikedActivities(newLikedActivities);
     };
 
     return (
@@ -49,11 +29,22 @@ const FeedTimeline: React.FC<{ activities: FeedTimelineProps[] }> = ({ activitie
             </Typography>
             
             {activities.map((activity, idx) => {
-                const isLiked = likedActivities.has(idx);
-                // Ensure we have a valid number for like count
-                const initialLikeCount = typeof activity.likeCount === 'number' ? activity.likeCount : 0;
-                const currentLikeCount = likeCounts[idx] !== undefined ? likeCounts[idx] : initialLikeCount;
-                
+                const [isLiked, setIsLiked] = useState(activity.isLiked);
+                const likeCounts = activities.map(act => act.likes);
+                const initialLikeCount = likeCounts[idx] || 0;
+                const [currentLikeCount, setCurrentLikeCount] = useState(initialLikeCount);
+
+                const handleLike = () => {
+                    if (isLiked) {
+                        feedService.unlikeActivity(activity.id);
+                        setCurrentLikeCount(prev => Math.max(prev - 1, 0));
+                    } else {
+                        feedService.likeActivity(activity.id);
+                        setCurrentLikeCount(prev => prev + 1);
+                    }
+                    setIsLiked(!isLiked);
+                };
+
                 return (
                     <Box
                         key={idx}
@@ -87,7 +78,7 @@ const FeedTimeline: React.FC<{ activities: FeedTimelineProps[] }> = ({ activitie
                         {/* Heart and like count at the bottom */}
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                             <IconButton 
-                                onClick={() => handleLike(idx, initialLikeCount)}
+                                onClick={() => handleLike()}
                                 color={isLiked ? 'error' : 'default'}
                                 size="small"
                             >
