@@ -19,4 +19,20 @@ public class FeedController(IFeedService feedService) : ControllerBase
         var feed = await _feedService.GetUserFeedAsync(userId);
         return Ok(feed);
     }
+
+    [HttpPost("like/{activityId}")]
+    public async Task<IActionResult> LikeActivity(int activityId)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await _feedService.LikeActivityAsync(userId, activityId);
+        return NoContent();
+    }
+
+    [HttpPost("unlike/{activityId}")]
+    public async Task<IActionResult> UnlikeActivity(int activityId)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await _feedService.UnlikeActivityAsync(userId, activityId);
+        return NoContent();
+    }
 }
