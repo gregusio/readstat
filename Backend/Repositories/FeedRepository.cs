@@ -24,7 +24,13 @@ public class FeedRepository(IDbContextFactory<DataContext> contextFactory) : IFe
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         var activity = await context.UserActivityHistories
-            .FirstOrDefaultAsync(a => a.Id == activityId && a.UserId == userId);
+            .FirstOrDefaultAsync(a => a.Id == activityId);
+
+        await context.Likes.AddAsync(new Like
+        {
+            UserId = userId,
+            ActivityId = activityId
+        });
 
         if (activity != null)
         {
@@ -32,18 +38,33 @@ public class FeedRepository(IDbContextFactory<DataContext> contextFactory) : IFe
             await context.SaveChangesAsync();
         }
     }
-    
+
     public async Task UnlikeActivityAsync(int userId, int activityId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         var activity = await context.UserActivityHistories
-            .FirstOrDefaultAsync(a => a.Id == activityId && a.UserId == userId);
+            .FirstOrDefaultAsync(a => a.Id == activityId);
+
+        var like = await context.Likes
+            .FirstOrDefaultAsync(l => l.UserId == userId && l.ActivityId == activityId);
+
+        if (like != null)
+        {
+            context.Likes.Remove(like);
+        }
 
         if (activity != null && activity.Likes > 0)
         {
             activity.Likes--;
             await context.SaveChangesAsync();
         }
+    }
+    
+    public async Task<bool> IsActivityLikedAsync(int activityId, int userId)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        Console.WriteLine($"Checking if activity {activityId} is liked by user {userId}");
+        return await context.Likes.AnyAsync(l => l.ActivityId == activityId && l.UserId == userId);
     }
 }

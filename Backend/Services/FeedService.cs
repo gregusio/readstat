@@ -23,12 +23,12 @@ public class FeedService(IFeedRepository feedRepository, IUserFollowingService u
         {
             var userActivityHistory = await _feedRepository.GetUserFeedAsync(followingId);
             return userActivityHistory != null && userActivityHistory.Any()
-                ? MapToDTO(userActivityHistory, followingUsernames)
+                ? await MapToDTO(userActivityHistory, followingUsernames, userId)
                 : Enumerable.Empty<UserActivityHistoryDTO>();
         });
-
+        
         var userFeed = (await Task.WhenAll(feedTasks)).SelectMany(feed => feed).ToList();
-
+        
         return userFeed.OrderByDescending(activity => activity.ActivityDate);
     }
 
@@ -42,18 +42,22 @@ public class FeedService(IFeedRepository feedRepository, IUserFollowingService u
         await _feedRepository.UnlikeActivityAsync(userId, activityId);
     }
 
-    private IEnumerable<UserActivityHistoryDTO> MapToDTO(IEnumerable<UserActivityHistory> activities, IEnumerable<UserDTO> followingUsernames)
+    private async Task<IEnumerable<UserActivityHistoryDTO>> MapToDTO(IEnumerable<UserActivityHistory> activities, IEnumerable<UserDTO> followingUsernames, int userId)
     {
         var usernameLookup = followingUsernames.ToDictionary(user => user.Id, user => user.Username);
-
-        return activities.Select(activity => new UserActivityHistoryDTO
+    
+        var tasks = activities.Select(async activity => new UserActivityHistoryDTO
         {
             Id = activity.Id,
             UserId = activity.UserId,
             Username = usernameLookup.TryGetValue(activity.UserId, out var username) ? username : "Unknown",
             ActivityType = activity.ActivityType,
             ActivityDate = activity.ActivityDate,
-            Description = activity.Description
+            Description = activity.Description,
+            Likes = activity.Likes,
+            IsLiked = await _feedRepository.IsActivityLikedAsync(activity.Id, userId)
         });
+    
+        return await Task.WhenAll(tasks);
     }
 }
