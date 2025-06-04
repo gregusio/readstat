@@ -3,7 +3,11 @@ import React, { useContext, useRef } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  userId: string;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ userId }) => {
   const { setSearchQuery } = useContext(SearchContext);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -15,7 +19,7 @@ const SearchBar: React.FC = () => {
   ) => {
     const target = event.target as HTMLInputElement;
     setSearchQuery(target.value);
-    navigate("/books");
+    navigate(`/${userId}/books`);
   };
 
   const clearSearch = () => {

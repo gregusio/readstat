@@ -178,7 +178,9 @@ function NavBar() {
                   justifyContent: "center",
                 }}
               >
-                <SearchBar />
+                {user && user.id && (
+                  <SearchBar userId={user.id} />
+                )}
               </Box>
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
