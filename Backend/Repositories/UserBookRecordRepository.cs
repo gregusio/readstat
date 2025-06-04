@@ -62,7 +62,26 @@ public class UserBookRecordRepository(IDbContextFactory<DataContext> contextFact
     public async Task UpdateAsync(UserBookRecord record)
     {
         await using var _context = _contextFactory.CreateDbContext();
+
+        var existingRecord = await _context.UserBookRecords
+        .AsNoTracking()
+        .FirstOrDefaultAsync(r => r.Id == record.Id);
+
         _context.UserBookRecords.Update(record);
+
+        if (existingRecord != null && 
+        string.IsNullOrWhiteSpace(existingRecord.MyReview) && 
+        !string.IsNullOrWhiteSpace(record.MyReview))
+        {
+            await _context.UserActivityHistories.AddAsync(new UserActivityHistory
+            {
+                UserId = record.UserId,
+                ActivityType = "Review",
+                Description = string.Format("Added a review for \"{0}\": {1}", record.UserTitle, record.MyReview),
+                ActivityDate = DateTime.UtcNow,
+            });
+        }    
+            
         await _context.SaveChangesAsync();
     }
 
