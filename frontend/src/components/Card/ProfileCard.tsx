@@ -45,22 +45,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name }) => {
     return (
         <div className="profile-card">
             <Grid container spacing={5} direction="row" alignItems="left">
-                {isEditing && isOwnProfile ? (
-                    <>
-                        <TextField
-                            id="username"
-                            label="Username"
-                            value={editedUsername}
-                            onChange={(e) => { setEditedUsername(e.target.value); }}
-                        />
-                        <Button onClick={handleSaveProfile}>Save</Button>
-                    </>
+                {isOwnProfile ? (
+                    isEditing ? (
+                        <>
+                            <TextField
+                                id="username"
+                                label="Username"
+                                value={editedUsername}
+                                onChange={(e) => { setEditedUsername(e.target.value); }}
+                            />
+                            <Button onClick={handleSaveProfile}>Save</Button>
+                        </>
+                    ) : (
+                        <>
+                            <h2>Username: {username}</h2>
+                            <Button onClick={handleEditProfile}>Edit Profile</Button>
+                        </>
+                    )
                 ) : (
-                    <>
-                        <h2>Username: {username}</h2>
-
-                        <Button onClick={handleEditProfile}>Edit Profile</Button>
-                    </>
+                    <h2>Username: {username}</h2>
                 )}
             </Grid>
 
