@@ -18,6 +18,7 @@ public class ProfileService(IUserActivityHistoryService userActivityHistoryServi
         }
         var user = users.First();
         var userActivityHistory = await _userActivityHistoryService.GetUserActivityHistory(userId);
+        userActivityHistory.Sort((x, y) => y.ActivityDate.CompareTo(x.ActivityDate)); 
         var userProfileDto = new UserProfileDTO
         {
             Id = user.Id,
