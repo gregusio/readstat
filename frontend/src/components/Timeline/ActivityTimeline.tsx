@@ -1,5 +1,5 @@
 import Timeline from '@mui/lab/Timeline';
-import { TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, timelineOppositeContentClasses, TimelineSeparator } from '@mui/lab';
+import { TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, timelineOppositeContentClasses, TimelineSeparator } from '@mui/lab';
 import React from 'react';
 
 interface ActivityTimelineProps {

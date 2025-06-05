@@ -91,7 +91,7 @@ const Books: React.FC = () => {
   const handleDeleteAll = async () => {
     setDeleteLoading(true);
     if (!userId) return;
-    await bookService.deleteAllBooks(userId);
+    await bookService.deleteAllBooks();
     setDeleteLoading(false);
     window.location.reload();
   };

@@ -1,7 +1,7 @@
 import React from "react";
 import feedService from "../services/feedService";
 import FeedTimeline from "../components/Timeline/FeedTimeline";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 const Feed: React.FC = () => {
