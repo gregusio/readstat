@@ -1,4 +1,4 @@
-# ReadStat - Setup Guide
+# Readstat - Setup Guide
 
 ## Quick Start
 

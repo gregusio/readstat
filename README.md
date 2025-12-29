@@ -1,4 +1,4 @@
-# readstat
+# Readstat
 
 ![dotnet workflow](https://github.com/gregusio/readstat/actions/workflows/dotnet.yml/badge.svg)
 
