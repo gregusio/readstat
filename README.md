@@ -27,59 +27,8 @@ Readstat is a comprehensive full-stack project designed for book lovers and read
 
 ## Installation
 
-### With Docker
-
-Currently not working due to issues with SQL Server in Docker. :(
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/gregusio/readstat.git
-cd readstat
-```
-
-2. Run docker-compose
-
-```bash
-docker-compose up --build
-```
-
-3. Open the app in your browser - [http://localhost:3000/login](http://localhost:3000/login)
-
-### Without Docker
-
-#### Prerequisites
-
-- .NET Core 8.0
-- Node.js 22.0
-- local SQL Server
-
-#### Setup
-
-1. Clone the repository
-
-```bash
-git clone
-cd readstat
-```
-
-2. Install dependencies
-
-```bash
-npm install
-cd frontend && npm install && cd ..
-```
-
-3. Run project
-
-```bash
-npm run start
-```
-
-4. Open the app in your browser - [http://localhost:3000/login](http://localhost:3000/login)
+Please refer to the [SETUP.md](SETUP.md) file for detailed setup instructions.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
