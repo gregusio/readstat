@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Set environment variable for API URL (use localhost since the browser runs on the host)
+ENV VITE_API_BASE_URL=http://localhost:5027/api
+
 # Build the application
 RUN npm run build
 
@@ -20,4 +23,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Start the web server
-CMD ["npm", "run", "preview", "--", "--port", "3000"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3000"]
