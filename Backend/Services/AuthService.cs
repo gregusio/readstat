@@ -24,7 +24,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
 
         if (user != null && VerifyPassword(user, password))
         {
-            var (accessToken, refreshToken) = await GenerateTokens(username);
+            var (accessToken, refreshToken) = await GenerateTokens(user);
             return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Success = true, Message = "Login successful" };
         }
 
@@ -46,7 +46,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
             return new RefreshTokenResponse { Success = false, Message = "User not found" };
         }
 
-        var (newAccessToken, newRefreshToken) = await GenerateTokens(user.Username);
+        var (newAccessToken, newRefreshToken) = await GenerateTokens(user);
 
         return new RefreshTokenResponse
         {
@@ -57,24 +57,23 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         };
     }
 
-    private async Task<(string accessToken, string refreshToken)> GenerateTokens(string username)
+    private async Task<(string accessToken, string refreshToken)> GenerateTokens(User user)
     {
-        var accessToken = await GenerateJwtToken(username);
+        var accessToken = await GenerateJwtToken(user);
         var refreshToken = GenerateRefreshToken();
 
-        await SaveRefreshToken(username, refreshToken);
+        await SaveRefreshToken(user, refreshToken);
 
         return (accessToken, refreshToken);
     }
 
-    private async Task<string> GenerateJwtToken(string username)
+    private async Task<string> GenerateJwtToken(User user)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Role, "User"),
-            new Claim(ClaimTypes.NameIdentifier,  user!.Id.ToString())
+            new Claim(ClaimTypes.NameIdentifier,  user.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -100,14 +99,8 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         return Convert.ToBase64String(randomNumber);
     }
 
-    private async Task SaveRefreshToken(string username, string refreshToken)
+    private async Task SaveRefreshToken(User user, string refreshToken)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
-        if (user == null)
-        {
-            return;
-        }
-
         var token = new RefreshToken
         {
             Token = refreshToken,
