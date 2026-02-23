@@ -28,24 +28,24 @@ public class UserActivityHistoryService(IUserActivityHistoryRepository userActiv
             ActivityDate = userActivity.ActivityDate,
             Description = userActivity.Description
         };
-
     }
 
-    public Task<bool> DeleteUserActivity(int activityId)
+    public async Task<bool> DeleteUserActivity(int activityId)
     {
-        var activity = _userActivityHistoryRepository.GetUserActivitiesAsync(activityId);
-        if (activity != null)
+        var activities = await _userActivityHistoryRepository.GetUserActivitiesAsync(activityId);
+        if (activities != null)
         {
-            _userActivityHistoryRepository.DeleteUserActivityAsync(activityId);
-            return Task.FromResult(true);
+            await _userActivityHistoryRepository.DeleteUserActivityAsync(activityId);
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
-    public Task<List<UserActivityHistoryDTO>> GetUserActivityHistory(int userId)
+    public async Task<List<UserActivityHistoryDTO>> GetUserActivityHistory(int userId)
     {
-        var userActivities = _userActivityHistoryRepository.GetUserActivitiesAsync(userId);
-        var userActivityDtos = userActivities.Select(activity => new UserActivityHistoryDTO
+        var userActivities = await _userActivityHistoryRepository.GetUserActivitiesAsync(userId);
+
+        return userActivities.Select(activity => new UserActivityHistoryDTO
         {
             Id = activity.Id,
             UserId = activity.UserId,
@@ -53,8 +53,5 @@ public class UserActivityHistoryService(IUserActivityHistoryRepository userActiv
             ActivityDate = activity.ActivityDate,
             Description = activity.Description
         }).ToList();
-
-        return Task.FromResult(userActivityDtos);
     }
 }
-
