@@ -1,8 +1,7 @@
-using System.Security.Cryptography;
-using System.Text;
 using Backend.Interfaces;
 using Backend.Models;
 using Backend.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
@@ -27,20 +26,13 @@ public class AuthServiceTest
     public async Task AuthenticateAsync_WithValidCredentials_ReturnsLoginResponse()
     {
         // Arrange
-        using var sha256 = SHA256.Create();
-
-        var Sha256Hash = new Func<string, string>(input =>
-        {
-            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToBase64String(hash);
-        });
-
         var user = new User
         {
             Id = 1,
             Username = "test",
-            PasswordHash = Sha256Hash("test")
+            PasswordHash = string.Empty
         };
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "test");
 
         _configMock.Setup(x => x["Jwt:Key"]).Returns("This is a test key and should be changed in production");
         _configMock.Setup(x => x["Jwt:Issuer"]).Returns("test");
@@ -76,20 +68,13 @@ public class AuthServiceTest
     public async Task RegisterAsync_WithValidCredentials_ReturnsRegisterResponse()
     {
         // Arrange
-        using var sha256 = SHA256.Create();
-
-        var Sha256Hash = new Func<string, string>(input =>
-        {
-            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToBase64String(hash);
-        });
-
         var user = new User
         {
             Id = 1,
             Username = "test",
-            PasswordHash = Sha256Hash("test")
+            PasswordHash = string.Empty
         };
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "test");
 
         _configMock.Setup(x => x["Jwt:Key"]).Returns("This is a test key and should be changed in production");
         _configMock.Setup(x => x["Jwt:Issuer"]).Returns("test");
@@ -111,20 +96,13 @@ public class AuthServiceTest
     public async Task RegisterAsync_WithInvalidCredentials_ReturnsRegisterResponse()
     {
         // Arrange
-        using var sha256 = SHA256.Create();
-
-        var Sha256Hash = new Func<string, string>(input =>
-        {
-            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return Convert.ToBase64String(hash);
-        });
-
         var user = new User
         {
             Id = 1,
             Username = "test",
-            PasswordHash = Sha256Hash("test")
+            PasswordHash = string.Empty
         };
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, "test");
 
         _configMock.Setup(x => x["Jwt:Key"]).Returns("This is a test key and should be changed in production");
         _configMock.Setup(x => x["Jwt:Issuer"]).Returns("test");
