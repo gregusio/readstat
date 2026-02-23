@@ -73,9 +73,13 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
             new Claim(ClaimTypes.NameIdentifier,  user.Id.ToString())
         };
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!.PadRight(16, '0'))
-        );
+        var jwtKey = configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("JWT key is not configured.");
+
+        if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
+            throw new InvalidOperationException("JWT key must be at least 32 bytes (256 bits).");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
