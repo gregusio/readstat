@@ -2,10 +2,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+
 using Backend.DTO;
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Services;
 
@@ -14,12 +16,13 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
     private readonly IConfiguration _configuration = configuration;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
+    private readonly PasswordHasher<User> _passwordHasher = new();
 
     public async Task<LoginResponse> LoginAsync(string username, string password)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
 
-        if (user != null && user.PasswordHash == HashPassword(password))
+        if (user != null && VerifyPassword(user, password))
         {
             var (accessToken, refreshToken) = await GenerateTokens(username);
             return new LoginResponse { AccessToken = accessToken, RefreshToken = refreshToken, Success = true, Message = "Login successful" };
@@ -123,22 +126,22 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
             return new RegisterResponse { Success = false, Message = "Username already taken" };
         }
 
-        var passwordHash = HashPassword(request.Password);
-
         var user = new User
         {
-            PasswordHash = passwordHash,
-            Username = request.Username
+            Username = request.Username,
+            PasswordHash = string.Empty
         };
+
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+
         await _userRepository.AddUserAsync(user);
 
         return new RegisterResponse { Success = true, Message = "Registration successful" };
     }
 
-    private string HashPassword(string password)
+    private bool VerifyPassword(User user, string password)
     {
-        using var sha256 = SHA256.Create();
-        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(hashedBytes);
+        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+        return result != PasswordVerificationResult.Failed;
     }
 }
