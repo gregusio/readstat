@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Backend.Data;
 using Backend.Interfaces;
 using Backend.Models;
@@ -12,27 +11,27 @@ public class UserActivityHistoryRepository(IDbContextFactory<DataContext> contex
 
     public async Task AddUserActivityAsync(UserActivityHistory userActivity)
     {
-        await using var _context = _dbContextFactory.CreateDbContext();
-        await _context.UserActivityHistories.AddAsync(userActivity);
-        await _context.SaveChangesAsync();
+        await using var context = _dbContextFactory.CreateDbContext();
+        await context.UserActivityHistories.AddAsync(userActivity);
+        await context.SaveChangesAsync();
     }
 
-    public List<UserActivityHistory> GetUserActivitiesAsync(int userId)
+    public async Task<List<UserActivityHistory>> GetUserActivitiesAsync(int userId)
     {
-        using var _context = _dbContextFactory.CreateDbContext();
-        return _context.UserActivityHistories
+        await using var context = _dbContextFactory.CreateDbContext();
+        return await context.UserActivityHistories
             .Where(x => x.UserId == userId)
-            .ToList();
+            .ToListAsync();
     }
 
-    public void DeleteUserActivityAsync(int activityId)
+    public async Task DeleteUserActivityAsync(int activityId)
     {
-        using var _context = _dbContextFactory.CreateDbContext();
-        var activity = _context.UserActivityHistories.Find(activityId);
+        await using var context = _dbContextFactory.CreateDbContext();
+        var activity = await context.UserActivityHistories.FindAsync(activityId);
         if (activity != null)
         {
-            _context.UserActivityHistories.Remove(activity);
-            _context.SaveChanges();
+            context.UserActivityHistories.Remove(activity);
+            await context.SaveChangesAsync();
         }
     }
 }
