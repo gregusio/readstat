@@ -12,24 +12,20 @@ public class BookService(IBookRepository bookRepository, IUserBookRecordReposito
     public async Task<IEnumerable<BookBasicInfoDTO>> GetUserBooksAsync(int userId)
     {
         var userBookRecords = await _userBookRecordRepository.GetAllForUserAsync(userId);
-
-        var DTOBooks = new List<BookBasicInfoDTO>();
-
-        foreach (var userBookRecord in userBookRecords)
+    
+        var bookIds = userBookRecords.Select(ubr => ubr.BookId).Distinct();
+        var books = (await _bookRepository.GetBooksByIdsAsync(bookIds))
+            .ToDictionary(b => b.Id);
+    
+        return userBookRecords.Select(ubr => new BookBasicInfoDTO
         {
-            var book = await _bookRepository.GetByIdAsync(userBookRecord.BookId);
-
-            DTOBooks.Add(new BookBasicInfoDTO
-            {
-                Id = userBookRecord.Id,
-                Title = userBookRecord.UserTitle ?? book!.Title,
-                Author = userBookRecord.UserAuthor ?? book!.Author,
-                ExclusiveShelf = userBookRecord.ExclusiveShelf
-            });
-        }
-
-        return DTOBooks;
+            Id = ubr.Id,
+            Title = ubr.UserTitle ?? books[ubr.BookId].Title,
+            Author = ubr.UserAuthor ?? books[ubr.BookId].Author,
+            ExclusiveShelf = ubr.ExclusiveShelf
+        });
     }
+
 
     public async Task<BookDetailsDTO> GetBookDetailsAsync(int userId, int recordId)
     {
