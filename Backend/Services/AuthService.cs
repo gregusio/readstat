@@ -13,14 +13,11 @@ namespace Backend.Services;
 
 public class AuthService(IConfiguration configuration, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository) : IAuthService
 {
-    private readonly IConfiguration _configuration = configuration;
-    private readonly IUserRepository _userRepository = userRepository;
-    private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository;
     private readonly PasswordHasher<User> _passwordHasher = new();
 
     public async Task<LoginResponse> LoginAsync(string username, string password)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var user = await userRepository.GetByUsernameAsync(username);
 
         if (user != null && VerifyPassword(user, password))
         {
@@ -33,13 +30,13 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
 
     public async Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken)
     {
-        var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+        var token = await refreshTokenRepository.GetByTokenAsync(refreshToken);
         if (token == null || token.ExpiresAt < DateTime.UtcNow)
         {
             return new RefreshTokenResponse { Success = false, Message = "Invalid refresh token" };
         }
 
-        var users = await _userRepository.GetByIdsAsync(new[] { token.UserId });
+        var users = await userRepository.GetByIdsAsync(new[] { token.UserId });
         var user = users.FirstOrDefault();
         if (user == null)
         {
@@ -77,13 +74,13 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         };
 
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!.PadRight(16, '0'))
+            Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!.PadRight(16, '0'))
         );
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: claims,
             expires: DateTime.Now.AddHours(1),
             signingCredentials: creds
@@ -109,12 +106,12 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
             ExpiresAt = DateTime.UtcNow.AddDays(7)
         };
 
-        await _refreshTokenRepository.AddAsync(token);
+        await refreshTokenRepository.AddAsync(token);
     }
 
     public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
     {
-        if (await _userRepository.GetByUsernameAsync(request.Username) != null)
+        if (await userRepository.GetByUsernameAsync(request.Username) != null)
         {
             return new RegisterResponse { Success = false, Message = "Username already taken" };
         }
@@ -127,7 +124,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
 
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
-        await _userRepository.AddUserAsync(user);
+        await userRepository.AddUserAsync(user);
 
         return new RegisterResponse { Success = true, Message = "Registration successful" };
     }
