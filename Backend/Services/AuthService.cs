@@ -62,7 +62,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         var accessToken = await GenerateJwtToken(username);
         var refreshToken = GenerateRefreshToken();
 
-        SaveRefreshToken(username, refreshToken);
+        await SaveRefreshToken(username, refreshToken);
 
         return (accessToken, refreshToken);
     }
@@ -100,7 +100,7 @@ public class AuthService(IConfiguration configuration, IUserRepository userRepos
         return Convert.ToBase64String(randomNumber);
     }
 
-    private async void SaveRefreshToken(string username, string refreshToken)
+    private async Task SaveRefreshToken(string username, string refreshToken)
     {
         var user = await _userRepository.GetByUsernameAsync(username);
         if (user == null)
