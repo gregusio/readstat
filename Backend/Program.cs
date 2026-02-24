@@ -37,15 +37,22 @@ builder.Services.Configure<FormOptions>(options =>
 builder.Services.AddDbContextFactory<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    options.EnableSensitiveDataLogging();
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+    }
 });
+
+var allowedOrigins = builder.Configuration["AllowedOrigins"]?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? new[] { "http://localhost:3000" };
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") 
+            policy.WithOrigins(allowedOrigins)
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
@@ -113,13 +120,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-try 
+try
 {
     using (var scope = app.Services.CreateScope())
     {
         var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataContext>>();
         await using var context = dbContextFactory.CreateDbContext();
-        if(context.Database.GetPendingMigrations().Any())
+        if (context.Database.GetPendingMigrations().Any())
         {
             await context.Database.MigrateAsync();
         }
@@ -130,4 +137,5 @@ catch (Exception e)
     Console.WriteLine(e);
 }
 
-app.Run("http://localhost:5027");
+var urls = builder.Configuration["ASPNETCORE_URLS"] ?? "http://localhost:5027";
+app.Run(urls);
