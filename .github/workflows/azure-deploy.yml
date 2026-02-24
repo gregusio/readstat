@@ -61,12 +61,20 @@ jobs:
               run: |
                   mkdir -p ./Backend/publish/wwwroot
                   cp -r ./frontend/dist/* ./Backend/publish/wwwroot/
-              shell: bash
+
+            - name: Create deployment package
+              run: |
+                  cd ./Backend/publish
+                  zip -r ../../deploy.zip .
 
             - name: Deploy to Azure Web App
-              uses: azure/webapps-deploy@v2
-              with:
-                  app-name: ${{ env.AZURE_WEBAPP_NAME }}
-                  publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                  package: ./Backend/publish
-                  startup-command: dotnet Backend.dll
+              env:
+                  DEPLOY_USER: ${{ secrets.AZURE_DEPLOY_USER }}
+                  DEPLOY_PASS: ${{ secrets.AZURE_DEPLOY_PASS }}
+              run: |
+                  curl -X POST \
+                    --user "$DEPLOY_USER:$DEPLOY_PASS" \
+                    --data-binary @deploy.zip \
+                    -H "Content-Type: application/zip" \
+                    "https://${{ env.AZURE_WEBAPP_NAME }}.scm.azurewebsites.net/api/zipdeploy" \
+                    --fail --silent --show-error
