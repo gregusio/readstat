@@ -13,8 +13,9 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Set environment variable for API URL (use localhost since the browser runs on the host)
-ENV VITE_API_BASE_URL=http://localhost:5027/api
+# Accept API URL as a build argument (set via docker-compose args or CI/CD)
+ARG VITE_API_BASE_URL=http://localhost:5027/api
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 # Build the application
 RUN npm run build

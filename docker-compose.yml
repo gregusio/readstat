@@ -5,7 +5,7 @@ services:
         environment:
             - ACCEPT_EULA=Y
             - SA_PASSWORD=${SA_PASSWORD}
-            - MSSQL_PID=${MSSQL_PID}
+            - MSSQL_PID=Express
         ports:
             - "1433:1433"
         volumes:
@@ -23,11 +23,15 @@ services:
             dockerfile: Dockerfile
         container_name: readstat-backend
         ports:
-            - "5027:5027"
+            - "${BACKEND_PORT:-5027}:${BACKEND_PORT:-5027}"
         environment:
-            - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-            - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+            - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+            - ASPNETCORE_URLS=http://+:${BACKEND_PORT:-5027}
             - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ReadstatDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+            - Jwt__Key=${JWT_KEY}
+            - Jwt__Issuer=${JWT_ISSUER:-readstat}
+            - Jwt__Audience=${JWT_AUDIENCE:-readstat}
+            - AllowedOrigins=${ALLOWED_ORIGINS:-http://localhost:3000}
         depends_on:
             sqlserver:
                 condition: service_healthy
@@ -37,9 +41,11 @@ services:
         build:
             context: ./frontend
             dockerfile: Dockerfile
+            args:
+                - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:5027/api}
         container_name: readstat-frontend
         ports:
-            - "3000:3000"
+            - "${FRONTEND_PORT:-3000}:3000"
         depends_on:
             - backend
         restart: on-failure
