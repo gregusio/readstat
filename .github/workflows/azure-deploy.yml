@@ -1,0 +1,71 @@
+name: Deploy to Azure
+
+on:
+    push:
+        branches: ["main"]
+    workflow_dispatch:
+
+env:
+    AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+    DOTNET_VERSION: "8.0.x"
+    NODE_VERSION: "22"
+
+jobs:
+    build-and-deploy:
+        name: Build and Deploy
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: "npm"
+                  cache-dependency-path: frontend/package-lock.json
+
+            - name: Install frontend dependencies
+              run: npm ci
+              working-directory: ./frontend
+
+            - name: Build frontend
+              run: npm run build
+              working-directory: ./frontend
+              env:
+                  VITE_API_BASE_URL: /api
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: Restore dependencies
+              run: dotnet restore
+              working-directory: ./Backend
+
+            - name: Build backend
+              run: dotnet build --configuration Release --no-restore
+              working-directory: ./Backend
+
+            - name: Test
+              run: dotnet test --no-build --verbosity normal
+              working-directory: ./Backend.test
+              continue-on-error: true
+
+            - name: Publish backend
+              run: dotnet publish --configuration Release --no-build --output ./publish
+              working-directory: ./Backend
+
+            - name: Copy frontend build to wwwroot
+              run: |
+                  mkdir -p ./Backend/publish/wwwroot
+                  cp -r ./frontend/dist/* ./Backend/publish/wwwroot/
+              shell: bash
+
+            - name: Deploy to Azure Web App
+              uses: azure/webapps-deploy@v3
+              with:
+                  app-name: ${{ env.AZURE_WEBAPP_NAME }}
+                  publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+                  package: ./Backend/publish

@@ -27,6 +27,8 @@ obj/
 *.sln.docstates
 appsettings.Development.json
 appsettings.Local.json
+publish/
+deploy.zip
 
 # Docker
 docker-compose.override.yml
