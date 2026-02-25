@@ -1,0 +1,57 @@
+name: Deploy Backend to Azure
+
+on:
+    push:
+        branches: ["main", "azure-deploy"]
+    workflow_dispatch:
+
+env:
+    AZURE_BACKEND_WEBAPP_NAME: ${{ vars.AZURE_BACKEND_WEBAPP_NAME }}
+    DOTNET_VERSION: "8.0.x"
+
+jobs:
+    build-and-deploy:
+        name: Build and Deploy Backend
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: Restore dependencies
+              run: dotnet restore
+              working-directory: ./Backend
+
+            - name: Build backend
+              run: dotnet build --configuration Release --no-restore
+              working-directory: ./Backend
+
+            - name: Test
+              run: dotnet test --no-build --verbosity normal
+              working-directory: ./Backend.test
+              continue-on-error: true
+
+            - name: Publish backend
+              run: dotnet publish --configuration Release --no-build --output ./publish
+              working-directory: ./Backend
+
+            - name: Create deployment package
+              run: |
+                  cd ./Backend/publish
+                  zip -r ../../deploy.zip .
+
+            - name: Deploy to Azure Web App
+              env:
+                  DEPLOY_USER: ${{ secrets.AZURE_DEPLOY_USER }}
+                  DEPLOY_PASS: ${{ secrets.AZURE_DEPLOY_PASS }}
+              run: |
+                  curl -X POST \
+                    --user '${{ secrets.AZURE_DEPLOY_USER }}:${{ secrets.AZURE_DEPLOY_PASS }}' \
+                    --data-binary @deploy.zip \
+                    -H "Content-Type: application/zip" \
+                    "https://${{ env.AZURE_BACKEND_WEBAPP_NAME }}.scm.azurewebsites.net/api/zipdeploy" \
+                    --fail --silent --show-error
