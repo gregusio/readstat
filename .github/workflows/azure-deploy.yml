@@ -50,7 +50,7 @@ jobs:
                   DEPLOY_PASS: ${{ secrets.AZURE_DEPLOY_PASS }}
               run: |
                   curl -X POST \
-                    --user "$DEPLOY_USER:$DEPLOY_PASS" \
+                    --user '${{ secrets.AZURE_DEPLOY_USER }}:${{ secrets.AZURE_DEPLOY_PASS }}' \
                     --data-binary @deploy.zip \
                     -H "Content-Type: application/zip" \
                     "https://${{ env.AZURE_BACKEND_WEBAPP_NAME }}.scm.azurewebsites.net/api/zipdeploy" \

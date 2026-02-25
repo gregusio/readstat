@@ -57,7 +57,7 @@ jobs:
                   DEPLOY_PASS: ${{ secrets.AZURE_FRONTEND_DEPLOY_PASS }}
               run: |
                   curl -X POST \
-                    --user "$DEPLOY_USER:$DEPLOY_PASS" \
+                    --user '${{ secrets.AZURE_FRONTEND_DEPLOY_USER }}:${{ secrets.AZURE_FRONTEND_DEPLOY_PASS }}' \
                     --data-binary @frontend-deploy.zip \
                     -H "Content-Type: application/zip" \
                     "https://${{ env.AZURE_FRONTEND_NAME }}.scm.azurewebsites.net/api/zipdeploy" \
